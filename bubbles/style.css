@@ -1,0 +1,217 @@
+html, body {
+  padding: 0px;
+  margin: 0px;
+  background: #222;
+  font-family: 'Karla', sans-serif;
+  color: #FFF;
+  height: 100%;
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  overflow: hidden;
+}
+
+.info {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+}
+
+.container {
+  border-radius: 100%;
+  width: 400px;
+  height: 400px;
+  overflow:hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  margin: auto;
+  position: relative;
+  border: 10px solid #000;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2), inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  background: #A700DD;
+  display:flex;
+}
+.container .help {
+  position: absolute;
+  top: -40px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+}
+.container .plane {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.container .plane .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  margin-top: -13.33333px;
+}
+.container .plane .row:nth-child(even) {
+  margin-left: 50px;
+}
+.container .plane .row .icon {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: move;
+  ccborder: 1px solid red;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 100px;
+  max-width: 100px;
+  height: 100px;
+  position: relative;
+  box-sizing: border-box;
+}
+.container .plane .row .icon:active {
+  cursor: move;
+}
+.container .plane .row .icon .draw {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  font-size: 14px;
+  background: black;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 100%;
+  -webkit-transform: translateX(-50%) translateY(-50%) scale(0.5, 0.5);
+          transform: translateX(-50%) translateY(-50%) scale(0.5, 0.5);
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.container .plane .row .icon .draw:after{
+   content: '';
+   position:absolute;
+   width:100%;
+   height:100%;
+   border-radius:100%;
+   top:50%;
+   left:50%;
+   transform:translateX(-50%) translateY(-50%);
+   border:2px solid #000;
+   transition:all 0.5s;
+}
+.container .plane .row .icon.open{
+   z-index:1000;
+}
+.container .plane .row .icon.open .draw:after{
+   transition:all 1s;
+   width:500%;
+   height:500%;
+   background:rgba(0, 0, 0, 1);
+}
+.container .plane .row .icon .draw i {
+  font-size: 36px;
+  margin: auto;
+  display: block;
+}
+
+.container .app{
+   pointer-events:none;
+   z-index:100000;
+   opacity:0;
+   color:#FFF;
+   top:0px;
+   left:0px;
+   width:75%;
+   margin:auto;
+   font-size:28px;
+   overflow:hidden;
+   text-align:center;
+   transition:all 0.25s;
+}
+
+.container .app .title{
+   font-size:46px;
+   font-weight:600;
+   transition: all 0.25s;
+   transition-delay:0.75s;
+}
+.container .app .item{
+   margin-top:10px;
+   font-weight:600;
+   position:relative;
+   width:auto;
+   overflow:hidden;
+   cursor:pointer;
+   display:inline-block;
+   left:100%;
+   opacity:0;
+   transition: 0s;
+}
+.container .app .item:nth-of-type(0){
+   transition-delay: 0.25s;
+}
+.container.open .app .item{
+   transition:all 0.25s;
+   left:0px;
+   opacity:1;
+}
+.container.open .app .item:nth-of-type(1){
+   transition-delay: 0.5s;
+}
+.container.open .app .item:nth-of-type(2){
+   transition-delay: 0.75s;
+}
+.container.open .app .item:nth-of-type(3){
+   transition-delay: 1s;
+}
+.container.open .app .item:nth-of-type(4){
+   transition-delay: 1.25s;
+}
+.container.open .app .item:nth-of-type(5){
+   transition-delay: 1.5s;
+}
+
+.container .app .item:after{
+   content:"";
+   position:absolute;
+   bottom:0px;
+   left:-100%;
+   height:4px;
+   width:100%;
+   opacity:0;
+   background:#FFF;
+   transition:all 0.25s;
+}
+.container .app .item:hover:after{
+   left:0px;
+   opacity:1;
+}
+.container .app .close{
+   cccolor:#F22;
+}
+.container.open .app{
+   transition: all 0.25s;
+   transition-delay:0.75s;
+   opacity:1 !important;
+   z-index:10000;
+   transform:translateX(0px) translateY(0px);
+   pointer-events:initial;
+}
