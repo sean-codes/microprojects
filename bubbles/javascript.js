@@ -154,8 +154,6 @@ function updateIconSizes(){
 
       iconDraw.style.transform = `translateX(-50%) translateY(-50%) scale(${percent}, ${percent})`
       iconDraw.style.opacity = percent
-
-      //iconDraw.innerHTML = html.icons[i].getBoundingClientRect().left + ', ' + html.icons[i].getBoundingClientRect().top
    }
 }
 
