@@ -1,0 +1,32 @@
+{
+  "name": "microprojects",
+  "version": "1.0.0",
+  "description": "Microprojects and Prototypes",
+  "main": "index.js",
+  "scripts": {
+    "build": "./build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sean-codes/microprojects.git"
+  },
+  "keywords": [
+    "microprojects",
+    "codepen",
+    "prototypes",
+    "simple",
+    "small"
+  ],
+  "author": "sean-codes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sean-codes/microprojects/issues"
+  },
+  "homepage": "https://github.com/sean-codes/microprojects#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-sass": "^3.1.0"
+  },
+  "dependencies": {}
+}
