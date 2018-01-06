@@ -4,11 +4,13 @@
          html, body {
             margin: 0;
             padding: 0;
-            color: #FFF;
-            font-family: monospace;
          }
 
          body * {
+            margin:0;
+            padding:0;
+            color: #FFF;
+            font-family: monospace;
             box-sizing:border-box;
             display:block;
             background: transparent;
@@ -41,14 +43,18 @@
          }
 
          project project-title {
-            font-size: 14px;
             font-weight: 600;
             text-align:center;
-            line-height:3em;
-            height: 3em;
             white-space: nowrap;
+            height: 3em;
             text-overflow:ellipsis;
             overflow:hidden;
+         }
+         project project-title a {
+            font-size: 14px;
+            line-height:3em;
+            color:#FFF;
+            font-family: monospace;
          }
 
          iframe {
@@ -66,26 +72,26 @@
       <projects>
          <project>
             <project-view>
-               <iframe src="../Login Form (Only CSS)/index.html" scrolling="no"></iframe>
+               <iframe src="./Login Form (Only CSS)/index.html" scrolling="no"></iframe>
             </project-view>
             <project-title>
-               Login Form (Only CSS) awd awdawd
+               <a href="./Login Form (Only CSS)/index.html">Login Form (Only CSS) awd awdawd</a>
             </project-title>
          </project>
          <project>
             <project-view>
-               <iframe src="../Messenger with Emojis/index.html" scrolling="no"></iframe>
+               <iframe src="./Messenger with Emojis/index.html" scrolling="no"></iframe>
             </project-view>
             <project-title>
-               Messenger with Emojis
+               <a href="./Messenger with Emojis/index.html">Messenger with Emojis</a>
             </project-title>
          </project>
          <project>
             <project-view>
-               <iframe src="../Mirror like Links/index.html" scrolling="no"></iframe>
+               <iframe src="./Mirror like Links/index.html" scrolling="no"></iframe>
             </project-view>
             <project-title>
-               Mirror like Links
+               <a href="./Mirror like Links/index.html">Mirror like Links</a>
             </project-title>
          </project>
       </projects>
