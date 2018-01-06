@@ -1,0 +1,93 @@
+<html>
+   <head>
+      <style>
+         html, body {
+            margin: 0;
+            padding: 0;
+            color: #FFF;
+            font-family: monospace;
+         }
+
+         body * {
+            box-sizing:border-box;
+            display:block;
+            background: transparent;
+            width:100%;
+            line-height: 2em;
+            font-size:13px;
+         }
+
+         projects {
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+         }
+
+         project {
+            max-width:325px;
+            background:#333;
+            border-radius:3px;
+            box-sizing:border-box;
+            margin:10px;
+            padding:10px 10px 0px 10px;
+            box-shadow:0px 1px 2px rgba(0, 0, 0, 0.25);
+         }
+
+         project project-view {
+            position:relative;
+            width:100%;
+            height:150px;
+            overflow:hidden;
+         }
+
+         project project-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-align:center;
+            line-height:3em;
+            height: 3em;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+         }
+
+         iframe {
+            width:200%;
+            height: 200%;
+            transform-origin: top left;
+            transform: scale(0.5);
+            box-sizing:border-box;
+            overflow: hidden;
+            border:none;
+         }
+      </style>
+   </head>
+   <body>
+      <projects>
+         <project>
+            <project-view>
+               <iframe src="./Login Form (Only CSS)/index.html" scrolling="no"></iframe>
+            </project-view>
+            <project-title>
+               Login Form (Only CSS) awd awdawd
+            </project-title>
+         </project>
+         <project>
+            <project-view>
+               <iframe src="./Messenger with Emojis/index.html" scrolling="no"></iframe>
+            </project-view>
+            <project-title>
+               Messenger with Emojis
+            </project-title>
+         </project>
+         <project>
+            <project-view>
+               <iframe src="./Mirror like Links/index.html" scrolling="no"></iframe>
+            </project-view>
+            <project-title>
+               Mirror like Links
+            </project-title>
+         </project>
+      </projects>
+   </body>
+</html>

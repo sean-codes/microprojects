@@ -1,0 +1,1 @@
+boilerplate for microprojects
