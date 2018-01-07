@@ -17,6 +17,10 @@ body * {
   line-height: 2em;
   font-size: 13px; }
 
+h1 {
+  font-size: 2em;
+  text-align: center; }
+
 projects {
   display: -webkit-box;
   display: -ms-flexbox;

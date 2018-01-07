@@ -9,6 +9,7 @@ var prefix = require('gulp-autoprefixer')
 var readLine = require('readline-sync')
 var gutil = require('gulp-util')
 var data = require('gulp-data')
+var watch = require('gulp-watch')
 
 gulp.task('new', function() {
    var projectName = readLine.question('Project Title: ')
@@ -16,7 +17,6 @@ gulp.task('new', function() {
    if(!fs.existsSync(projectPath)) {
       console.log('Creating project..')
       gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function(){
-         build()
          gulp.start('watch')
       }))
       return
@@ -27,10 +27,15 @@ gulp.task('new', function() {
 
 gulp.task('watch', function() {
    build()
-
    var projectFolders = GulpFolders('projects')
+   var unlinked = {}
    GulpInception(projectFolders, function(projectFolder) {
-      gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
+      //gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
+
+      var wat = watch([projectFolder]).on('unlink', function(filename) {
+         if(!unlinked[projectFolder]){ build() }
+         unlinked[projectFolder] = true;
+      })
    })
    gulp.watch(['template/**/src/*', 'template/**/src/*'], function(){ microBuild('template') })
    gulp.watch(['www/**/src/*', 'www/**/src/*'], function(){ microBuild('www') })
@@ -45,7 +50,9 @@ function build() {
    GulpInception(projectFolders, microBuild)
    microBuild('template')
    microBuild('www')
+}
 
+function updateIndex() {
    gulp.src('www/index.html').pipe(gulp.dest(''))
 }
 
@@ -81,7 +88,7 @@ function microBuild(pathSite) {
          return JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')));
       }))
       .pipe(pug({ pretty: true }).on('error', gutil.log))
-      .pipe(gulp.dest(pathSite))
+      .pipe(gulp.dest(pathSite)).on('finish', function() { updateIndex() })
 }
 
 // Might work. Wish we just knew how gulp worked
