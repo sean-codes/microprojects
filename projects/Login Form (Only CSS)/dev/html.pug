@@ -1,0 +1,25 @@
+.container
+   input(type="radio" name="tab" id="signin" checked)
+   input(type="radio" name="tab" id="register")
+   .pages
+      .page
+         .input
+            .title #[i.material-icons account_box] USERNAME
+            input.text(type="text" placeholder="")
+         .input
+            .title #[i.material-icons lock] PASSWORD
+            input.text(type="password" placeholder="")
+         .input
+            input(type="submit" value="ENTER")
+      .page.signup
+         .input
+            .title #[i.material-icons person] NAME
+            input.text(type="text" placeholder="")
+         .input
+            .title #[i.material-icons markunread_mailbox] EMAIL
+            input.text(type="password" placeholder="")
+         .input
+            input(type="submit" value="SIGN ME UP!")
+   .tabs
+      label.tab(for="signin") #[.text Sign In]
+      label.tab(for="register") #[.text Register]
