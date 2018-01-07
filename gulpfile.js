@@ -30,7 +30,7 @@ gulp.task('watch', function() {
    var projectFolders = GulpFolders('projects')
    var unlinked = {}
    GulpInception(projectFolders, function(projectFolder) {
-      //gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
+      gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
 
       var wat = watch([projectFolder]).on('unlink', function(filename) {
          if(!unlinked[projectFolder]){ build() }
