@@ -6,12 +6,19 @@ var pug = require('gulp-pug')
 var sass = require('gulp-sass')
 var babel = require('gulp-babel')
 var prefix = require('gulp-autoprefixer')
-var copy = require('gulp-copy')
-var prompt = require('gulp-prompt')
+var readLine = require('readline-sync')
 
 gulp.task('new', function() {
+   var projectName = readLine.question('Project Title: ')
+   var projectPath = path.join(__dirname, 'projects', projectName)
+   if(!fs.existsSync(projectPath)) {
+      console.log('Creating project..')
+      return gulp.src('boilerplate/*')
+         .pipe(gulp.dest(projectPath));
+   }
 
-})
+   console.log('Project Exists!')
+});
 
 gulp.task('watch', function() {
    gulp.watch(['projects/**/dev/*'], ['default'])

@@ -23,9 +23,8 @@
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-babel": "^7.0.0",
-    "gulp-livereload": "^3.8.1",
-    "gulp-prompt": "^1.0.1",
     "gulp-pug": "^3.3.0",
-    "gulp-sass": "^3.1.0"
+    "gulp-sass": "^3.1.0",
+    "readline-sync": "^1.4.7"
   }
 }
