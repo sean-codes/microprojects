@@ -5,12 +5,20 @@
 			"path": "projects/Login Form (Only CSS)"
 		},
 		{
+			"title": "MacOS Doc",
+			"path": "projects/MacOS Doc"
+		},
+		{
 			"title": "Messenger with Emojis",
 			"path": "projects/Messenger with Emojis"
 		},
 		{
 			"title": "Mirror like Links",
 			"path": "projects/Mirror like Links"
+		},
+		{
+			"title": "Walker",
+			"path": "projects/Walker"
 		}
 	]
 }
