@@ -15,27 +15,37 @@ gulp.task('new', function() {
    var projectPath = path.join(__dirname, 'projects', projectName)
    if(!fs.existsSync(projectPath)) {
       console.log('Creating project..')
-      return gulp.src('template/**/*')
-         .pipe(gulp.dest(projectPath));
+      gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function(){
+         build()
+         gulp.start('watch')
+      }))
+      return
    }
 
    console.log('Project Exists!')
 });
 
 gulp.task('watch', function() {
-   gulp.watch([
-      'projects/**/src/*', 'template/**/src/*', 'www/**/src/*',
-      'projects/**/index.pug', 'template/index.pug', 'www/index.pug'], ['default'])
+   build()
+
+   var projectFolders = GulpFolders('projects')
+   GulpInception(projectFolders, function(projectFolder) {
+      gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
+   })
+   gulp.watch(['template/**/src/*', 'template/**/src/*'], function(){ microBuild('template') })
+   gulp.watch(['www/**/src/*', 'www/**/src/*'], function(){ microBuild('www') })
 })
 
-gulp.task('default', function() {
+gulp.task('default', build)
+
+function build() {
    var projectFolders = GulpFolders('projects')
    updateWWWJSON(projectFolders)
 
    GulpInception(projectFolders, microBuild)
    microBuild('template')
    microBuild('www')
-})
+}
 
 function updateWWWJSON(projectFolders) {
    var wwwJSON = JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')))
