@@ -1,30 +1,35 @@
 # microprojects
-> Microproject and Prototypes creation tool (a static site generator)
+> Microprojects and Prototypes creation tool (a static site generator)
 
 ![open](./example.gif)
 example: [open](https://sean-codes.github.io/microprojects)
 
+# What it does
+A tool for quickly developing web projects and keeping a catalog of them.
 
-## How it works
+## Core Features
+- Create micro project using template
+- Autoreload
+- Builds a catalog of projects
+- Simple structure
+- Pug, SCSS/Autoprefixer, Babel
+
+# How to use
+
+## Viewing
+All projects can be viewed from the index.html in the root directory. Each individual project also has an index.html.
+
+## Creating new projects
 > Don't forget to use `npm install`!
 
-View all the projects by opening index.html in the root of this repository
+``gulp new`` Duplicates the boilerplate, builds the site, and starts `gulp watch`
+![open](./new.gif)
 
-Individual projects can be demoed from its own `project/index.html`.
+## Editing existing projects
 
-**gulp** Runs the default task that builds the entire site and projects
+``gulp watch`` Watches for changes to existing projects
 
-**gulp new** Duplicated the template file and creates a new folder in the projects directory. Also starts watching for changes.
-
-**gulp watch** Watch for changes to existing projects
-
-Making changes to a projects src pug(html), scss(css), and js files causes only the indidividual project to be updated.
-
-When gulp is run the reload.json is updated causing autoreload to run
-
-A project list is kept in the `www.json` and is used to build the `index.html` in the root of this repository.
-
-## Project structure
+# Project structure
 > Make changes to the `src` folder
 ```.js
    project/
@@ -38,20 +43,4 @@ A project list is kept in the `www.json` and is used to build the `index.html` i
        ├── css.scss // SASS
        ├── js.js // BABEL
        └── html.pug // PUG/JADE/HTML
-```
-
-
-## new project
-Duplicates the boilerplate, builds the site, and starts `gulp watch`
-![open](./new.gif)
-
-```.js
-gulp new
->> Project Title: Project Title
-```
-
-## watch
-continue working on a project
-```.js
-   gulp watch
 ```
