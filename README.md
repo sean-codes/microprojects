@@ -8,11 +8,19 @@ example: [open](https://sean-codes.github.io/microprojects)
 ## How it works
 > Don't forget to use `npm install`!
 
-The site and projects are built using gulp. Use `gulp new` to start a new project or `gulp watch` to edit existing ones.
+View all the projects by opening index.html in the root of this repository
 
-Making changes to a projects src pug(html), scss(css), and js files causes the indidividual project to be built.
+Individual projects can be demoed from its own `project/index.html`.
 
-Each project can be demoed from its own `project/index.html`.
+**gulp** Runs the default task that builds the entire site and projects
+
+**gulp new** Duplicated the template file and creates a new folder in the projects directory. Also starts watching for changes.
+
+**gulp watch** Watch for changes to existing projects
+
+Making changes to a projects src pug(html), scss(css), and js files causes only the indidividual project to be updated.
+
+When gulp is run the reload.json is updated causing autoreload to run
 
 A project list is kept in the `www.json` and is used to build the `index.html` in the root of this repository.
 
