@@ -1,0 +1,7 @@
+projects
+   each project in projectsList   
+      project
+         project-view
+            iframe(src=project.path+'/index.html', scrolling='no')
+         project-title
+            a(href=project.path+'/index.html')=project.title
