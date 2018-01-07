@@ -45,12 +45,14 @@ function build() {
    GulpInception(projectFolders, microBuild)
    microBuild('template')
    microBuild('www')
+
+   gulp.src('www/index.html').pipe(gulp.dest(''))
 }
 
 function updateWWWJSON(projectFolders) {
    var wwwJSON = JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')))
    wwwJSON.projectsList = projectFolders.map(function(folderPath) {
-      return { title: path.basename(folderPath), path: '../' + folderPath }
+      return { title: path.basename(folderPath), path: folderPath }
    })
    fs.writeFileSync(path.join(__dirname, 'www.json'), JSON.stringify(wwwJSON, null, '\t'))
 }

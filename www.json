@@ -2,15 +2,15 @@
 	"projectsList": [
 		{
 			"title": "Login Form (Only CSS)",
-			"path": "../projects/Login Form (Only CSS)"
+			"path": "projects/Login Form (Only CSS)"
 		},
 		{
 			"title": "Messenger with Emojis",
-			"path": "../projects/Messenger with Emojis"
+			"path": "projects/Messenger with Emojis"
 		},
 		{
 			"title": "Mirror like Links",
-			"path": "../projects/Mirror like Links"
+			"path": "projects/Mirror like Links"
 		}
 	]
 }

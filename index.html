@@ -1,101 +1,33 @@
+<!DOCTYPE html>
 <html>
-   <head>
-      <style>
-         html, body {
-            margin: 0;
-            padding: 0;
-            background:#222;
-         }
-
-         body * {
-            margin:0;
-            padding:0;
-            color: #FFF;
-            font-family: monospace;
-            box-sizing:border-box;
-            display:block;
-            background: transparent;
-            width:100%;
-            line-height: 2em;
-            font-size:13px;
-         }
-
-         projects {
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-         }
-
-         project {
-            max-width:362px;
-            background:#444;
-            border-radius:3px;
-            box-sizing:border-box;
-            margin:10px;
-            padding:10px 10px 0px 10px;
-            box-shadow:0px 1px 2px rgba(0, 0, 0, 0.25);
-         }
-
-         project project-view {
-            position:relative;
-            width:100%;
-            height:200px;
-            overflow:hidden;
-         }
-
-         project project-title {
-            font-weight: 600;
-            text-align:center;
-            white-space: nowrap;
-            height: 3em;
-            text-overflow:ellipsis;
-            overflow:hidden;
-         }
-         project project-title a {
-            font-size: 14px;
-            line-height:3em;
-            color:#FFF;
-            font-family: monospace;
-         }
-
-         iframe {
-            width:200%;
-            height: 200%;
-            transform-origin: top left;
-            transform: scale(0.5);
-            box-sizing:border-box;
-            overflow: hidden;
-            border:none;
-            background:#222;
-         }
-      </style>
-   </head>
-   <body>
-      <projects>
-         <project>
-            <project-view>
-               <iframe src="./Login Form (Only CSS)/index.html" scrolling="no"></iframe>
-            </project-view>
-            <project-title>
-               <a href="./Login Form (Only CSS)/index.html">Login Form (Only CSS) awd awdawd</a>
-            </project-title>
-         </project>
-         <project>
-            <project-view>
-               <iframe src="./Messenger with Emojis/index.html" scrolling="no"></iframe>
-            </project-view>
-            <project-title>
-               <a href="./Messenger with Emojis/index.html">Messenger with Emojis</a>
-            </project-title>
-         </project>
-         <project>
-            <project-view>
-               <iframe src="./Mirror like Links/index.html" scrolling="no"></iframe>
-            </project-view>
-            <project-title>
-               <a href="./Mirror like Links/index.html">Mirror like Links</a>
-            </project-title>
-         </project>
-      </projects>
-   </body>
+  <head>
+    <title>Microprojects</title>
+    <link rel="stylesheet" href="./www/bin/css.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Karla">
+    <link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  </head>
+  <body>
+    <projects>
+      <project>
+        <project-view>
+          <iframe src="projects/Login Form (Only CSS)/index.html" scrolling="no"></iframe>
+        </project-view>
+        <project-title><a href="projects/Login Form (Only CSS)/index.html">Login Form (Only CSS)</a></project-title>
+      </project>
+      <project>
+        <project-view>
+          <iframe src="projects/Messenger with Emojis/index.html" scrolling="no"></iframe>
+        </project-view>
+        <project-title><a href="projects/Messenger with Emojis/index.html">Messenger with Emojis</a></project-title>
+      </project>
+      <project>
+        <project-view>
+          <iframe src="projects/Mirror like Links/index.html" scrolling="no"></iframe>
+        </project-view>
+        <project-title><a href="projects/Mirror like Links/index.html">Mirror like Links</a></project-title>
+      </project>
+    </projects>
+    <script src="./www/bin/js.js"></script>
+  </body>
 </html>
