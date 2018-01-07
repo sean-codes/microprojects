@@ -13,7 +13,7 @@ gulp.task('new', function() {
    var projectPath = path.join(__dirname, 'projects', projectName)
    if(!fs.existsSync(projectPath)) {
       console.log('Creating project..')
-      return gulp.src('boilerplate/*')
+      return gulp.src('template/**/*')
          .pipe(gulp.dest(projectPath));
    }
 
@@ -32,20 +32,20 @@ gulp.task('default', function() {
 
       // JS
       gulp.src(path.join(pathDev, '*.js'))
-         .pipe(babel({ presets: ['env'] }))
+         .pipe(babel({ presets: ['env'] }).on('error', gutil.log))
          .pipe(gulp.dest(pathDist))
 
       // CSS
       gulp.src(path.join(pathDev, '*.scss'))
-       .pipe(sass())
-       .pipe(prefix({ browsers: ['last 2 versions'], cascade: false }))
+       .pipe(sass().on('error', gutil.log))
+       .pipe(prefix({ browsers: ['last 2 versions'], cascade: false }).on('error', gutil.log))
        .pipe(gulp.dest(pathDist))
 
       // HTML
       gulp.src(path.join(pathDev, '*.pug'))
          .pipe(gulp.dest(pathDist))
       gulp.src(path.join(pathSite, 'index.pug'))
-         .pipe(pug({ pretty: true }))
+         .pipe(pug({ pretty: true }).on('error', gutil.log))
          .pipe(gulp.dest(pathSite))
    })
 })
