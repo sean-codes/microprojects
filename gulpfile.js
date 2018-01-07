@@ -10,6 +10,7 @@ var readLine = require('readline-sync')
 var gutil = require('gulp-util')
 var data = require('gulp-data')
 var watch = require('gulp-watch')
+var concat = require('gulp-concat')
 
 gulp.task('new', function() {
    var projectName = readLine.question('Project Title: ')
@@ -70,7 +71,8 @@ function microBuild(pathSite) {
    var pathDist = path.join(pathSite, 'bin')
 
    // JS
-   gulp.src(path.join(pathDev, '*.js'))
+   gulp.src([path.join(pathDev, '*.js'), 'autoreload.js'])
+      .pipe(concat('js.js'))
       .pipe(babel({ presets: ['env'] }).on('error', gutil.log))
       .pipe(gulp.dest(pathDist))
 
@@ -89,6 +91,8 @@ function microBuild(pathSite) {
       }))
       .pipe(pug({ pretty: true }).on('error', gutil.log))
       .pipe(gulp.dest(pathSite)).on('finish', function() { updateIndex() })
+
+   fs.writeFileSync(path.join(__dirname, 'reload.json'), JSON.stringify({ changed: Date.now() }))
 }
 
 // Might work. Wish we just knew how gulp worked
