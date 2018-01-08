@@ -71,7 +71,7 @@ function microBuild(pathSite) {
    var pathDist = path.join(pathSite, 'bin')
 
    // JS
-   gulp.src([path.join(pathDev, '*.js'), 'autoreload.js'])
+   gulp.src(['autoreload.js', path.join(pathDev, '*.js')])
       .pipe(concat('js.js'))
       .pipe(babel({ presets: ['env'] }).on('error', gutil.log))
       .pipe(gulp.dest(pathDist))

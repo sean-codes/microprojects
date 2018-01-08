@@ -1,7 +1,5 @@
 "use strict";
 
-console.log('demo');
-
 // Autoreload Injected by microprojects
 if (!window.frameElement) {
    var lastChange = 0;
@@ -23,3 +21,5 @@ if (!window.frameElement) {
    xhttp.open("GET", "../../reload.json", true);
    xhttp.send();
 }
+
+console.log('demo');

@@ -1,6 +1,10 @@
 {
 	"projectsList": [
 		{
+			"title": "Cursor Watch",
+			"path": "projects/Cursor Watch"
+		},
+		{
 			"title": "Login Form (Only CSS)",
 			"path": "projects/Login Form (Only CSS)"
 		},

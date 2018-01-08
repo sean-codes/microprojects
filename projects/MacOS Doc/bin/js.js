@@ -1,12 +1,4 @@
-'use strict';
-
-//For the demo only
-setTimeout(function () {
-   document.getElementById('downloads').classList.add('demo');
-}, 1000);
-document.body.addEventListener('click', function () {
-   document.getElementById('downloads').classList.remove('demo');
-});
+"use strict";
 
 // Autoreload Injected by microprojects
 if (!window.frameElement) {
@@ -29,3 +21,11 @@ if (!window.frameElement) {
    xhttp.open("GET", "../../reload.json", true);
    xhttp.send();
 }
+
+//For the demo only
+setTimeout(function () {
+   document.getElementById('downloads').classList.add('demo');
+}, 1000);
+document.body.addEventListener('click', function () {
+   document.getElementById('downloads').classList.remove('demo');
+});
