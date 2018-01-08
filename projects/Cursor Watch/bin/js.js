@@ -32,14 +32,9 @@ var CursorWatch = function () {
 
       this.input = input;
       this.fake = document.createElement('div');
-
-      this.data = {
-         position: 0,
-         cordinates: { x: 0, y: 0 }
-      };
-
-      this.listen();
+      this.data = { position: 0, x: 0, y: 0 };
       this.listeners = [];
+      this.listen();
    }
 
    _createClass(CursorWatch, [{
@@ -85,10 +80,17 @@ var CursorWatch = function () {
          this.input.addEventListener('keyup', function () {
             _this.change();
          });
+         this.input.addEventListener('keydown', function (e) {
+            if (e.repeat) _this.change();
+         });
          this.input.addEventListener('mouseup', function () {
             _this.change();
          });
          this.input.addEventListener('touchstart', function () {
+            _this.change();
+         });
+
+         this.input.addEventListener('scroll', function () {
             _this.change();
          });
       }
@@ -111,11 +113,10 @@ var CursorWatch = function () {
          var cursor = this.fake.querySelector('cursor');
          var cursorBox = cursor.getBoundingClientRect();
          var fakeBox = this.fake.getBoundingClientRect();
+         var inputBox = this.input.getBoundingClientRect();
 
-         this.data.cordinates = {
-            x: cursorBox.left - fakeBox.left,
-            y: cursorBox.top - fakeBox.top
-         };
+         this.data.x = inputBox.left - this.input.scrollLeft + cursorBox.left - fakeBox.left;
+         this.data.y = inputBox.top - this.input.scrollTop + cursorBox.top - fakeBox.top;
       }
    }, {
       key: "updateFake",
@@ -138,8 +139,10 @@ var CursorWatch = function () {
 
 var textarea = document.querySelector('textarea');
 var dataarea = document.querySelector('pre');
+var crosshair = document.querySelector('crosshair');
 
 var cursorWatch = new CursorWatch(textarea);
 cursorWatch.on('change', function (data) {
    dataarea.innerHTML = JSON.stringify(data, null, '\t');
+   crosshair.style.transform = "translateX(" + data.x + "px) translateY(" + data.y + "px)";
 });

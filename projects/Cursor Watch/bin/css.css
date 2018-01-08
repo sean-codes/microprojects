@@ -12,6 +12,7 @@ body * {
     display: none; }
 
 html, body {
+  margin: 0;
   background: #222;
   color: #FFF; }
 
@@ -36,3 +37,12 @@ body container {
     padding: 10px; }
   body container pre {
     padding: 10px; }
+  body container crosshair {
+    width: 20px;
+    height: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: 1px solid red;
+    -webkit-transition: all 0.25s;
+    transition: all 0.25s; }

@@ -2,14 +2,9 @@ class CursorWatch {
    constructor(input) {
       this.input = input
       this.fake = document.createElement('div')
-
-      this.data = {
-         position: 0,
-         cordinates: { x: 0, y: 0 }
-      }
-
-      this.listen()
+      this.data = { position: 0, x: 0, y: 0 }
       this.listeners = []
+      this.listen()
    }
 
    on(type, callback) {
@@ -26,8 +21,11 @@ class CursorWatch {
 
    listen() {
       this.input.addEventListener('keyup', () => { this.change() })
+      this.input.addEventListener('keydown', (e) => { if(e.repeat) this.change() })
       this.input.addEventListener('mouseup', () => { this.change() })
       this.input.addEventListener('touchstart', () => { this.change() })
+
+      this.input.addEventListener('scroll', () => { this.change() })
    }
 
    change() {
@@ -45,11 +43,10 @@ class CursorWatch {
       var cursor = this.fake.querySelector('cursor')
       var cursorBox = cursor.getBoundingClientRect()
       var fakeBox = this.fake.getBoundingClientRect()
+      var inputBox = this.input.getBoundingClientRect()
 
-      this.data.cordinates = {
-         x: cursorBox.left - fakeBox.left,
-         y: cursorBox.top - fakeBox.top
-      }
+      this.data.x = inputBox.left - this.input.scrollLeft + cursorBox.left - fakeBox.left
+      this.data.y = inputBox.top - this.input.scrollTop + cursorBox.top - fakeBox.top
    }
 
    updateFake() {
@@ -66,8 +63,10 @@ class CursorWatch {
 // User
 var textarea = document.querySelector('textarea')
 var dataarea = document.querySelector('pre')
+var crosshair = document.querySelector('crosshair')
 
 var cursorWatch = new CursorWatch(textarea)
 cursorWatch.on('change', function(data) {
    dataarea.innerHTML = JSON.stringify(data, null, '\t')
+   crosshair.style.transform = `translateX(${data.x}px) translateY(${data.y}px)`
 })
