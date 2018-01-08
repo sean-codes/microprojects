@@ -33,6 +33,7 @@ var CursorWatch = function () {
       this.input = input;
       this.fake = document.createElement('div');
       this.data = { position: 0, x: 0, y: 0 };
+      this.oldPosition = 0;
       this.listeners = [];
       this.listen();
    }
@@ -77,18 +78,12 @@ var CursorWatch = function () {
       value: function listen() {
          var _this = this;
 
-         this.input.addEventListener('keyup', function () {
-            _this.change();
-         });
-         this.input.addEventListener('keydown', function (e) {
-            if (e.repeat) _this.change();
-         });
-         this.input.addEventListener('mouseup', function () {
-            _this.change();
-         });
-         this.input.addEventListener('touchstart', function () {
-            _this.change();
-         });
+         this.interval = setInterval(function () {
+            _this.updateCursorPosition();
+            if (_this.oldPosition != _this.data.position) {
+               _this.change();
+            }
+         }, 1000 / 30);
 
          this.input.addEventListener('scroll', function () {
             _this.change();
@@ -112,22 +107,28 @@ var CursorWatch = function () {
       value: function updateCursorXYPosition() {
          var cursor = this.fake.querySelector('cursor');
          var cursorBox = cursor.getBoundingClientRect();
-         var fakeBox = this.fake.getBoundingClientRect();
-         var inputBox = this.input.getBoundingClientRect();
+         // var fakeBox = this.fake.getBoundingClientRect()
+         // var inputBox = this.input.getBoundingClientRect()
 
-         this.data.x = inputBox.left - this.input.scrollLeft + cursorBox.left - fakeBox.left;
-         this.data.y = inputBox.top - this.input.scrollTop + cursorBox.top - fakeBox.top;
+         this.data.x = cursor.offsetLeft + this.input.offsetLeft; // - this.input.scrollLeft
+         this.data.y = cursor.offsetTop + this.input.offsetTop - this.input.scrollTop;
       }
    }, {
       key: "updateFake",
       value: function updateFake() {
          this.fake.style.cssText = document.defaultView.getComputedStyle(this.input, "").cssText;
-         this.fake.style.visibility = "hidden";
-         this.fake.style.pointerEvents = "none";
+         //this.fake.style.visibility = "hidden"
          var text = this.input.value.split('');
-         text.splice(this.data.position, 0, '<cursor style="display:inline">|</cursor>');
+         text.splice(this.data.position, 0, '<cursor style="display:inline-block">|</cursor>');
          this.fake.innerHTML = text.join('');
          document.body.appendChild(this.fake);
+
+         this.fake.scrollTop = this.input.scrollTop;
+         this.fake.style.left = this.input.offsetLeft + 'px';
+         this.fake.style.top = this.input.offsetTop + 'px';
+         this.fake.style.pointerEvents = "none";
+         this.fake.style.visibility = "hidden";
+         this.fake.style.position = "fixed";
       }
    }]);
 
