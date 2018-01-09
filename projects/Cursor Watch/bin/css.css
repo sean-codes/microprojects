@@ -21,6 +21,16 @@ h1 {
   font-size: 24px;
   margin: 10px; }
 
+body crosshair {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: -7px;
+  left: -14px;
+  border: 2px solid red;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s; }
+
 body container {
   max-width: 400px;
   padding: 10px;
@@ -34,15 +44,7 @@ body container {
     resize: none;
     border-radius: 2px;
     background: #FFF;
-    padding: 10px; }
+    padding: 10px;
+    font-size: 18px; }
   body container pre {
     padding: 10px; }
-  body container crosshair {
-    width: 20px;
-    height: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    border: 1px solid red;
-    -webkit-transition: all 0.25s;
-    transition: all 0.25s; }
