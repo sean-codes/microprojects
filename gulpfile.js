@@ -11,6 +11,15 @@ var gutil = require('gulp-util')
 var data = require('gulp-data')
 var watch = require('gulp-watch')
 var concat = require('gulp-concat')
+var tape = require('gulp-tape')
+var tapSpec = require('tap-spec')
+var run = require('tape-run')
+var shell = require('gulp-shell')
+
+gulp.task('test', function() {
+   test('projects/**/test/*.js')
+});
+
 
 gulp.task('new', function() {
    var projectName = readLine.question('Project Title: ')
@@ -31,7 +40,10 @@ gulp.task('watch', function() {
    var projectFolders = GulpFolders('projects')
    var unlinked = {}
    GulpInception(projectFolders, function(projectFolder) {
-      gulp.watch([projectFolder + '/src/*', projectFolder + '/index.pug'], function(){ microBuild(projectFolder) })
+      gulp.watch([projectFolder + '/test/*.js', projectFolder + '/src/**/*', projectFolder + '/index.pug'], function(){
+         microBuild(projectFolder)
+         test(projectFolder + '/test/test.js')
+      })
 
       var wat = watch([projectFolder]).on('unlink', function(filename) {
          if(!unlinked[projectFolder]){ build() }
@@ -43,6 +55,12 @@ gulp.task('watch', function() {
 })
 
 gulp.task('default', build)
+
+function test(path) {
+   console.log('Testing: ' + path)
+
+   shell.task([`browserify "${path}" | tape-run | tap-spec`])()
+}
 
 function build() {
    var projectFolders = GulpFolders('projects')

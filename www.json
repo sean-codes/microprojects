@@ -23,6 +23,14 @@
 		{
 			"title": "Walker",
 			"path": "projects/Walker"
+		},
+		{
+			"title": "cursor and mention",
+			"path": "projects/cursor and mention"
+		},
+		{
+			"title": "mention",
+			"path": "projects/mention"
 		}
 	]
 }
