@@ -32,7 +32,6 @@ class CursorWatch {
    }
 
    updateFake() {
-      console.log('wtf')
       this.fake.style.cssText = document.defaultView.getComputedStyle(this.input, "").cssText;
       this.fake.style.left = this.input.offsetLeft + 'px'
       this.fake.style.top = this.input.offsetTop + 'px'
@@ -47,12 +46,6 @@ class CursorWatch {
    }
 }
 
-// User
-var textarea = document.querySelector('textarea')
-var dataarea = document.querySelector('pre')
-var crosshair = document.querySelector('crosshair')
 
-var cursorWatch = new CursorWatch(textarea, function() {
-   dataarea.innerHTML = JSON.stringify(this.data, null, '\t')
-   crosshair.style.transform = `translateX(${this.data.x}px) translateY(${this.data.y}px)`
-})
+if(typeof module !== undefined)
+   module.exports = CursorWatch;
