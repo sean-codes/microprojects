@@ -22,13 +22,14 @@ class CursorWatch {
    change() {
       this.updateFake()
       this.updateCursorXYPosition()
-      this.callback()
+      this.callback && this.callback()
    }
 
    updateCursorXYPosition() {
       var cursor = this.fake.querySelector('cursor')
-      this.data.x = cursor.offsetLeft + this.input.offsetLeft - this.input.scrollLeft
-      this.data.y = cursor.offsetTop + this.input.offsetTop - this.input.scrollTop
+      var inputBox = this.input.getBoundingClientRect()
+      this.data.x = cursor.offsetLeft - this.input.scrollLeft
+      this.data.y = cursor.offsetTop - this.input.scrollTop
    }
 
    updateFake() {
@@ -47,5 +48,6 @@ class CursorWatch {
 }
 
 
-if(typeof module !== undefined)
+if(typeof module != 'undefined'){
    module.exports = CursorWatch;
+}

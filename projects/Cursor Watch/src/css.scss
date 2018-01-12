@@ -29,12 +29,13 @@ body{
       width:28px;
       height: 28px;
       position:absolute;
-      top:-7px; left:-14px;
+      top:0px; left:-3px;
       border:2px solid red;
       transition: all 0.25s;
    }
 
    container {
+      position:relative;
       max-width:400px;
       padding:10px;
       margin:auto;

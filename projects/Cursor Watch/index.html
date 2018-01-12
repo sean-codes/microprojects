@@ -9,22 +9,24 @@
   </head>
   <body>
     <h1>Type into the text area</h1>
-    <crosshair></crosshair>
     <container>
+      <crosshair></crosshair>
       <textarea></textarea>
-      <pre></pre>
+      <pre>  </pre>
     </container>
-    <script src="./bin/js.js"></script>
     <script>
-      // User
-      var textarea = document.querySelector('textarea')
-      var dataarea = document.querySelector('pre')
-      var crosshair = document.querySelector('crosshair')
+      document.body.onload = function() {
+         // User
+         var textarea = document.querySelector('textarea')
+         var dataarea = document.querySelector('pre')
+         var crosshair = document.querySelector('crosshair')
       
-      var cursorWatch = new CursorWatch(textarea, function() {
-         dataarea.innerHTML = JSON.stringify(this.data, null, '\t')
-         crosshair.style.transform = `translateX(${this.data.x}px) translateY(${this.data.y}px)`
-      })
+         var cursorWatch = new CursorWatch(textarea, function() {
+            dataarea.innerHTML = JSON.stringify(this.data, null, '\t')
+            crosshair.style.transform = `translateX(${this.data.x}px) translateY(${this.data.y}px)`
+         })
+      }
     </script>
+    <script src="./bin/js.js"></script>
   </body>
 </html>

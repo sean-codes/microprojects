@@ -20,6 +20,8 @@
     "ava": "^0.24.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "blue-tape": "^1.0.0",
+    "browser-env": "^3.2.4",
     "browserify": "^15.0.0",
     "electron": "^1.7.10",
     "faucet": "0.0.1",
@@ -36,13 +38,30 @@
     "gulp-watch": "^5.0.0",
     "jest": "^22.0.5",
     "jsdom": "^11.5.1",
+    "phantomjs": "^2.1.7",
     "puppeteer": "^0.13.0",
     "readline-sync": "^1.4.7",
+    "tap-difflet": "^0.7.0",
+    "tap-nyan": "^1.1.0",
     "tap-spec": "^4.1.1",
+    "tap-spec-integrated": "^1.0.1",
     "tape": "^4.8.0",
     "tape-run": "^3.0.1"
   },
   "dependencies": {
     "gulp-data": "^1.3.1"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
   }
 }

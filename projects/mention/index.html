@@ -2,13 +2,41 @@
 <html>
   <head>
     <title>Microprojects</title>
-    <link rel="stylesheet" href="./bin/css.css">
     <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Karla">
     <link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="../mention/bin/css.css">
+    <link rel="stylesheet" href="./bin/css.css">
   </head>
   <body>
-    <div class="demo">testing 123456</div>
+    <h1>Type into the text area</h1>
+    <container>
+      <textarea></textarea>
+      <pre id="data">
+        <script>document.body.onload = function() {
+   console.log('test')
+   var myMention = new Mention({
+      selector: 'textarea',
+      options: [
+         { id: 2, name: 'WideEye', description: 'Wideeye Potion' },
+         { id: 100, name: 'LiquidLuck', description: 'Felix Felicis' },
+         { id: 10, name: 'PolyJuice', description: 'Polyjuice Potion' }
+      ],
+      update: function() {
+         document.querySelector('#data').innerHTML = JSON.stringify(this.collect(), null, '\t')
+      },
+      match: function(word, option) {
+         return option.name.startsWith(word)
+            || option.description.toLowerCase().indexOf(word.toLowerCase()) >= 0
+      },
+      template: function(option) {
+         return '@' + option.name + ' [' + option.description + ']'
+      }
+   })
+}
+        </script></pre>
+    </container>
+    <script src="../mention/bin/js.js"></script>
     <script src="./bin/js.js"></script>
   </body>
 </html>

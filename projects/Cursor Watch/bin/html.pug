@@ -1,5 +1,17 @@
 h1 Type into the text area
-crosshair
 container
+   crosshair
    textarea
-   pre
+   pre   
+script.
+   document.body.onload = function() {
+      // User
+      var textarea = document.querySelector('textarea')
+      var dataarea = document.querySelector('pre')
+      var crosshair = document.querySelector('crosshair')
+
+      var cursorWatch = new CursorWatch(textarea, function() {
+         dataarea.innerHTML = JSON.stringify(this.data, null, '\t')
+         crosshair.style.transform = `translateX(${this.data.x}px) translateY(${this.data.y}px)`
+      })
+   }

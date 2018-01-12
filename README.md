@@ -15,9 +15,9 @@ A tool for quickly developing web projects and keeping a catalog of them.
 - Pug, SCSS/Autoprefixer, Babel
 
 # How to use
-
+![open](./howtouse.png)
 ## Viewing
-All projects can be viewed from the index.html in the root directory. Each individual project also has an index.html.
+All projects can be viewed from the index.html in the root directory. Each individual project also has an index.html. Using a browser plugin for Atom works well here.
 
 ## Creating new projects
 > Don't forget to use `npm install`!
