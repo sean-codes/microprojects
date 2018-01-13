@@ -8,12 +8,12 @@ body * {
    border: none;
    padding:0;
    margin:0;
-
-   &script, &style {
-      display:none;
-   }
+}
+script, style {
+   display:none!important;
 }
 
+// Setup
 html, body{
    margin: 0;
    background:#222;
