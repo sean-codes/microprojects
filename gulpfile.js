@@ -43,8 +43,11 @@ gulp.task('watch', function() {
    GulpInception(projectFolders, function(projectFolder) {
       gulp.watch([projectFolder + '/test/*.js', projectFolder + '/src/**/*', projectFolder + '/index.pug'], function(){
          microBuild(projectFolder)
-         test(projectFolder + '/test/test.js')
+         if(fs.existsSync(projectFolder + '/test/test.js')) {
+            test(projectFolder + '/test/test.js')
+         }
       })
+
 
       var wat = watch([projectFolder]).on('unlink', function(filename) {
          if(!unlinked[projectFolder]){ build() }
