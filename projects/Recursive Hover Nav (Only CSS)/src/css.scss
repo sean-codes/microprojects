@@ -1,0 +1,130 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   background:#222;
+   font-family: 'Karla', sans-serif;
+}
+body * {
+   margin:0;
+   padding:0;
+}
+
+/* HTML Nav Styles */
+/* HTML Nav Styles */
+/* HTML Nav Styles */
+nav > menu > menuitem {
+   display:inline-block;
+   position:relative;
+   float:left;
+}
+/*
+menu menuitem a {
+   color:black;
+   white-space:nowrap;
+   display:block;
+}
+
+nav > menu > menuitem:hover {
+   z-index:1000;
+   pinter-events:initial;
+}
+
+nav > menu menuitem > menu > menuitem{
+   pointer-events:none;
+   ccopacity:0;
+}
+
+nav > menu menuitem:hover > menu > menuitem,
+nav > menu menuitem.hover > menu > menuitem{
+   pointer-events:initial;
+   opacity:1;
+}
+
+nav > menu menuitem > menu menuitem {
+   display:block;
+}
+
+nav > menu menuitem > menu {
+   position:absolute;
+   bottom:0px;
+   left:0px;
+   transform:translateY(100%);
+}
+
+nav > menu menuitem > menu menu {
+   transform:translateX(100%);
+   bottom:inherit;
+   left:inherit;
+   right:0px;
+   top:0px;
+}
+*/
+/* User Styles Below Not Required */
+/* User Styles Below Not Required */
+/* User Styles Below Not Required */
+/*
+nav {
+   margin-top:40px;
+   margin-left:40px;
+}
+a {
+   background:#75F;
+   color:#FFF;
+   min-width:190px;
+   padding:20px 40px;
+   transition: background 0.5s, color 0.5s, transform 0.5s;
+   margin:0px 6px 6px 0px;
+   box-sizing:border-box;
+   border-radius:3px;
+   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+a:hover {
+   background:#759F;
+   color:#FFF;
+   cursor:pointer;
+}
+
+menuitem:hover > menu > menuitem > a + menu:after,
+menuitem.hover > menu > menuitem > a + menu:after{
+   transition: all 0.6s;
+   content: '';
+   position:absolute;
+   border:10px solid transparent;
+   border-left: 10px solid white;
+   left: -180px;
+   top: 20px;
+}
+
+nav > menu > menuitem > a + menu:after{
+   content: '';
+   position:absolute;
+   border:10px solid transparent;
+   border-top: 10px solid white;
+   left:12px;
+   top: -38px;
+}
+
+nav > menu > menuitem > menu menuitem{
+   transition: all 0.6s;
+   transform:translateY(150%);
+   opacity:0;
+}
+
+nav > menu > menuitem:hover > menu menuitem,
+nav > menu > menuitem.hover > menu menuitem{
+   transform:translateY(0%);
+   opacity: 1;
+}
+
+menuitem > menu > menuitem > menu > menuitem{
+   transition: all 1s !important;
+   transform:translateX(100%) translateY(0%) !important;
+   opacity: 0 !important;
+}
+menuitem > menu > menuitem:hover > menu > menuitem,
+menuitem > menu > menuitem.hover > menu > menuitem{
+   transform:translateX(0%) translateY(0%) !important;
+   opacity: 1 !important;
+}
+*/
