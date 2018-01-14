@@ -34,15 +34,16 @@ function Mention(settings) {
    }
 
    this.setupHTML = function() {
-      this.html.input = document.querySelector(settings.selector)
+      this.html.input = settings.input
+      this.html.input.style.resize = 'none'
       this.html.wrapper = document.createElement('div')
       this.html.wrapper.classList.add('mention-wrapper')
       this.html.display = document.createElement('div')
       this.html.display.classList.add('mention-display')
       this.html.display.style.cssText = document.defaultView.getComputedStyle(this.html.input, "").cssText;
-      this.html.display.style.background = ''
       this.html.display.style.pointerEvents = "none"
       this.html.display.style.position = "absolute"
+      this.html.display.style.background = ''
       this.html.display.style.left = '0'
       this.html.display.style.top = '0'
       this.html.input.parentElement.insertBefore(this.html.wrapper, this.html.input)
@@ -75,7 +76,6 @@ function Mention(settings) {
          optionHTML.setAttribute('mentiondata', JSON.stringify(option))
          optionHTML.style.display = "inline"
          optionHTML.style.font = "inherit"
-         //optionHTML = '<u>@'+option+'</u>'
          storeText = storeText.replace(new RegExp('@'+option.name, 'g'), optionHTML.outerHTML)
       }
       this.html.display.innerHTML = storeText
@@ -161,8 +161,8 @@ function Mention(settings) {
    }
 
    var that = this
+   this.input = settings.input
    this.options = settings.options || []
-   this.selector = settings.selector
    this.key = settings.key || '@'
    this.cursorPosition = 0
    this.hover = 0

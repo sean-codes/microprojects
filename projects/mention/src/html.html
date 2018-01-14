@@ -1,12 +1,28 @@
-h1 Type into the text area
-container
-   textarea
-   pre#data
-      script.
+<style>
+   html, body {
+      font-family: monospace;
+   }
+   h1 {
+      color: #FFF;
+   }
+   container {
+      max-width:600px;
+      margin:20px auto;
+      display:block;
+   }
+   textarea {
+      width:100%;
+   }
+</style>
+<container>
+   <h1>Type into the text area. Use @ symbol to mention</h1>
+   <textarea></textarea>
+   <display></display>
+   <pre id="data"></pre>
+   <script>
          document.body.onload = function() {
-            console.log('test')
             var myMention = new Mention({
-               selector: 'textarea',
+               input: document.querySelector('textarea'),
                options: [
                   { id: 2, name: 'WideEye', description: 'Wideeye Potion' },
                   { id: 100, name: 'LiquidLuck', description: 'Felix Felicis' },
@@ -24,3 +40,5 @@ container
                }
             })
          }
+   </script>
+</container>
