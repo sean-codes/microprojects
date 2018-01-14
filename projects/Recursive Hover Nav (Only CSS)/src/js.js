@@ -1,5 +1,5 @@
 // For the thumbnail demo! :]
-/*
+
 var count = 1
 setTimeout(demo, 500)
 setTimeout(demo, 700)
@@ -37,4 +37,3 @@ document.addEventListener('mouseover', function() {
    mousein = true
    reset()
 })
-*/
