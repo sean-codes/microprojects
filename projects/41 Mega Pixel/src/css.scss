@@ -1,0 +1,145 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   font-family: 'Syncopate', sans-serif;;
+   color:#FFF;
+   height:100%;
+}
+body{
+   background:linear-gradient(to right, #56a, #46d);
+   display:flex;
+   &:hover {
+      phone{ transform:scale(1); }
+   }
+}
+phone, phone * {
+   display:block;
+   box-sizing:border-box;
+   background:transparent;
+   width:100%; height:100%;
+   margin:0; padding:0;
+   font-size: 62.5%;
+}
+phone {
+   animation:flyin 1.5s;
+   transition:all 0.25s;
+   transform:scale(0.5);
+   font-size:7px;
+   position:relative;
+   max-width:36em;
+   margin:auto;
+   background:#FFF;
+   height:65em;
+   padding:1.0em 0.8em;
+   border-radius:0.25em;
+   box-shadow:inset 0px 0px 1em rgba(0, 0, 0, 0.75), 2em 4em 20em rgba(0, 0, 0, 0.25);;
+
+   volumn, power{
+      position:absolute;
+      height:20em;
+      width:0.8em;
+      background:#000;
+      right:-4px;
+      top:15em;
+   }
+   power {
+      position:absolute;
+      height:10em;
+      top:44em;
+      box-shadow:0px 40em 0px rgba(0, 0, 0, 1);
+   }
+   screen {
+      background:#000;
+      min-height:100%;
+      border-radius:2em;
+      border:0.2em solid rgba(255, 255, 255, 0.4);
+      position:relative;
+      overflow:hidden;
+      &:after{
+         content:'';
+         position:absolute;
+         width:200%;
+         height:200%;
+         top:-40em;
+         left:-100em;
+         transform:rotateZ(25deg);
+         background:rgba(255, 255, 255, 0.075);
+         z-index:10;
+      }
+      speaker {
+         z-index:100;
+         position:absolute;
+         width:25em;
+         height:2em;
+         top:0em;
+         border:3em solid transparent;
+         border-top:2em solid #555;
+         transform:translateX(-50%);
+         left:50%;
+      }
+      camera, sensor{
+         position:absolute;
+         top:4.7em; right:11em;
+         width:3.5em; height:3.5em;
+         border-radius:75%;
+         background:#666;
+      }
+      sensor {
+         width:7em;
+         border-radius:3em;
+         background:rgba(100, 0, 100, 0.25);
+         right:22em;
+      }
+
+      logo{
+         position:absolute;
+         font-size:225%;
+         font-weight:600;
+         color:#AAA;
+         letter-spacing:0.1em;
+         top:1.1em;
+         z-index:100000;
+         text-align:center;
+      }
+
+      lcd {
+         width:76.3em;
+         height:125em;
+         background:rgba(255, 255, 255, 0.1);
+         position:absolute;
+         top:13.3em;
+         left:5em;
+      }
+
+      time {
+         position:absolute;
+         font-size:1200%;
+         top:4.8em;
+         left:.5em;
+         color:#FFF;
+         font-weight:100;
+      }
+
+      icons{
+         position:absolute;
+         height:21em;
+         bottom:0px;
+         display:flex;
+
+         svg{
+            flex:1;
+            font-size:300px;
+            position:relative;
+            top:1.5em;
+            color:#ccc;
+            &:last-of-type{ transform:scaleX(-1); }
+         }
+      }
+   }
+}
+
+@keyframes flyin{
+   0%{ transform:translateY(300px) scale(2) rotateZ(45deg); opacity: 0;}
+   80%{ transform:translateY(50px) scale(0.6) rotateZ(-20deg); opacity: 0.8;}
+   100%{ transform:translateY(0px) scale(0.5); opacity: 1;}
+}

@@ -1,6 +1,10 @@
 {
 	"projectsList": [
 		{
+			"title": "41 Mega Pixel",
+			"path": "projects/41 Mega Pixel"
+		},
+		{
 			"title": "Cursor Watch",
 			"path": "projects/Cursor Watch"
 		},
@@ -27,10 +31,6 @@
 		{
 			"title": "Walker",
 			"path": "projects/Walker"
-		},
-		{
-			"title": "cursor and mention",
-			"path": "projects/cursor and mention"
 		},
 		{
 			"title": "mention",
