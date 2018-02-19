@@ -15,7 +15,6 @@ var tape = require('gulp-tape')
 var tapSpec = require('tap-spec')
 var run = require('tape-run')
 var shell = require('gulp-shell')
-var ava = require('gulp-ava')
 
 gulp.task('test', function() {
    test('projects/**/test/*.js')
@@ -61,28 +60,7 @@ gulp.task('watch', function() {
 gulp.task('default', build)
 
 function test(path) {
-   console.log('Testing: ' + path)
-   //var test = require('./projects/Cursor Watch/test/test')
-   //var tape = require("tape");
-   //var tapSpec = require("tap-spec");
-
-   //var htest = tape.createHarness();
-
-   //htest.createStream().pipe(tapSpec()).pipe(process.stdout);
-
-   //var f = require('./projects/Cursor Watch/test/test.js');
-   //f(htest);
-
-   	// gulp.src(path)
-   	// 	 //`gulp-ava` needs filepaths, so you can't have any plugins before it
-   	// 	.pipe(ava({verbose: true}))
-
    shell.task([`browserify "${path}" | tape-run | tap-spec`])()
-   //shell.task([`browserify "${path}" | testling`])()
-   // return gulp.src(path)
-   //  .pipe(tape({
-   //    reporter: tapSpec()
-   //  }));
 }
 
 function build() {
