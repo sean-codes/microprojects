@@ -1,8 +1,63 @@
 html, body{
    padding:0px;
    margin:0px;
-   background:#333;
+   background:#ccc;
    font-family: 'Karla', sans-serif;
    color:#FFF;
-   height:100%;
+}
+
+.shape {
+   perspective:200px;
+   transform-style:preserve-3d;
+   box-shadow:0px 250px 15px rgba(0, 0, 0, 0.5);
+   height:20px;
+   width:200px;
+   margin:120px auto;
+   border-radius:50%;
+   background:transparent;
+   transform:translateZ(-10000px);
+}
+
+.cylinder{
+  $size: 200px;
+  $width: 200px;
+  $height: 200px;
+  $side-height: 70px;
+  background:#465;
+  width:$width;
+  height:$height;
+  border-radius:50%;
+  transform:rotateX(50deg) rotateY(4deg);
+  position:relative;
+  transform-style: preserve-3d;
+  transition: all 0.2s;
+
+  &:after{
+     content:'';
+     background:inherit;
+     width:100%; height:100%;
+     position:absolute;
+     top:0px; left:0px;
+     transform:translateZ(-1 * $side-height);
+     border-radius:50%;
+ }
+  .side {
+    $sides: 37;
+    $side-width: 2 * 3.14 * ($size/2) / $sides + 2.5px;
+    width: $side-width;
+    height:$side-height;
+    background:#222;
+    position:absolute;
+    top:50%; left:50%;
+    transform-origin:0% 0%;
+    @for $i from 0 through 100{
+      &:nth-of-type(#{$i + 1}) {
+        transform:rotateX(90deg) rotateY($i *(360 / $sides + 1deg)) translateZ($width / 2) translateY(-1 * $side-height + 1px) translateX(-50%);
+
+        @if($i >= $sides){
+          opacity: 0;
+        }
+      }
+    }
+  }
 }
