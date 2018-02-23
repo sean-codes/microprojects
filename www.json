@@ -2,39 +2,39 @@
 	"projectsList": [
 		{
 			"title": "3D Cylinder",
-			"path": "projects\\3D Cylinder"
+			"path": "projects/3D Cylinder"
 		},
 		{
 			"title": "41 Mega Pixel",
-			"path": "projects\\41 Mega Pixel"
+			"path": "projects/41 Mega Pixel"
 		},
 		{
 			"title": "Cursor Watch",
-			"path": "projects\\Cursor Watch"
+			"path": "projects/Cursor Watch"
 		},
 		{
 			"title": "Login Form (Only CSS)",
-			"path": "projects\\Login Form (Only CSS)"
+			"path": "projects/Login Form (Only CSS)"
 		},
 		{
 			"title": "MacOS Doc",
-			"path": "projects\\MacOS Doc"
+			"path": "projects/MacOS Doc"
 		},
 		{
 			"title": "Messenger with Emojis",
-			"path": "projects\\Messenger with Emojis"
+			"path": "projects/Messenger with Emojis"
 		},
 		{
 			"title": "Mirror like Links",
-			"path": "projects\\Mirror like Links"
+			"path": "projects/Mirror like Links"
 		},
 		{
 			"title": "Recursive Hover Nav (Only CSS)",
-			"path": "projects\\Recursive Hover Nav (Only CSS)"
+			"path": "projects/Recursive Hover Nav (Only CSS)"
 		},
 		{
 			"title": "Walker",
-			"path": "projects\\Walker"
+			"path": "projects/Walker"
 		}
 	]
 }

@@ -17,7 +17,7 @@ new CSSettings({
          },
          value: function() {
             var value = JSON.parse(this.html.input.value)
-            return `rotateX(${value.y}deg) rotateY(${-value.x}deg)`
+            return `rotateX(${Math.floor(value.y)}deg) rotateY(${Math.floor(-value.x)}deg)`
          }
       },
    ]
