@@ -26,9 +26,10 @@ if (!window.frameElement) {
 
 var ctx = document.querySelector('canvas').getContext('2d');
 var canvas = ctx.canvas;
+canvas.width = 500;
+canvas.height = 300;
 var draw = new Draw(ctx);
 var mouse = new Mouse(canvas);
-monitorResize();
 
 draw.set({
 	font: '200px monospace',
@@ -40,7 +41,6 @@ draw.set({
 draw.strokeText(canvas.width / 2, canvas.height / 2, 'Demo');
 var particles = [];
 scan(function (points) {
-	console.log(points);
 	particles = points;
 	particles.forEach(function (particle) {
 		particle.sx = particle.x;
@@ -149,22 +149,12 @@ function Draw(ctx) {
 	};
 }
 
-function monitorResize() {
-	var resize = function resize() {
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-	};
-
-	window.onresize = resize;
-	resize();
-}
-
 function Mouse(canvas) {
 	this.x = 0;
 	this.y = 0;
 	this.canvas = canvas;
 	this.canvas.addEventListener('mousemove', function (e) {
-		this.x = e.clientX;
-		this.y = e.clientY;
+		this.x = e.layerX;
+		this.y = e.layerY;
 	}.bind(this));
 }
