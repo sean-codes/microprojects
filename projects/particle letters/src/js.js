@@ -12,12 +12,17 @@ draw.set({
 })
 
 draw.strokeText(canvas.width/2, canvas.height/2, 'Demo')
-var particles = scan()
-particles.forEach(function(particle) {
-	particle.sx = particle.x
-	particle.sy = particle.y
+var particles = []
+scan(function(points) {
+	console.log(points)
+	particles = points
+	particles.forEach(function(particle) {
+		particle.sx = particle.x
+		particle.sy = particle.y
+	})
+	step()
 })
-step()
+
 function step() {
 	draw.clear()
 	window.requestAnimationFrame(step)
@@ -32,7 +37,7 @@ function step() {
 		}
 
 		if(Math.abs(mouse.y - particle.y) < 15) {
-			particle.y += (mouse.y-particle.y)*0.25
+			particle.y -= (mouse.y-particle.y)*0.5
 		}
 
 		draw.fillCircle(particle.x, particle.y, 4)
@@ -41,19 +46,35 @@ function step() {
 	//draw.line(0, mouse.y, canvas.width, mouse.y)
 }
 
+function scan(done, points, y) {
+	var points = typeof points == 'undefined' ? [] : points
+	var y = typeof y == 'undefined' ? canvas.height : y
+	if(!y) return done(points)
 
-function scan() {
-	var points = []
 	var x = canvas.width; while(x--) {
-		var y = canvas.height; while(y--) {
-			var [r,g,b,alpha] = ctx.getImageData(x, y, 1, 1).data
-			if(alpha){
-				points.push({ x:x, y:y, r:r, g:g, b:b, a:alpha })
-			}
+		var [r,g,b,alpha] = ctx.getImageData(x, y, 1, 1).data
+		if(alpha){
+			points.push({ x:x, y:y, r:r, g:g, b:b, a:alpha })
 		}
 	}
-	return points
+
+	setTimeout(function() {
+		console.log('scanning x:' + x + ' y:' + y)
+		scan(done, points, y-1)
+	})
 }
+// function scan() {
+// 	var points = []
+// 	var x = canvas.width; while(x--) {
+// 		var y = canvas.height; while(y--) {
+// 			var [r,g,b,alpha] = ctx.getImageData(x, y, 1, 1).data
+// 			if(alpha){
+// 				points.push({ x:x, y:y, r:r, g:g, b:b, a:alpha })
+// 			}
+// 		}
+// 	}
+// 	return points
+// }
 
 
 function Draw(ctx) {
