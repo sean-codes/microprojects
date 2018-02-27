@@ -90,7 +90,6 @@ function scan(done, points, y) {
 	}
 
 	setTimeout(function () {
-		console.log('scanning x:' + x + ' y:' + y);
 		scan(done, points, y - 1);
 	});
 }
