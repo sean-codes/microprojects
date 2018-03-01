@@ -19,8 +19,8 @@ scan(function(points) {
 	particles.forEach(function(particle) {
 		particle.sx = particle.x
 		particle.sy = particle.y
-		particle.ax = 0
-		particle.ay = 0
+		particle.ax = Math.random()*50-25
+		particle.ay = Math.random()*50-25
 	})
 	step()
 })
