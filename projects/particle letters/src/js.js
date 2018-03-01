@@ -19,6 +19,8 @@ scan(function(points) {
 	particles.forEach(function(particle) {
 		particle.sx = particle.x
 		particle.sy = particle.y
+		particle.ax = 0
+		particle.ay = 0
 	})
 	step()
 })
@@ -27,23 +29,26 @@ function step() {
 	draw.clear()
 	window.requestAnimationFrame(step)
 	particles.forEach(function(particle) {
-		particle.x += Math.random()-0.5
-		particle.y += Math.random()-0.5
-		if(Math.abs(particle.x - particle.sx) > 5) {
-			particle.x -= (particle.x - particle.sx)*0.1
-		}
-		if(Math.abs(particle.y - particle.sy) > 5) {
-			particle.y -= (particle.y - particle.sy)*0.1
+		var distance = Math.sqrt(Math.pow(particle.y-mouse.y, 2) + Math.pow(particle.x-mouse.x, 2))
+		var push = 1/distance * 15
+
+		for(var ax of ['x', 'y']) {
+			// Move
+			particle[ax] += particle['a'+ax]
+			// Move random
+			particle['a'+ax] += Math.random() - 0.5
+			// Pull to start
+			particle['a'+ax] -= Math.sign(particle[ax]-particle['s'+ax])*0.5
+			// Dampen
+			particle['a'+ax] *= 0.95
+
+			// Push from mouse
+			particle['a'+ax] -= Math.sign(mouse[ax]-particle[ax]) * push
 		}
 
-		if(Math.abs(mouse.y - particle.y) < 15) {
-			particle.y -= (mouse.y-particle.y)*0.5
-		}
 
 		draw.fillCircle(particle.x, particle.y, 4)
 	})
-
-	//draw.line(0, mouse.y, canvas.width, mouse.y)
 }
 
 function scan(done, points, y) {
@@ -123,7 +128,7 @@ function Mouse(canvas) {
 	this.y = 0
 	this.canvas = canvas
 	this.canvas.addEventListener('mousemove', function(e) {
-		this.x = e.layerX
-		this.y = e.layerY
+		this.x = e.offsetX
+		this.y = e.offsetY
 	}.bind(this))
 }

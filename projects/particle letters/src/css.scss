@@ -1,7 +1,7 @@
 html, body{
    padding:0px;
    margin:0px;
-   background:#333;
+   background:#000;
    font-family: 'Karla', sans-serif;
    color:#FFF;
    height:100%;
@@ -12,8 +12,9 @@ body{
 }
 
 canvas {
-	background:#333;
+	background:#000;
 	margin:auto;
-	width:400px;
+	width:500px;
 	height:300px;
+	filter:blur(2px) contrast(30);
 }
