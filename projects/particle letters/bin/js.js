@@ -1,7 +1,5 @@
 "use strict";
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 // Autoreload Injected by microprojects
 if (!window.frameElement) {
 	var lastChange = 0;
@@ -38,18 +36,15 @@ draw.set({
 	fillStyle: '#45a'
 });
 
-draw.strokeText(canvas.width / 2, canvas.height / 2, 'Demo');
-var particles = [];
-scan(function (points) {
-	particles = points;
-	particles.forEach(function (particle) {
-		particle.sx = particle.x;
-		particle.sy = particle.y;
-		particle.ax = Math.random() * 50 - 25;
-		particle.ay = Math.random() * 50 - 25;
-	});
-	step();
+draw.strokeText(canvas.width / 2, canvas.height / 2, 'DEMO');
+var particles = scan(ctx);
+particles.forEach(function (particle) {
+	particle.sx = particle.x;
+	particle.sy = particle.y;
+	particle.ax = Math.random() * 50 - 25;
+	particle.ay = Math.random() * 50 - 25;
 });
+step();
 
 function step() {
 	draw.clear();
@@ -85,26 +80,23 @@ function step() {
 	});
 }
 
-function scan(done, points, y) {
-	var points = typeof points == 'undefined' ? [] : points;
-	var y = typeof y == 'undefined' ? canvas.height : y;
-	if (!y) return done(points);
-
-	var x = canvas.width;while (x--) {
-		var _ctx$getImageData$dat = _slicedToArray(ctx.getImageData(x, y, 1, 1).data, 4),
-		    r = _ctx$getImageData$dat[0],
-		    g = _ctx$getImageData$dat[1],
-		    b = _ctx$getImageData$dat[2],
-		    alpha = _ctx$getImageData$dat[3];
+function scan(ctx) {
+	var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+	var pixels = [];
+	for (var i = 0; i < imageData.data.length; i += 4) {
+		var x = i / 4 % imageData.width;
+		var y = Math.floor(i / 4 / imageData.width) % imageData.height;
+		var _ref = [imageData.data[i], imageData.data[i + 1], imageData.data[i + 2], imageData.data[i + 3]],
+		    r = _ref[0],
+		    g = _ref[1],
+		    b = _ref[2],
+		    alpha = _ref[3];
 
 		if (alpha) {
-			points.push({ x: x, y: y, r: r, g: g, b: b, a: alpha });
+			pixels.push({ x: x, y: y, r: r, g: g, b: b, a: alpha, i: i });
 		}
 	}
-
-	setTimeout(function () {
-		scan(done, points, y - 1);
-	});
+	return pixels;
 }
 // function scan() {
 // 	var points = []
@@ -172,6 +164,6 @@ function Mouse(canvas) {
 	}.bind(this));
 	this.canvas.addEventListener('mouseleave', function (e) {
 		this.x = -100;
-		tihs.y = -100;
+		this.y = -100;
 	}.bind(this));
 }
