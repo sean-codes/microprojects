@@ -18,3 +18,12 @@ canvas {
   height: 300px;
   -webkit-filter: blur(2px) contrast(30);
   filter: blur(2px) contrast(30); }
+
+inputs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: #FFF;
+  font-size: 12px; }
+  inputs input {
+    display: block; }

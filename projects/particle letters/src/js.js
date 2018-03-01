@@ -6,7 +6,7 @@ var draw = new Draw(ctx)
 var mouse = new Mouse(canvas)
 
 draw.set({
-	font: '200px monospace',
+	font: '125px monospace',
 	textBaseline: 'middle',
 	textAlign: 'center',
 	fillStyle: '#45a'
@@ -28,6 +28,13 @@ scan(function(points) {
 function step() {
 	draw.clear()
 	window.requestAnimationFrame(step)
+	var move = document.getElementById('move').value
+	document.querySelector('[for=move]').innerHTML = 'move ('+move+')'
+	var pull = document.getElementById('pull').value
+	document.querySelector('[for=pull]').innerHTML = 'pull ('+pull+')'
+	var dampen = document.getElementById('dampen').value
+	document.querySelector('[for=dampen]').innerHTML = 'dampem ('+dampen+')'
+
 	particles.forEach(function(particle) {
 		var distance = Math.sqrt(Math.pow(particle.y-mouse.y, 2) + Math.pow(particle.x-mouse.x, 2))
 		var push = 1/distance * 15
@@ -36,11 +43,11 @@ function step() {
 			// Move
 			particle[ax] += particle['a'+ax]
 			// Move random
-			particle['a'+ax] += Math.random() - 0.5
+			particle['a'+ax] += (Math.random() - 0.5)*move
 			// Pull to start
-			particle['a'+ax] -= Math.sign(particle[ax]-particle['s'+ax])*0.5
+			particle['a'+ax] -= Math.sign(particle[ax]-particle['s'+ax])*pull
 			// Dampen
-			particle['a'+ax] *= 0.95
+			particle['a'+ax] *= dampen
 
 			// Push from mouse
 			particle['a'+ax] -= Math.sign(mouse[ax]-particle[ax]) * push
@@ -130,5 +137,9 @@ function Mouse(canvas) {
 	this.canvas.addEventListener('mousemove', function(e) {
 		this.x = e.offsetX
 		this.y = e.offsetY
+	}.bind(this))
+	this.canvas.addEventListener('mouseleave', function(e) {
+		this.x = -100
+		tihs.y = -100
 	}.bind(this))
 }
