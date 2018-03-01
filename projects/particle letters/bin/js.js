@@ -41,8 +41,8 @@ var particles = scan(ctx);
 particles.forEach(function (particle) {
 	particle.sx = particle.x;
 	particle.sy = particle.y;
-	particle.ax = Math.random() * 50 - 25;
-	particle.ay = Math.random() * 50 - 25;
+	particle.ax = Math.random() * 25 - 13;
+	particle.ay = Math.random() * 25 - 13;
 });
 step();
 

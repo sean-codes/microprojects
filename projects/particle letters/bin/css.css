@@ -12,12 +12,12 @@ body {
   display: flex; }
 
 canvas {
-  background: #111;
+  background: #000;
   margin: auto;
   width: 500px;
   height: 300px;
-  -webkit-filter: blur(2px) contrast(30);
-  filter: blur(2px) contrast(30); }
+  -webkit-filter: blur(2px) contrast(20);
+  filter: blur(2px) contrast(20); }
 
 inputs {
   position: fixed;

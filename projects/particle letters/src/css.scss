@@ -12,11 +12,11 @@ body{
 }
 
 canvas {
-	background:#111;
+	background:#000;
 	margin:auto;
 	width:500px;
 	height:300px;
-	filter:blur(2px) contrast(30);
+	filter:blur(2px) contrast(20);
 }
 
 inputs {
