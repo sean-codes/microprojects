@@ -33,10 +33,10 @@ draw.set({
 	font: '125px monospace',
 	textBaseline: 'middle',
 	textAlign: 'center',
-	fillStyle: '#45a'
+	fillStyle: 'orange'
 });
 
-draw.strokeText(canvas.width / 2, canvas.height / 2, 'DEMO');
+draw.strokeText(canvas.width / 2, canvas.height / 2, 'MAGMA');
 var particles = scan(ctx);
 particles.forEach(function (particle) {
 	particle.sx = particle.x;
@@ -76,7 +76,7 @@ function step() {
 			particle['a' + ax] -= Math.sign(mouse[ax] - particle[ax]) * push;
 		}
 
-		draw.fillCircle(particle.x, particle.y, 4);
+		draw.fillCircle(particle.x, particle.y, 3);
 	});
 }
 
