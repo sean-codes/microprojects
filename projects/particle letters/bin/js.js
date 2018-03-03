@@ -36,7 +36,7 @@ draw.set({
 	fillStyle: 'orange'
 });
 
-draw.strokeText(canvas.width / 2, canvas.height / 2, 'MAGMA');
+draw.strokeText(canvas.width / 2, canvas.height / 2, 'M');
 var particles = scan(ctx);
 particles.forEach(function (particle) {
 	particle.sx = particle.x;
@@ -58,7 +58,7 @@ function step() {
 
 	particles.forEach(function (particle) {
 		var distance = Math.sqrt(Math.pow(particle.y - mouse.y, 2) + Math.pow(particle.x - mouse.x, 2));
-		var push = 1 / distance * 15;
+		var push = 1 / distance * 6;
 
 		var _arr = ['x', 'y'];
 		for (var _i = 0; _i < _arr.length; _i++) {

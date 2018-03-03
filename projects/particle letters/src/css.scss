@@ -9,6 +9,7 @@ html, body{
 
 body{
 	display:flex;
+	cursor:crosshair;
 }
 
 canvas {
@@ -24,7 +25,12 @@ inputs {
 	top:0; left:0;
 	color:#FFF;
 	font-size:12px;
+	opacity:0;
+	transition: all 0.2s;
 	input{
 		display:block;
+	}
+	&:hover {
+		opacity:1;
 	}
 }
