@@ -83,7 +83,7 @@ function step() {
 function scan(ctx) {
 	var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	var pixels = [];
-	var dpi = 1;
+	var density = 1;
 	for (var i = 0; i < imageData.data.length; i += 4) {
 		var x = i / 4 % imageData.width;
 		var y = Math.floor(i / 4 / imageData.width) % imageData.height;
@@ -94,8 +94,9 @@ function scan(ctx) {
 		    alpha = _ref[3];
 
 		// Loop all pixels and take the max
-		// the block at pixel 0 and dpi 2 would be [0, 1, 5, 6]
+		// the block at pixel 0 and density 2 would be [0, 1, 5, 6]
 		// Note: if the dpi doesn't line up with the col/row count. 💀
+		// Center the pixel between
 		//
 		//  -------------------
 		//  |  0   1   2   4  |
@@ -104,7 +105,7 @@ function scan(ctx) {
 		//  -------------------
 
 		var block = [];
-		for (var b = 1; b < dpi; b++) {
+		for (var b = 1; b < density; b++) {
 			r = Math.max(r, imageData.data[i + b]);
 			g = Math.max(g, imageData.data[i + b + 1]);
 			b = Math.max(b, imageData.data[i + b + 2]);
