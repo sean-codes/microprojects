@@ -24,19 +24,19 @@ if (!window.frameElement) {
 
 var ctx = document.querySelector('canvas').getContext('2d');
 var canvas = ctx.canvas;
-canvas.width = 500;
-canvas.height = 300;
+canvas.width = 100;
+canvas.height = 100;
 var draw = new Draw(ctx);
 var mouse = new Mouse(canvas);
 
 draw.set({
-	font: '125px monospace',
+	font: '50px monospace',
 	textBaseline: 'middle',
 	textAlign: 'center',
-	fillStyle: 'orange'
+	fillStyle: 'black'
 });
 
-draw.strokeText(canvas.width / 2, canvas.height / 2, 'M');
+draw.fillText(canvas.width / 2, canvas.height / 2, 'M');
 var particles = scan(ctx);
 particles.forEach(function (particle) {
 	particle.sx = particle.x;
@@ -47,7 +47,7 @@ particles.forEach(function (particle) {
 step();
 
 function step() {
-	draw.clear();
+	//draw.clear()
 	window.requestAnimationFrame(step);
 	var move = document.getElementById('move').value;
 	document.querySelector('[for=move]').innerHTML = 'move (' + move + ')';
@@ -71,7 +71,6 @@ function step() {
 			particle['a' + ax] -= Math.sign(particle[ax] - particle['s' + ax]) * pull;
 			// Dampen
 			particle['a' + ax] *= dampen;
-
 			// Push from mouse
 			particle['a' + ax] -= Math.sign(mouse[ax] - particle[ax]) * push;
 		}
@@ -83,39 +82,49 @@ function step() {
 function scan(ctx) {
 	var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	var pixels = [];
-	var density = 1;
-	for (var i = 0; i < imageData.data.length; i += 4) {
-		var x = i / 4 % imageData.width;
-		var y = Math.floor(i / 4 / imageData.width) % imageData.height;
-		var _ref = [imageData.data[i], imageData.data[i + 1], imageData.data[i + 2], imageData.data[i + 3]],
-		    r = _ref[0],
-		    g = _ref[1],
-		    b = _ref[2],
-		    alpha = _ref[3];
+	var density = 10;
+	var rows = ctx.canvas.height / density;
+	var cols = ctx.canvas.width / density;
 
-		// Loop all pixels and take the max
-		// the block at pixel 0 and density 2 would be [0, 1, 5, 6]
-		// Note: if the dpi doesn't line up with the col/row count. 💀
-		// Center the pixel between
-		//
-		//  -------------------
-		//  |  0   1   2   4  |
-		//  |  5   6   7   8  |
-		//  |  9  10  11  12  |
-		//  -------------------
-
-		var block = [];
-		for (var b = 1; b < density; b++) {
-			r = Math.max(r, imageData.data[i + b]);
-			g = Math.max(g, imageData.data[i + b + 1]);
-			b = Math.max(b, imageData.data[i + b + 2]);
-			alpha = Math.max(b, imageData.data[i + b + 3]);
-		}
-
-		if (alpha) {
-			pixels.push({ x: x, y: y, r: r, g: g, b: b, a: alpha, i: i });
+	for (var row = 0; row < rows; row++) {
+		for (var col = 0; col < cols; col++) {
+			var pixelX = row * density + density / 2;
+			var pixelY = col * density + density / 2;
+			console.log(pixelX, pixelY);
+			for (var rp = 0; rp < density; rp++) {
+				for (var rc = 0; rc < density; rc++) {
+					//console.log(row*density+rp, col*density+rc, count++)
+				}
+			}
 		}
 	}
+	/*
+ for(var i = 0; i < imageData.data.length; i+=4) {
+ 	var x = (i/4) % imageData.width
+ 	var y = Math.floor((i/4)/imageData.width) % imageData.height
+ 	var [r,g,b,alpha] = [imageData.data[i],imageData.data[i+1],imageData.data[i+2], imageData.data[i+3]]
+ 		// Loop all pixels and take the max
+ 	// the block at pixel 0 and density 2 would be [0, 1, 4, 5]
+ 	// Note: if the dpi doesn't line up with the col/row count. 💀
+ 	// Center the pixel between
+ 	//
+ 	//  -------------------
+ 	//  |  0   1   2   3  |
+ 	//  |  4   5   6   7  |
+ 	//  |  8   9  10  11  |
+ 	//  -------------------
+ 		var block = []
+ 	for(var b = 1; b < density; b++) {
+ 		r = Math.max(r, imageData.data[i+b])
+ 		g = Math.max(g, imageData.data[i+b+1])
+ 		b = Math.max(b, imageData.data[i+b+2])
+ 		alpha = Math.max(b, imageData.data[i+b+3])
+ 	}
+ 		if(alpha) {
+ 		pixels.push({ x:x, y:y, r:r, g:g, b:b, a:alpha, i:i })
+ 	}
+ }
+ */
 	return pixels;
 }
 // function scan() {
