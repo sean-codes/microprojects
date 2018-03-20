@@ -1,29 +1,42 @@
 var ctx = document.querySelector('canvas').getContext('2d')
 var canvas = ctx.canvas
-canvas.width = 100
-canvas.height = 100
+var size = canvas.getBoundingClientRect()
+canvas.width = size.width
+canvas.height = size.height
 var draw = new Draw(ctx)
 var mouse = new Mouse(canvas)
 
-draw.set({
-	font: '50px monospace',
-	textBaseline: 'middle',
-	textAlign: 'center',
-	fillStyle: 'black'
+document.querySelector('#density')
+var particles = []
+var densityInput = document.getElementById('density')
+var density = densityInput.value
+densityInput.addEventListener('input', function() {
+	density = this.value
+	document.querySelector('[for=density]').innerHTML = 'density ('+density+')'
+	init()
 })
-
-draw.fillText(canvas.width/2, canvas.height/2, 'M')
-var particles = scan(ctx)
-particles.forEach(function(particle) {
-	particle.sx = particle.x
-	particle.sy = particle.y
-	particle.ax = Math.random()*25-13
-	particle.ay = Math.random()*25-13
-})
+function init() {
+	draw.set({
+		font: '125px monospace',
+		textBaseline: 'middle',
+		textAlign: 'center',
+		fillStyle: 'black'
+	})
+	draw.clear()
+	draw.fillText(canvas.width/2, canvas.height/2, 'GHOST')
+	particles = scan(ctx)
+	particles.forEach(function(particle) {
+		particle.sx = particle.x
+		particle.sy = particle.y
+		particle.ax = Math.random()*25-13
+		particle.ay = Math.random()*25-13
+	})
+}
+init()
 step()
 
 function step() {
-	//draw.clear()
+	draw.clear()
 	window.requestAnimationFrame(step)
 	var move = document.getElementById('move').value
 	document.querySelector('[for=move]').innerHTML = 'move ('+move+')'
@@ -49,7 +62,6 @@ function step() {
 			particle['a'+ax] -= Math.sign(mouse[ax]-particle[ax]) * push
 		}
 
-
 		draw.fillCircle(particle.x, particle.y, 3)
 	})
 }
@@ -57,23 +69,35 @@ function step() {
 function scan(ctx) {
 	var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
 	var pixels = []
-	var density = 10
 	var rows = ctx.canvas.height/density
 	var cols = ctx.canvas.width/density
 
-
 	for(var row = 0; row < rows; row++) {
 		for(var col = 0; col < cols; col++) {
-			var pixelX = row*density+density/2
-			var pixelY = col*density+density/2
-			console.log(pixelX, pixelY)
+			var pixelX = col*density+density/2
+			var pixelY = row*density+density/2
+			//console.log(pixelX, pixelY)
 			for(var rp = 0; rp < density; rp++) {
 				for(var rc = 0; rc < density; rc++) {
+					var pixelID = ((row*density+rp) * ctx.canvas.width + (col*density+rc))*4
+					var [r,g,b,alpha] = [
+						imageData.data[pixelID],
+						imageData.data[pixelID+1],
+						imageData.data[pixelID+2],
+						imageData.data[pixelID+3]
+					]
+					//console.log(pixelID, alpha)
+					if(alpha){
+						 pixels.push({ x: pixelX, y: pixelY, info: { r:r, g:g, b:b, alpha:alpha } })
+						 rp = density
+						 rc = density
+					 }
 					//console.log(row*density+rp, col*density+rc, count++)
 				}
 			}
 		}
 	}
+	//console.log('pixels', pixels)
 	/*
 	for(var i = 0; i < imageData.data.length; i+=4) {
 		var x = (i/4) % imageData.width

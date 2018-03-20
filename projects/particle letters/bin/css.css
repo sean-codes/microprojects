@@ -15,9 +15,10 @@ body {
 canvas {
   background: #fff;
   margin: auto;
-  width: 100px;
-  height: 100px;
-  ccfilter: blur(2px) contrast(20); }
+  width: 500px;
+  height: 200px;
+  -webkit-filter: blur(2px) contrast(20);
+  filter: blur(2px) contrast(20); }
 
 inputs {
   position: fixed;
