@@ -20,7 +20,7 @@ function init() {
 		font: '125px monospace',
 		textBaseline: 'middle',
 		textAlign: 'center',
-		fillStyle: 'black'
+		fillStyle: '#000'
 	})
 	draw.clear()
 	draw.fillText(canvas.width/2, canvas.height/2, 'GHOST')

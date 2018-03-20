@@ -1,9 +1,9 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  background: #000;
+  background: #fff;
   font-family: 'Karla', sans-serif;
-  color: #FFF;
+  color: #fff;
   height: 100%; }
 
 body {
@@ -28,7 +28,9 @@ inputs {
   font-size: 12px;
   opacity: 0;
   -webkit-transition: all 0.2s;
-  transition: all 0.2s; }
+  transition: all 0.2s;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 5px; }
   inputs input {
     display: block; }
   inputs:hover {

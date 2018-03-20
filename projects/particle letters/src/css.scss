@@ -1,9 +1,9 @@
 html, body{
    padding:0px;
    margin:0px;
-   background:#000;
+   background:#fff;
    font-family: 'Karla', sans-serif;
-   color:#FFF;
+   color:#fff;
    height:100%;
 }
 
@@ -27,6 +27,8 @@ inputs {
 	font-size:12px;
 	opacity:0;
 	transition: all 0.2s;
+	background:rgba(0, 0, 0, 0.75);
+	padding:5px;
 	input{
 		display:block;
 	}
