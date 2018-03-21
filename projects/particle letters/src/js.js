@@ -1,20 +1,24 @@
+// NOTE: this code is a bit upsidedown
+
 var ctx = document.querySelector('canvas').getContext('2d')
 var canvas = ctx.canvas
-var size = canvas.getBoundingClientRect()
-canvas.width = size.width
-canvas.height = size.height
+canvas.width = canvas.getBoundingClientRect().width
+canvas.height = canvas.getBoundingClientRect().height
+
 var draw = new Draw(ctx)
 var mouse = new Mouse(canvas)
 
-document.querySelector('#density')
 var particles = []
 var densityInput = document.getElementById('density')
-var density = densityInput.value
+
 densityInput.addEventListener('input', function() {
-	density = this.value
-	document.querySelector('[for=density]').innerHTML = 'density ('+density+')'
+	document.querySelector('[for=density]').innerHTML = 'density ('+densityInput.value+')'
 	init()
 })
+
+init()
+step()
+
 function init() {
 	draw.set({
 		font: '125px monospace',
@@ -22,10 +26,10 @@ function init() {
 		textAlign: 'center',
 		fillStyle: '#FFF'
 	})
-	
+
 	draw.clear()
 	draw.fillText(canvas.width/2, canvas.height/2, 'INK')
-	particles = scan(ctx)
+	particles = scan(ctx, densityInput.value)
 	for(var particle of particles) {
 		particle.sx = particle.x
 		particle.sy = particle.y
@@ -33,8 +37,6 @@ function init() {
 		particle.ay = Math.random()*25-13
 	}
 }
-init()
-step()
 
 function step() {
 	draw.clear()
@@ -67,7 +69,7 @@ function step() {
 	}
 }
 
-function scan(ctx) {
+function scan(ctx, density) {
 	var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
 	var pixels = []
 	var rows = ctx.canvas.height/density
@@ -77,7 +79,7 @@ function scan(ctx) {
 		for(var col = 0; col < cols; col++) {
 			var pixelX = col*density+density/2
 			var pixelY = row*density+density/2
-			//console.log(pixelX, pixelY)
+
 			for(var rp = 0; rp < density; rp++) {
 				for(var rc = 0; rc < density; rc++) {
 					var pixelID = ((row*density+rp) * ctx.canvas.width + (col*density+rc))*4
@@ -87,13 +89,12 @@ function scan(ctx) {
 						imageData.data[pixelID+2],
 						imageData.data[pixelID+3]
 					]
-					//console.log(pixelID, alpha)
+
 					if(alpha){
 						 pixels.push({ x: pixelX, y: pixelY, info: { r:r, g:g, b:b, alpha:alpha } })
 						 rp = density
 						 rc = density
 					 }
-					//console.log(row*density+rp, col*density+rc, count++)
 				}
 			}
 		}
