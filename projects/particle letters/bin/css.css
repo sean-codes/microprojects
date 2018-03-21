@@ -1,7 +1,7 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  background: #fff;
+  background: #000;
   font-family: 'Karla', sans-serif;
   color: #fff;
   height: 100%; }
@@ -13,12 +13,12 @@ body {
   cursor: crosshair; }
 
 canvas {
-  background: #fff;
+  background: #000;
   margin: auto;
   width: 500px;
-  height: 200px;
-  -webkit-filter: blur(2px) contrast(20);
-  filter: blur(2px) contrast(20); }
+  height: 300px;
+  -webkit-filter: blur(3px) contrast(20);
+  filter: blur(3px) contrast(20); }
 
 inputs {
   position: fixed;

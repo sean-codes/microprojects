@@ -20,17 +20,18 @@ function init() {
 		font: '125px monospace',
 		textBaseline: 'middle',
 		textAlign: 'center',
-		fillStyle: '#000'
+		fillStyle: '#FFF'
 	})
+	
 	draw.clear()
-	draw.fillText(canvas.width/2, canvas.height/2, 'GHOST')
+	draw.fillText(canvas.width/2, canvas.height/2, 'INK')
 	particles = scan(ctx)
-	particles.forEach(function(particle) {
+	for(var particle of particles) {
 		particle.sx = particle.x
 		particle.sy = particle.y
 		particle.ax = Math.random()*25-13
 		particle.ay = Math.random()*25-13
-	})
+	}
 }
 init()
 step()
@@ -45,7 +46,7 @@ function step() {
 	var dampen = document.getElementById('dampen').value
 	document.querySelector('[for=dampen]').innerHTML = 'dampem ('+dampen+')'
 
-	particles.forEach(function(particle) {
+	for(var particle of particles) {
 		var distance = Math.sqrt(Math.pow(particle.y-mouse.y, 2) + Math.pow(particle.x-mouse.x, 2))
 		var push = 1/distance * 6
 
@@ -62,8 +63,8 @@ function step() {
 			particle['a'+ax] -= Math.sign(mouse[ax]-particle[ax]) * push
 		}
 
-		draw.fillCircle(particle.x, particle.y, 3)
-	})
+		draw.fillCircle(particle.x, particle.y, 4)
+	}
 }
 
 function scan(ctx) {

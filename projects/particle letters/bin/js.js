@@ -44,17 +44,39 @@ function init() {
 		font: '125px monospace',
 		textBaseline: 'middle',
 		textAlign: 'center',
-		fillStyle: '#000'
+		fillStyle: '#FFF'
 	});
+
 	draw.clear();
-	draw.fillText(canvas.width / 2, canvas.height / 2, 'GHOST');
+	draw.fillText(canvas.width / 2, canvas.height / 2, 'INK');
 	particles = scan(ctx);
-	particles.forEach(function (particle) {
-		particle.sx = particle.x;
-		particle.sy = particle.y;
-		particle.ax = Math.random() * 25 - 13;
-		particle.ay = Math.random() * 25 - 13;
-	});
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = particles[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var particle = _step.value;
+
+			particle.sx = particle.x;
+			particle.sy = particle.y;
+			particle.ax = Math.random() * 25 - 13;
+			particle.ay = Math.random() * 25 - 13;
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
 }
 init();
 step();
@@ -69,27 +91,48 @@ function step() {
 	var dampen = document.getElementById('dampen').value;
 	document.querySelector('[for=dampen]').innerHTML = 'dampem (' + dampen + ')';
 
-	particles.forEach(function (particle) {
-		var distance = Math.sqrt(Math.pow(particle.y - mouse.y, 2) + Math.pow(particle.x - mouse.x, 2));
-		var push = 1 / distance * 6;
+	var _iteratorNormalCompletion2 = true;
+	var _didIteratorError2 = false;
+	var _iteratorError2 = undefined;
 
-		var _arr = ['x', 'y'];
-		for (var _i = 0; _i < _arr.length; _i++) {
-			var ax = _arr[_i];
-			// Move
-			particle[ax] += particle['a' + ax];
-			// Move random
-			particle['a' + ax] += (Math.random() - 0.5) * move;
-			// Pull to start
-			particle['a' + ax] -= Math.sign(particle[ax] - particle['s' + ax]) * pull;
-			// Dampen
-			particle['a' + ax] *= dampen;
-			// Push from mouse
-			particle['a' + ax] -= Math.sign(mouse[ax] - particle[ax]) * push;
+	try {
+		for (var _iterator2 = particles[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+			var particle = _step2.value;
+
+			var distance = Math.sqrt(Math.pow(particle.y - mouse.y, 2) + Math.pow(particle.x - mouse.x, 2));
+			var push = 1 / distance * 6;
+
+			var _arr = ['x', 'y'];
+			for (var _i = 0; _i < _arr.length; _i++) {
+				var ax = _arr[_i];
+				// Move
+				particle[ax] += particle['a' + ax];
+				// Move random
+				particle['a' + ax] += (Math.random() - 0.5) * move;
+				// Pull to start
+				particle['a' + ax] -= Math.sign(particle[ax] - particle['s' + ax]) * pull;
+				// Dampen
+				particle['a' + ax] *= dampen;
+				// Push from mouse
+				particle['a' + ax] -= Math.sign(mouse[ax] - particle[ax]) * push;
+			}
+
+			draw.fillCircle(particle.x, particle.y, 4);
 		}
-
-		draw.fillCircle(particle.x, particle.y, 3);
-	});
+	} catch (err) {
+		_didIteratorError2 = true;
+		_iteratorError2 = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion2 && _iterator2.return) {
+				_iterator2.return();
+			}
+		} finally {
+			if (_didIteratorError2) {
+				throw _iteratorError2;
+			}
+		}
+	}
 }
 
 function scan(ctx) {
