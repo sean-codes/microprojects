@@ -37,6 +37,10 @@
 			"path": "projects/Walker"
 		},
 		{
+			"title": "nexus",
+			"path": "projects/nexus"
+		},
+		{
 			"title": "particle letters",
 			"path": "projects/particle letters"
 		},
