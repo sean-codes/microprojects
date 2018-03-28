@@ -30,7 +30,7 @@ ctx.canvas.height = 300;
 var draw = new Draw(ctx);
 
 // Make a grid give each a x/y velocity
-var zoneSize = 40;
+var zoneSize = 10;
 
 var fields = fakeNoise();
 ctx.canvas.addEventListener('click', function () {
@@ -38,7 +38,7 @@ ctx.canvas.addEventListener('click', function () {
 });
 
 var particles = [];
-var i = 30000;while (i--) {
+var i = 15000;while (i--) {
    particles.push({
       pos: new Vector(ctx.canvas.width / 2, ctx.canvas.height / 2),
       direction: new Vector(Math.random() * 10 - 5, Math.random() * 10 - 5),
@@ -46,6 +46,14 @@ var i = 30000;while (i--) {
    });
 }
 
+/**
+* returns a flow field
+* @param {object} options - a set of options to adjust the fields
+* @param {number} options.fieldSize - the size of each field
+* @param {number} options.chaos - amount of gravities
+* @param {number} options.duration - amount of iterations to move gravities
+* @param {number} options.minSpin - minimum amount to spin
+*/
 function fakeNoise() {
    var fields = [];
    for (var x = 0; x <= Math.ceil(ctx.canvas.width / zoneSize); x++) {
@@ -71,7 +79,7 @@ function fakeNoise() {
       });
    }
 
-   var duration = 1000;while (duration--) {
+   var duration = 30000;while (duration--) {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -92,59 +100,22 @@ function fakeNoise() {
                gravity.speed = Math.random() * 2 + 1;
                gravity.size = Math.random() * 40 + 10;
             }
-            if (gravity.pos.x - gravity.size < 0) gravity.pos.x = ctx.canvas.width - gravity.size;
-            if (gravity.pos.y - gravity.size < 0) gravity.pos.y = ctx.canvas.height - gravity.size;
-            if (gravity.pos.x + gravity.size > ctx.canvas.width) gravity.pos.x = gravity.size;
-            if (gravity.pos.y + gravity.size > ctx.canvas.height) gravity.pos.y = gravity.size;
+            if (gravity.pos.x < 0) gravity.pos.x = ctx.canvas.width - gravity.size;
+            if (gravity.pos.y < 0) gravity.pos.y = ctx.canvas.height - gravity.size;
+            if (gravity.pos.x + gravity.size > ctx.canvas.width) gravity.pos.x = 0;
+            if (gravity.pos.y + gravity.size > ctx.canvas.height) gravity.pos.y = 0;
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var x = gravity.pos.x;while (x < gravity.pos.x + gravity.size) {
+               var y = gravity.pos.y;while (y < gravity.pos.y + gravity.size) {
+                  var fieldCol = Math.floor(x / zoneSize);
+                  var fieldRow = Math.floor(y / zoneSize);
+                  var field = fields[fieldCol][fieldRow];
+                  field.direction.x = gravity.direction.x;
+                  field.direction.y = gravity.direction.y;
 
-            try {
-               for (var _iterator2 = fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  var fieldrow = _step2.value;
-                  var _iteratorNormalCompletion3 = true;
-                  var _didIteratorError3 = false;
-                  var _iteratorError3 = undefined;
-
-                  try {
-                     for (var _iterator3 = fieldrow[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        var field = _step3.value;
-
-                        var distance = gravity.pos.distance(field.pos);
-                        if (distance < gravity.size) {
-                           field.direction = gravity.direction.clone();
-                        }
-                     }
-                  } catch (err) {
-                     _didIteratorError3 = true;
-                     _iteratorError3 = err;
-                  } finally {
-                     try {
-                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                           _iterator3.return();
-                        }
-                     } finally {
-                        if (_didIteratorError3) {
-                           throw _iteratorError3;
-                        }
-                     }
-                  }
+                  y += gravity.size / 10;
                }
-            } catch (err) {
-               _didIteratorError2 = true;
-               _iteratorError2 = err;
-            } finally {
-               try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                     _iterator2.return();
-                  }
-               } finally {
-                  if (_didIteratorError2) {
-                     throw _iteratorError2;
-                  }
-               }
+               x += gravity.size / 10;
             }
          }
       } catch (err) {
@@ -162,7 +133,6 @@ function fakeNoise() {
          }
       }
    }
-
    return fields;
 }
 
@@ -172,15 +142,15 @@ setInterval(function () {
 
    // Particles
    draw.set({ fillStyle: 'rgba(255, 255, 255, 0.1)' });
-   var _iteratorNormalCompletion4 = true;
-   var _didIteratorError4 = false;
-   var _iteratorError4 = undefined;
+   var _iteratorNormalCompletion2 = true;
+   var _didIteratorError2 = false;
+   var _iteratorError2 = undefined;
 
    try {
-      for (var _iterator4 = particles[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-         var particle = _step4.value;
+      for (var _iterator2 = particles[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+         var particle = _step2.value;
 
-         //draw.set({ fillStyle: particle.color+'33' })
+         draw.set({ fillStyle: particle.color + '33' });
          draw.fillRect(particle.pos.x, particle.pos.y, 3, 3);
 
          particle.pos.add(particle.direction);
@@ -192,27 +162,25 @@ setInterval(function () {
          // please hold
          var fieldCol = Math.floor(particle.pos.x / zoneSize);
          var fieldRow = Math.floor(particle.pos.y / zoneSize);
-         //var field = fields[fieldCol][fieldRow]
-         //var pull = field.direction.clone().min(particle.direction)
-         //var pull = field.direction.fastMin(particle.direction.fastScale(0.05))
-         //particle.direction.add(pull) // Make this variable
+         var field = fields[fieldCol][fieldRow];
+         var pull = field.direction.clone().min(particle.direction);
+
+         particle.direction.add(pull.scale(0.015)); // Make this variable
       }
    } catch (err) {
-      _didIteratorError4 = true;
-      _iteratorError4 = err;
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
    } finally {
       try {
-         if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
+         if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
          }
       } finally {
-         if (_didIteratorError4) {
-            throw _iteratorError4;
+         if (_didIteratorError2) {
+            throw _iteratorError2;
          }
       }
    }
-
-   console.log(particles.length);
 }, 1000 / 60);
 
 // Librairies
@@ -263,6 +231,9 @@ function Vector(x, y) {
    this.y = y || 0;
    this.add = function (v) {
       this.x += v.x;this.y += v.y;return this;
+   };
+   this.fastAdd = function (v) {
+      return { x: this.x + v.x, y: this.y + v.y };
    };
    this.min = function (v) {
       this.x -= v.x;this.y -= v.y;return this;

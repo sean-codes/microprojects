@@ -6,7 +6,7 @@ ctx.canvas.height = 300
 var draw = new Draw(ctx)
 
 // Make a grid give each a x/y velocity
-var zoneSize = 40;
+var zoneSize = 10;
 
 var fields = fakeNoise()
 ctx.canvas.addEventListener('click', function() {
@@ -14,7 +14,7 @@ ctx.canvas.addEventListener('click', function() {
 })
 
 var particles = []
-var i = 30000; while(i--) {
+var i = 15000; while(i--) {
    particles.push({
       pos: new Vector(ctx.canvas.width/2, ctx.canvas.height/2),
       direction: new Vector(Math.random()*10-5, Math.random()*10-5),
@@ -22,6 +22,14 @@ var i = 30000; while(i--) {
    })
 }
 
+/**
+* returns a flow field
+* @param {object} options - a set of options to adjust the fields
+* @param {number} options.fieldSize - the size of each field
+* @param {number} options.chaos - amount of gravities
+* @param {number} options.duration - amount of iterations to move gravities
+* @param {number} options.minSpin - minimum amount to spin
+*/
 function fakeNoise() {
    var fields = []
    for(var x = 0; x <= Math.ceil(ctx.canvas.width/zoneSize); x++) {
@@ -47,7 +55,7 @@ function fakeNoise() {
       })
    }
 
-   var duration = 1000; while(duration--) {
+   var duration = 30000; while(duration--) {
       for(var gravity of gravities) {
          gravity.pos.add(gravity.direction)
          var direction = Math.atan2(gravity.direction.y, gravity.direction.x)
@@ -61,22 +69,27 @@ function fakeNoise() {
             gravity.speed = Math.random()*2 + 1
             gravity.size = Math.random()*40 + 10
          }
-         if(gravity.pos.x-gravity.size < 0) gravity.pos.x = ctx.canvas.width-gravity.size
-         if(gravity.pos.y-gravity.size < 0) gravity.pos.y = ctx.canvas.height-gravity.size
-         if(gravity.pos.x+gravity.size > ctx.canvas.width) gravity.pos.x = gravity.size
-         if(gravity.pos.y+gravity.size > ctx.canvas.height) gravity.pos.y = gravity.size
+         if(gravity.pos.x < 0) gravity.pos.x = ctx.canvas.width-gravity.size
+         if(gravity.pos.y < 0) gravity.pos.y = ctx.canvas.height-gravity.size
+         if(gravity.pos.x+gravity.size > ctx.canvas.width) gravity.pos.x = 0
+         if(gravity.pos.y+gravity.size > ctx.canvas.height) gravity.pos.y = 0
 
-         for(var fieldrow of fields) {
-            for(var field of fieldrow) {
-               var distance = gravity.pos.distance(field.pos)
-               if(distance < gravity.size) {
-                  field.direction = gravity.direction.clone()
-               }
-            }
-         }
+
+
+			var x = gravity.pos.x; while(x < gravity.pos.x + gravity.size) {
+				var y = gravity.pos.y; while(y < gravity.pos.y + gravity.size) {
+					var fieldCol = Math.floor(x / zoneSize)
+					var fieldRow = Math.floor(y / zoneSize)
+					var field = fields[fieldCol][fieldRow]
+					field.direction.x = gravity.direction.x
+					field.direction.y = gravity.direction.y
+
+					y += gravity.size/10
+				}
+				x += gravity.size/10
+			}
       }
    }
-
    return fields
 }
 
@@ -87,7 +100,7 @@ setInterval(function() {
    // Particles
    draw.set({ fillStyle: 'rgba(255, 255, 255, 0.1)' })
    for(var particle of particles) {
-      //draw.set({ fillStyle: particle.color+'33' })
+      draw.set({ fillStyle: particle.color+'33' })
       draw.fillRect(particle.pos.x, particle.pos.y, 3, 3)
 
       particle.pos.add(particle.direction)
@@ -99,12 +112,11 @@ setInterval(function() {
       // please hold
       var fieldCol = Math.floor(particle.pos.x / zoneSize)
       var fieldRow = Math.floor(particle.pos.y / zoneSize)
-      //var field = fields[fieldCol][fieldRow]
-      //var pull = field.direction.clone().min(particle.direction)
-		//var pull = field.direction.fastMin(particle.direction.fastScale(0.05))
-      //particle.direction.add(pull) // Make this variable
+      var field = fields[fieldCol][fieldRow]
+      var pull = field.direction.clone().min(particle.direction)
+
+      particle.direction.add(pull.scale(0.015)) // Make this variable
    }
-	console.log(particles.length)
 }, 1000/60)
 
 // Librairies
@@ -154,6 +166,7 @@ function Vector(x, y) {
    this.x = x || 0
    this.y = y || 0
    this.add = function(v){ this.x+=v.x; this.y+=v.y; return this }
+   this.fastAdd = function(v){ return { x: this.x+v.x, y:this.y+v.y } }
    this.min = function(v){ this.x-=v.x; this.y-=v.y; return this }
    this.fastMin = function(v){ return { x: this.x-v.x, y:this.y-v.y } }
    this.scale = function(s) { this.x*=s; this.y*=s; return this }
