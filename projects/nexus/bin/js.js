@@ -30,7 +30,12 @@ var draw = new Draw(ctx)
 // Make a grid give each a x/y velocity
 var zoneSize = 10;
 
-var fields = fakeNoise()
+var fields = VectorField({
+	width: ctx.canvas.width,
+	height: ctx.canvas.height,
+	fieldSize: 10
+})
+
 ctx.canvas.addEventListener('click', function() {
    fields = fakeNoise()
 })
@@ -48,15 +53,37 @@ var i = 	10000; while(i--) {
 * returns a flow field
 * @param {object} options - a set of options to adjust the fields
 * @param {number} options.fieldSize - the size of each field
-* @param {number} options.chaos - amount of gravities
+* @param {number} options.chaos - amount of chaos
 * @param {number} options.duration - amount of iterations to move gravities
-* @param {number} options.minSpin - minimum amount to spin
+* @param {number} options.spinMin - minimum amount to spin
+* @param {number} options.spinMax - maximum amount to spin
+* @param {number} options.sizeMin - minimum amount to size
+* @param {number} options.sizeMax - maximum amount to size
+* @param {number} options.speedMin - minimum amount of speed
+* @param {number} options.speedMax - maximum amount to speed
 */
-function fakeNoise() {
+
+function VectorField(options) {
+
+	// Setup the options
+	var options = options || {}
+	options.width = options.width || 100
+	options.height = options.height || 100
+	options.fieldSize = options.fieldSize || 10
+	options.chaos = options.chaos || 1
+	options.duration = options.duration || 5000
+	options.spinMin = options.spinMin || 0
+	options.spinMax = options.spinMax || 0.5
+	options.sizeMin = options.sizeMin || 15
+	options.sizeMax = options.sizeMax || 15
+	options.speedMin = options.speedMin || 0.1
+	options.speedMax = options.speedMax || 5
+
+	// Create the grid of fields
    var fields = []
-   for(var x = 0; x <= Math.ceil(ctx.canvas.width/zoneSize); x++) {
+   for(var x = 0; x <= Math.ceil(options.width/options.fieldSize); x++) {
       fields[x] = []
-      for(var y = 0; y <= Math.ceil(ctx.canvas.height/zoneSize); y++) {
+      for(var y = 0; y <= Math.ceil(options.height/options.fieldSize); y++) {
          fields[x][y] = {
             pos: new Vector(x*zoneSize, y*zoneSize),
             center: new Vector(x*zoneSize+zoneSize/2, y*zoneSize+zoneSize/2),
@@ -69,7 +96,7 @@ function fakeNoise() {
    var gravities = []
    var count = 1; while(count--) {
       gravities.push({
-         pos: new Vector(ctx.canvas.width/2, ctx.canvas.height/2),
+         pos: new Vector(options.width/2, options.height/2),
          direction: new Vector((Math.random()*6-3), (Math.random()*6-3)),
          size: Math.random()*40 + 15,
          spin: (Math.random()-0.5)*0.1,
