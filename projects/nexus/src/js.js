@@ -14,7 +14,7 @@ ctx.canvas.addEventListener('click', function() {
 })
 
 var particles = []
-var i = 15000; while(i--) {
+var i = 	10000; while(i--) {
    particles.push({
       pos: new Vector(ctx.canvas.width/2, ctx.canvas.height/2),
       direction: new Vector(Math.random()*10-5, Math.random()*10-5),
@@ -94,7 +94,10 @@ function fakeNoise() {
 }
 
 // Loop
-setInterval(function() {
+loop()
+
+function loop() {
+	setTimeout(function() { loop() }, 1000/60)
    draw.clear()
 
    // Particles
@@ -113,11 +116,14 @@ setInterval(function() {
       var fieldCol = Math.floor(particle.pos.x / zoneSize)
       var fieldRow = Math.floor(particle.pos.y / zoneSize)
       var field = fields[fieldCol][fieldRow]
-      var pull = field.direction.clone().min(particle.direction)
-
-      particle.direction.add(pull.scale(0.015)) // Make this variable
+      var pull = field.direction.clone().min(particle.direction).scale(0.015)
+		// var pull = {
+		// 	x: (field.direction.x-particle.direction.x)*0.015,
+		// 	y: (field.direction.y-particle.direction.y)*0.015
+		// }
+      particle.direction.add(pull) // Make this variable
    }
-}, 1000/60)
+}
 
 // Librairies
 function Draw(ctx) {

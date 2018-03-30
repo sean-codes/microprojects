@@ -92,7 +92,7 @@ function microBuild(pathSite) {
    // JS
    gulp.src(['autoreload.js', path.join(pathDev, '*.js')])
       .pipe(concat('js.js'))
-      .pipe(babel({ presets: ['env'] }).on('error', gutil.log))
+      //.pipe(babel({ presets: ['env'] }).on('error', gutil.log))
       .pipe(gulp.dest(pathDist))
 
    // CSS

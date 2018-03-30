@@ -1,21 +1,19 @@
-"use strict";
-
 // Autoreload Injected by microprojects
 if (!window.frameElement) {
-   var lastChange = 0;
+   var lastChange = 0
    var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function () {
+   xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-         var data = JSON.parse(this.responseText);
-         if (lastChange && data.changed !== lastChange) {
+         var data = JSON.parse(this.responseText)
+         if(lastChange && data.changed !== lastChange){
             window.location = window.location;
-            return;
+            return
          }
-         lastChange = data.changed;
-         setTimeout(function () {
+         lastChange = data.changed
+         setTimeout(function() {
             xhttp.open("GET", "../../reload.json", true);
-            xhttp.send();
-         }, 500);
+            xhttp.send()
+         }, 500)
       }
    };
    xhttp.open("GET", "../../reload.json", true);
@@ -24,36 +22,40 @@ if (!window.frameElement) {
 
 // For the thumbnail demo! :]
 
-var count = 1;
-setTimeout(demo, 500);
-setTimeout(demo, 700);
-setTimeout(demo, 900);
-setTimeout(reset, 2000);
+var count = 1
+setTimeout(demo, 500)
+setTimeout(demo, 700)
+setTimeout(demo, 900)
+setTimeout(reset, 2000)
 
-setTimeout(demo, 2500);
-setTimeout(demo, 2750);
-setTimeout(demo, 3050);
+setTimeout(demo, 2500)
+setTimeout(demo, 2750)
+setTimeout(demo, 3050)
 
-var mousein = false;
+
+var mousein = false
 function demo() {
-   if (mousein) return;
-   document.getElementById('demo' + count++).classList.toggle('hover');
+   if(mousein) return
+   document.getElementById('demo' + count++)
+      .classList.toggle('hover')
+
 }
 
 function demo2() {
-   if (mousein) return;
-   document.getElementById('demo2').classList.toggle('hover');
+   if(mousein) return
+   document.getElementById('demo2')
+      .classList.toggle('hover')
 }
 
 function reset() {
-   count = 1;
-   var hovers = document.querySelectorAll('.hover');
-   for (var i = 0; i < hovers.length; i++) {
-      hovers[i].classList.remove('hover');
+   count = 1
+   var hovers = document.querySelectorAll('.hover')
+   for(var i = 0; i < hovers.length; i++ ) {
+      hovers[i].classList.remove('hover')
    }
 }
 
-document.addEventListener('mouseover', function () {
-   mousein = true;
-   reset();
-});
+document.addEventListener('mouseover', function() {
+   mousein = true
+   reset()
+})
