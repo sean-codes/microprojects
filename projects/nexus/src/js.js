@@ -8,14 +8,22 @@ var draw = new Draw(ctx)
 // Make a grid give each a x/y velocity
 var zoneSize = 10;
 
-var fields = VectorField({
-	width: ctx.canvas.width,
-	height: ctx.canvas.height,
-	fieldSize: 10
-})
+var fields = []
+function init() {
+	fields = VectorField({
+		width: ctx.canvas.width,
+		height: ctx.canvas.height,
+		fieldSize: 5,
+		turn: Math.PI*2 / 4,
+		spinMin: -0.05,
+		spinMax: 0.05,
+		times: [60, 120]
+	})
+}
 
+init()
 ctx.canvas.addEventListener('click', function() {
-   fields = fakeNoise()
+	init()
 })
 
 var particles = []
@@ -31,7 +39,7 @@ var i = 	10000; while(i--) {
 * returns a flow field
 * @param {object} options - a set of options to adjust the fields
 * @param {number} options.fieldSize - the size of each field
-* @param {number} options.chaos - amount of chaos
+* @param {number} options.gravities - amount of gravities
 * @param {number} options.duration - amount of iterations to move gravities
 * @param {number} options.spinMin - minimum amount to spin
 * @param {number} options.spinMax - maximum amount to spin
@@ -48,76 +56,94 @@ function VectorField(options) {
 	options.width = options.width || 100
 	options.height = options.height || 100
 	options.fieldSize = options.fieldSize || 10
-	options.chaos = options.chaos || 1
-	options.duration = options.duration || 5000
-	options.spinMin = options.spinMin || 0
-	options.spinMax = options.spinMax || 0.5
-	options.sizeMin = options.sizeMin || 15
-	options.sizeMax = options.sizeMax || 15
-	options.speedMin = options.speedMin || 0.1
-	options.speedMax = options.speedMax || 5
+	options.gravities = options.gravities || 1
+	options.duration = options.duration || 15000
+	options.spinMin = options.spinMin || -0.05
+	options.spinMax = options.spinMax || 0.05
+	options.turn = options.turn || 0
+	options.sizeMin = options.sizeMin || 10
+	options.sizeMax = options.sizeMax || 50
+	options.grow = options.grow || 0.03
+	options.speedMin = options.speedMin || 2
+	options.speedMax = options.speedMax || 2
+	options.times = options.times || [90, 120]
 
 	// Create the grid of fields
-   var fields = []
-   for(var x = 0; x <= Math.ceil(options.width/options.fieldSize); x++) {
-      fields[x] = []
-      for(var y = 0; y <= Math.ceil(options.height/options.fieldSize); y++) {
-         fields[x][y] = {
-            pos: new Vector(x*zoneSize, y*zoneSize),
-            center: new Vector(x*zoneSize+zoneSize/2, y*zoneSize+zoneSize/2),
-            direction: new Vector(0, 0),
-            size: zoneSize
-         }
-      }
-   }
-
-   var gravities = []
-   var count = 1; while(count--) {
-      gravities.push({
-         pos: new Vector(options.width/2, options.height/2),
-         direction: new Vector((Math.random()*6-3), (Math.random()*6-3)),
-         size: Math.random()*40 + 15,
-         spin: (Math.random()-0.5)*0.1,
-         speed: Math.random()*3
-      })
-   }
-
-   var duration = 30000; while(duration--) {
-      for(var gravity of gravities) {
-         gravity.pos.add(gravity.direction)
-         var direction = Math.atan2(gravity.direction.y, gravity.direction.x)
-         var speed = gravity.direction.length()
-         direction += gravity.spin || 0.01
-         gravity.direction.x = Math.cos(direction)
-         gravity.direction.y = Math.sin(direction)
-         gravity.direction.scale(gravity.speed)
-         if(Math.random() > 0.99) {
-            gravity.spin = (Math.random()-0.5)*0.1
-            gravity.speed = Math.random()*2 + 1
-            gravity.size = Math.random()*40 + 10
-         }
-         if(gravity.pos.x < 0) gravity.pos.x = ctx.canvas.width-gravity.size
-         if(gravity.pos.y < 0) gravity.pos.y = ctx.canvas.height-gravity.size
-         if(gravity.pos.x+gravity.size > ctx.canvas.width) gravity.pos.x = 0
-         if(gravity.pos.y+gravity.size > ctx.canvas.height) gravity.pos.y = 0
-
-
-
-			var x = gravity.pos.x; while(x < gravity.pos.x + gravity.size) {
-				var y = gravity.pos.y; while(y < gravity.pos.y + gravity.size) {
-					var fieldCol = Math.floor(x / zoneSize)
-					var fieldRow = Math.floor(y / zoneSize)
-					var field = fields[fieldCol][fieldRow]
-					field.direction.x = gravity.direction.x
-					field.direction.y = gravity.direction.y
-
-					y += gravity.size/10
-				}
-				x += gravity.size/10
+	this.render = function() {
+		var fields = []
+		for(var x = 0; x <= Math.ceil(options.width/options.fieldSize); x++) {
+			fields[x] = []
+			for(var y = 0; y <= Math.ceil(options.height/options.fieldSize); y++) {
+				fields[x][y] = new this.Field(x, y)
 			}
-      }
-   }
-   return fields
+		}
+
+		var gravities = []
+	   var count = options.gravities; while(count--) {
+	      gravities.push(new this.Gravity(options))
+	   }
+
+	   var duration = options.duration; while(duration--) {
+	      for(var gravity of gravities) {
+				gravity.move()
+				var x = gravity.pos.x; while(x < gravity.pos.x + gravity.size && x > 0 && x < options.width) {
+					var y = gravity.pos.y; while(y < gravity.pos.y + gravity.size && y > 0 && y < options.height) {
+						var fieldCol = Math.floor(x / zoneSize)
+						var fieldRow = Math.floor(y / zoneSize)
+						var field = fields[fieldCol][fieldRow]
+
+						field.direction = new Vector(Math.cos(gravity.direction), Math.sin(gravity.direction)).scale(gravity.speed)
+						//field.direction.x = gravity.direction.x
+						//field.direction.y = gravity.direction.y
+
+						y += gravity.size/10
+					}
+					x += gravity.size/10
+				}
+			}
+		}
+
+		return fields
+	}
+
+	this.Field = function(x, y) {
+		this.pos = new Vector(x*zoneSize, y*zoneSize)
+		this.center = new Vector(x*zoneSize+zoneSize/2, y*zoneSize+zoneSize/2)
+		this.direction = new Vector(0, 0)
+		this.size = zoneSize
+	}
+
+	this.Gravity = function() {
+		this.pos = new Vector(options.width/2, options.height/2)
+		this.direction = 0
+		this.size= 0
+
+	   this.change = function() {
+	      this.spin = Math.random()*(options.spinMax-options.spinMin) + options.spinMin
+	      this.speed = Math.random()*(options.speedMax-options.speedMin) + options.speedMin
+	      this.direction += options.turn*Math.sign(Math.random()-0.5)
+	      this.targetSize = Math.random()*(options.sizeMax-options.sizeMin) + options.sizeMin
+	      this.timer = options.times[Math.floor(Math.random()*options.times.length)]
+	   }
+
+	   this.change()
+
+	   this.move = function() {
+	      this.direction += this.spin
+	      this.pos.add(new Vector(Math.cos(this.direction), Math.sin(this.direction)).scale(this.speed))
+	      this.size -= (this.size - this.targetSize)*options.grow
+	      if(this.pos.x + this.size < 0) this.pos.x = options.width
+	      if(this.pos.y + this.size < 0) this.pos.y = options.height
+	      if(this.pos.x > options.width) this.pos.x = 0 - this.size
+	      if(this.pos.y > options.height) this.pos.y = 0 - this.size
+
+	      if(!this.timer--) {
+	         this.change()
+	      }
+	   }
+	}
+
+	return this.render()
 }
 
 // Loop
@@ -193,6 +219,7 @@ function Draw(ctx) {
 	this.clear = function() {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 	}
+	console.log("Sean is a maniac who likes fluffy cats")
 }
 
 function Vector(x, y) {
