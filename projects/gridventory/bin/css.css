@@ -135,14 +135,12 @@ inventory {
     transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s; }
     inventory item icon {
       position: absolute;
-      top: 5px;
-      left: 5px;
-      width: calc(100% - 10px);
-      height: calc(100% - 10px);
-      border: 3px solid #aaa;
-      pointer-events: none; }
-    inventory item:hover icon {
-      border: 3px solid #aaa; }
+      top: 10px;
+      left: 10px;
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      pointer-events: none;
+      border-radius: 2px; }
     inventory item.held {
       -webkit-transition: -webkit-transform 0s 0s;
       transition: -webkit-transform 0s 0s;
