@@ -86,6 +86,12 @@ inventory {
 			//border:3px solid #aaa;
 			pointer-events:none;
 			border-radius:2px;
+			display:flex;
+			
+			content {
+				display:inline-block;
+				margin:auto;
+			}
 		}
 
 		&.held {

@@ -140,7 +140,13 @@ inventory {
       width: calc(100% - 20px);
       height: calc(100% - 20px);
       pointer-events: none;
-      border-radius: 2px; }
+      border-radius: 2px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex; }
+      inventory item icon content {
+        display: inline-block;
+        margin: auto; }
     inventory item.held {
       -webkit-transition: -webkit-transform 0s 0s;
       transition: -webkit-transform 0s 0s;

@@ -58,7 +58,7 @@ function Inventory(options) {
 			itemHTML.style.width = item.w * (this.size.w / this.slots.w) + 'px'
 			itemHTML.style.height = item.h * (this.size.h / this.slots.h) + 'px'
 			itemHTML.style.transform = `translateX(${item.x * (this.size.w / this.slots.w) + 'px'}) translateY(${item.y * (this.size.h / this.slots.h) + 'px'})`
-			itemHTML.innerHTML = `<icon style="background: ${item.color}"></icon>`
+			itemHTML.innerHTML = `<icon style="background: ${item.color}"><content>${item.content}</content></icon>`
 			itemHTML.addEventListener('mousedown', function(e) {
 				e.target.classList.add('held')
 				this.inventory.held.item = this
@@ -130,9 +130,9 @@ new Inventory({
 	size: { w: 300, h: 300 },
    slots: { w: 4, h: 4 },
    items: [
-      { x:0, y:0, w:1, h:1, content: "3", color: '#ffd54f' },
-      { x:2, y:0, w:1, h:2, content: "1", color: '#66bb6a' },
-      { x:0, y:2, w:1, h:1, content: "1", color: '#e53935' },
-      { x:0, y:3, w:3, h:1, content: "1", color: '#9575cd' },
+      { x:0, y:0, w:1, h:1, content: "1x1", color: '#ffd54f' },
+      { x:2, y:0, w:1, h:2, content: "1x2", color: '#66bb6a' },
+      { x:0, y:2, w:1, h:1, content: "1x1", color: '#e53935' },
+      { x:0, y:3, w:3, h:1, content: "3x1", color: '#9575cd' },
    ]
 })
