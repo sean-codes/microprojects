@@ -93,8 +93,8 @@ function Inventory(options) {
 			var x = this.held.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
 			var y = this.held.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
 
-			this.held.item.x = x
-			this.held.item.y = y
+			this.held.item.x = x / this.slotSize
+			this.held.item.y = y / this.slotSize
 			this.held.html.classList.remove('held')
 			this.held.html.style.transform = `translateX(${x + 'px'}) translateY(${y+ 'px'})`;
 			this.held.html = undefined
