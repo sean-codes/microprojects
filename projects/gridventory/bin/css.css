@@ -1,7 +1,7 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  background: #333;
+  background: #fff;
   font-family: 'Karla', sans-serif;
   color: #FFF;
   height: 100%; }
@@ -20,17 +20,15 @@ inventory, inventory * {
 
 inventory {
   position: relative;
-  margin: auto 40px;
+  margin: auto auto;
   width: 300px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
-  background: #000;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none; }
+  user-select: none;
+  -webkit-box-sizing: initial;
+  box-sizing: initial; }
   inventory ruler {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -47,96 +45,112 @@ inventory {
       -webkit-animation: fadeIn 1s forwards;
       animation: fadeIn 1s forwards; }
       inventory ruler box:nth-of-type(1) {
+        -webkit-animation-delay: 0.05s;
+        animation-delay: 0.05s; }
+      inventory ruler box:nth-of-type(2) {
         -webkit-animation-delay: 0.1s;
         animation-delay: 0.1s; }
-      inventory ruler box:nth-of-type(2) {
+      inventory ruler box:nth-of-type(3) {
+        -webkit-animation-delay: 0.15s;
+        animation-delay: 0.15s; }
+      inventory ruler box:nth-of-type(4) {
         -webkit-animation-delay: 0.2s;
         animation-delay: 0.2s; }
-      inventory ruler box:nth-of-type(3) {
+      inventory ruler box:nth-of-type(5) {
+        -webkit-animation-delay: 0.25s;
+        animation-delay: 0.25s; }
+      inventory ruler box:nth-of-type(6) {
         -webkit-animation-delay: 0.3s;
         animation-delay: 0.3s; }
-      inventory ruler box:nth-of-type(4) {
+      inventory ruler box:nth-of-type(7) {
+        -webkit-animation-delay: 0.35s;
+        animation-delay: 0.35s; }
+      inventory ruler box:nth-of-type(8) {
         -webkit-animation-delay: 0.4s;
         animation-delay: 0.4s; }
-      inventory ruler box:nth-of-type(5) {
+      inventory ruler box:nth-of-type(9) {
+        -webkit-animation-delay: 0.45s;
+        animation-delay: 0.45s; }
+      inventory ruler box:nth-of-type(10) {
         -webkit-animation-delay: 0.5s;
         animation-delay: 0.5s; }
-      inventory ruler box:nth-of-type(6) {
+      inventory ruler box:nth-of-type(11) {
+        -webkit-animation-delay: 0.55s;
+        animation-delay: 0.55s; }
+      inventory ruler box:nth-of-type(12) {
         -webkit-animation-delay: 0.6s;
         animation-delay: 0.6s; }
-      inventory ruler box:nth-of-type(7) {
+      inventory ruler box:nth-of-type(13) {
+        -webkit-animation-delay: 0.65s;
+        animation-delay: 0.65s; }
+      inventory ruler box:nth-of-type(14) {
         -webkit-animation-delay: 0.7s;
         animation-delay: 0.7s; }
-      inventory ruler box:nth-of-type(8) {
+      inventory ruler box:nth-of-type(15) {
+        -webkit-animation-delay: 0.75s;
+        animation-delay: 0.75s; }
+      inventory ruler box:nth-of-type(16) {
         -webkit-animation-delay: 0.8s;
         animation-delay: 0.8s; }
-      inventory ruler box:nth-of-type(9) {
+      inventory ruler box:nth-of-type(17) {
+        -webkit-animation-delay: 0.85s;
+        animation-delay: 0.85s; }
+      inventory ruler box:nth-of-type(18) {
         -webkit-animation-delay: 0.9s;
         animation-delay: 0.9s; }
-      inventory ruler box:nth-of-type(10) {
+      inventory ruler box:nth-of-type(19) {
+        -webkit-animation-delay: 0.95s;
+        animation-delay: 0.95s; }
+      inventory ruler box:nth-of-type(20) {
         -webkit-animation-delay: 1s;
         animation-delay: 1s; }
-      inventory ruler box:nth-of-type(11) {
-        -webkit-animation-delay: 1.1s;
-        animation-delay: 1.1s; }
-      inventory ruler box:nth-of-type(12) {
-        -webkit-animation-delay: 1.2s;
-        animation-delay: 1.2s; }
-      inventory ruler box:nth-of-type(13) {
-        -webkit-animation-delay: 1.3s;
-        animation-delay: 1.3s; }
-      inventory ruler box:nth-of-type(14) {
-        -webkit-animation-delay: 1.4s;
-        animation-delay: 1.4s; }
-      inventory ruler box:nth-of-type(15) {
-        -webkit-animation-delay: 1.5s;
-        animation-delay: 1.5s; }
-      inventory ruler box:nth-of-type(16) {
-        -webkit-animation-delay: 1.6s;
-        animation-delay: 1.6s; }
-      inventory ruler box:nth-of-type(17) {
-        -webkit-animation-delay: 1.7s;
-        animation-delay: 1.7s; }
-      inventory ruler box:nth-of-type(18) {
-        -webkit-animation-delay: 1.8s;
-        animation-delay: 1.8s; }
-      inventory ruler box:nth-of-type(19) {
-        -webkit-animation-delay: 1.9s;
-        animation-delay: 1.9s; }
-      inventory ruler box:nth-of-type(20) {
-        -webkit-animation-delay: 2s;
-        animation-delay: 2s; }
       inventory ruler box:before {
         content: '';
         position: absolute;
-        top: 10%;
-        left: 10%;
-        width: 80%;
-        height: 80%;
+        top: 5px;
+        left: 5px;
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        border: 3px dashed #444; }
+        border: 3px dashed #aaa; }
       inventory ruler box:hover:before {
         border: 3px dashed #888; }
   inventory item {
-    background: #fff;
-    opacity: 0.8;
-    border-radius: 3px;
+    position: absolute;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    position: absolute;
+    border-radius: 3px;
+    background: none;
     width: 25%;
     height: 25%;
     top: 0;
     left: 0;
     cursor: -webkit-grab;
-    cursor: grab; }
-    inventory item:hover {
-      opacity: 1; }
-    inventory item .held {
-      pointer-events: none;
+    cursor: grab;
+    z-index: 1;
+    -webkit-transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+    transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+    transition: transform 0.4s 0s, z-index 0s 0.4s;
+    transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s; }
+    inventory item icon {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: calc(100% - 10px);
+      height: calc(100% - 10px);
+      border: 3px solid #aaa;
+      pointer-events: none; }
+    inventory item:hover icon {
+      border: 3px solid #aaa; }
+    inventory item.held {
+      -webkit-transition: -webkit-transform 0s 0s;
+      transition: -webkit-transform 0s 0s;
+      transition: transform 0s 0s;
+      transition: transform 0s 0s, -webkit-transform 0s 0s;
       cursor: -webkit-grabbing;
-      cursor: grabbing; }
+      cursor: grabbing;
+      z-index: 10; }
 
 @-webkit-keyframes fadeIn {
   from {

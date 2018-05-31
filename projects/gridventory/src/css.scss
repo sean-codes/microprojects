@@ -1,7 +1,7 @@
 html, body{
    padding:0px;
    margin:0px;
-   background:#333;
+   background:#fff;
    font-family: 'Karla', sans-serif;
    color:#FFF;
    height:100%;
@@ -21,13 +21,14 @@ inventory, inventory * {
 // The manuever
 inventory {
    position:relative;
-   margin:auto 40px;
+   margin:auto auto;
    width:300px;
-   border:1px solid rgba(255, 255, 255, 0.2);
-   box-shadow:0px 5px 20px rgba(0, 0, 0, 0.5);
+   // border:1px solid rgba(255, 255, 255, 0.2);
+   // box-shadow:0px 5px 20px rgba(0, 0, 0, 0.5);
+	// /background:#000;
    border-radius:5px;
-   background:#000;
    user-select:none;
+	box-sizing:initial; // wtf
 
    // This draws in the background as a grid
    ruler {
@@ -44,17 +45,18 @@ inventory {
 
          @for $i from 1 through 20 {
             &:nth-of-type(#{$i}) {
-               animation-delay: $i * 0.1s;
+               animation-delay: $i * 0.05s;
             }
          }
 
          &:before {
             content: '';
             position:absolute;
-            top:10%; left:10%;
-            width:80%; height:80%;
+				top:5px; left:5px;
+				width:calc(100% - 10px);
+				height:calc(100% - 10px); // calc is hacking
             box-sizing:border-box;
-            border:3px dashed #444;
+            border:3px dashed #aaa;
          }
 
          &:hover:before {
@@ -65,20 +67,34 @@ inventory {
 
 
    item {
-      background:#fff;
-		opacity:0.8;
+		position:absolute;
+		box-sizing:border-box;
 		border-radius:3px;
-      box-sizing:border-box;
-      position:absolute;
+		background:none;
       width:25%; height:25%;
       top: 0; left: 0;
 		cursor:grab;
-		&:hover {
-			opacity: 1;
-		}
-		.held {
+		z-index: 1;
+		transition: transform 0.4s 0s, z-index 0s 0.4s; // well played on thsat z-index
+		// Fake icon
+		// I just dont feel like adding the html right meow!
+		icon {
+			position:absolute;
+			top:5px; left:5px;
+			width:calc(100% - 10px);
+			height:calc(100% - 10px);
+			border:3px solid #aaa;
 			pointer-events:none;
+		}
+
+		&:hover icon {
+			border:3px solid #aaa;
+		}
+
+		&.held {
+			transition: transform 0s 0s;
 			cursor:grabbing;
+			z-index:10;
 		}
    }
 }
