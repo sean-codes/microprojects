@@ -21,8 +21,8 @@ inventory, inventory * {
 // The manuever
 inventory {
    position:relative;
-   margin:auto;
-   width:400px;
+   margin:auto 40px;
+   width:300px;
    border:1px solid rgba(255, 255, 255, 0.2);
    box-shadow:0px 5px 20px rgba(0, 0, 0, 0.5);
    border-radius:5px;
@@ -33,7 +33,7 @@ inventory {
    ruler {
       display:flex;
       flex-wrap:wrap;
-
+		pointer-events:none;
       box {
          min-width:25%;
          max-width:25%;
@@ -65,12 +65,21 @@ inventory {
 
 
    item {
-      background:#F22;
-      border:2px solid #FFF;
+      background:#fff;
+		opacity:0.8;
+		border-radius:3px;
       box-sizing:border-box;
       position:absolute;
       width:25%; height:25%;
       top: 0; left: 0;
+		cursor:grab;
+		&:hover {
+			opacity: 1;
+		}
+		.held {
+			pointer-events:none;
+			cursor:grabbing;
+		}
    }
 }
 
