@@ -2,7 +2,7 @@ html, body {
   padding: 0px;
   margin: 0px;
   background: #fff;
-  font-family: 'Karla', sans-serif;
+  font-family: 'Roboto Slab', serif;
   color: #FFF;
   height: 100%; }
 
@@ -29,6 +29,15 @@ inventory {
   user-select: none;
   -webkit-box-sizing: initial;
   box-sizing: initial; }
+  inventory:after {
+    content: 'GRIDVENTORY';
+    position: absolute;
+    top: -40px;
+    width: 100%;
+    text-align: center;
+    color: #aaa;
+    font-size: 24px;
+    font-width: 600; }
   inventory ruler {
     display: -webkit-box;
     display: -ms-flexbox;

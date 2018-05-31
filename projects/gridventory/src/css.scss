@@ -2,7 +2,7 @@ html, body{
    padding:0px;
    margin:0px;
    background:#fff;
-   font-family: 'Karla', sans-serif;
+   font-family: 'Roboto Slab', serif;
    color:#FFF;
    height:100%;
 }
@@ -29,7 +29,16 @@ inventory {
    border-radius:5px;
    user-select:none;
 	box-sizing:initial; // wtf
-
+	&:after {
+		content: 'GRIDVENTORY';
+		position:absolute;
+		top:-40px;
+		width:100%;
+		text-align:center;
+		color:#aaa;
+		font-size:24px;
+		font-width:600;
+	}
    // This draws in the background as a grid
    ruler {
       display:flex;
@@ -87,7 +96,7 @@ inventory {
 			pointer-events:none;
 			border-radius:2px;
 			display:flex;
-			
+
 			content {
 				display:inline-block;
 				margin:auto;
