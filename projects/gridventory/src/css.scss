@@ -6,3 +6,75 @@ html, body{
    color:#FFF;
    height:100%;
 }
+
+body {
+   display:flex;
+}
+
+// Reset
+inventory, inventory * {
+   display:block;
+   box-sizing:border-box;
+   margin:0; padding:0;
+}
+
+// The manuever
+inventory {
+   position:relative;
+   margin:auto;
+   width:400px;
+   border:1px solid rgba(255, 255, 255, 0.2);
+   box-shadow:0px 5px 20px rgba(0, 0, 0, 0.5);
+   border-radius:5px;
+   background:#000;
+   user-select:none;
+
+   // This draws in the background as a grid
+   ruler {
+      display:flex;
+      flex-wrap:wrap;
+
+      box {
+         min-width:25%;
+         max-width:25%;
+         padding:12.5% 0;
+         position:relative;
+         opacity:0;
+         animation: fadeIn 1s forwards;
+
+         @for $i from 1 through 20 {
+            &:nth-of-type(#{$i}) {
+               animation-delay: $i * 0.1s;
+            }
+         }
+
+         &:before {
+            content: '';
+            position:absolute;
+            top:10%; left:10%;
+            width:80%; height:80%;
+            box-sizing:border-box;
+            border:3px dashed #444;
+         }
+
+         &:hover:before {
+            border:3px dashed #888;
+         }
+      }
+   }
+
+
+   item {
+      background:#F22;
+      border:2px solid #FFF;
+      box-sizing:border-box;
+      position:absolute;
+      width:25%; height:25%;
+      top: 0; left: 0;
+   }
+}
+
+@keyframes fadeIn{
+   from { opacity: 0; }
+   to { opacity: 1; }
+}
