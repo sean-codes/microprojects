@@ -37,6 +37,10 @@
 			"path": "projects/Walker"
 		},
 		{
+			"title": "gridventory",
+			"path": "projects/gridventory"
+		},
+		{
 			"title": "nexus",
 			"path": "projects/nexus"
 		},
