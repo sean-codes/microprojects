@@ -27,8 +27,10 @@ inventory {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-box-sizing: initial;
-  box-sizing: initial; }
+  cursor: crosshair; }
+  inventory.holding {
+    cursor: -webkit-grabbing;
+    cursor: grabbing; }
   inventory:after {
     content: 'GRIDVENTORY';
     position: absolute;
@@ -196,12 +198,11 @@ inventory {
         display: inline-block;
         margin: auto; }
     inventory item.held {
+      pointer-events: none;
       -webkit-transition: -webkit-transform 0s 0s;
       transition: -webkit-transform 0s 0s;
       transition: transform 0s 0s;
       transition: transform 0s 0s, -webkit-transform 0s 0s;
-      cursor: -webkit-grabbing;
-      cursor: grabbing;
       z-index: 10; }
 
 @-webkit-keyframes fadeIn {

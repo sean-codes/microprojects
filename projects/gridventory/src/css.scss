@@ -28,7 +28,12 @@ inventory {
 	// /background:#000;
    border-radius:5px;
    user-select:none;
-	box-sizing:initial; // wtf
+	cursor:crosshair;
+
+	&.holding {
+		cursor:grabbing;
+	}
+
 	&:after {
 		content: 'GRIDVENTORY';
 		position:absolute;
@@ -116,8 +121,8 @@ inventory {
 		}
 
 		&.held {
+			pointer-events:none;
 			transition: transform 0s 0s;
-			cursor:grabbing;
 			z-index:10;
 		}
    }

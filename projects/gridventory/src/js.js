@@ -47,6 +47,7 @@ function Inventory(options) {
 				if(this.inventory.held.html) {
 					this.inventory.drop()
 				}
+				this.inventory.html.inventory.classList.add('holding')
 				e.target.classList.add('held')
 				this.inventory.held.item = this
 				this.inventory.held.html = e.target
@@ -81,7 +82,6 @@ function Inventory(options) {
 				this.held.item.y = y / this.slotSize
 
 				if(this.isLegal()) {
-					console.log('is legal', x, y)
 					this.held.legal.x = x / this.slotSize
 					this.held.legal.y = y / this.slotSize
 				}
@@ -89,13 +89,14 @@ function Inventory(options) {
 		}.bind(this))
 
 
-		document.body.addEventListener('mouseup', function() {
-			this.drop()
-		}.bind(this))
+		document.body.addEventListener('mouseup', function() { this.drop() }.bind(this))
+		this.html.inventory.addEventListener('mouseleave', function() { this.drop() }.bind(this))
 
 
 		this.drop = function() {
+			if(!this.held.html) return
 			console.log('dropping item')
+			this.html.inventory.classList.remove('holding')
 			this.held.html.classList.remove('held')
 			this.held.item.x = this.held.legal.x
 			this.held.item.y = this.held.legal.y
@@ -133,7 +134,6 @@ function Inventory(options) {
 		// Collisions with another
 		for(var item of this.items) {
 			// physics in a ui
-			console.log(item.id, this.held.item.id)
 			var collisionParameters = [
 				item.id != this.held.item.id,
 				this.held.item.x*this.slotSize + this.held.item.w*this.slotSize > item.x*this.slotSize,
@@ -141,8 +141,8 @@ function Inventory(options) {
 				this.held.item.x*this.slotSize < item.x*this.slotSize + item.w*this.slotSize,
 				this.held.item.y*this.slotSize < item.y*this.slotSize + item.h*this.slotSize ]
 
-			// seemed like an interesting manuever
-			console.log(collisionParameters)
+			// for the <3 of console.log
+			// console.log(collisionParameters)
 			if(collisionParameters.every(item => item )) {
 				return false
 			}
@@ -150,6 +150,11 @@ function Inventory(options) {
 
 		return true
    }
+
+	// attempt to nudge out of the way
+	this.nudge = function() {
+
+	}
 
    this.init(options)
 }
