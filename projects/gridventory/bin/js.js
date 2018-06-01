@@ -135,6 +135,7 @@ function Inventory(options) {
    }
 
    this.isLegal = function(item, pos) {
+		legal = true
 		// stop
 		// i stole it from above. relax
 		var xover = pos.x % this.slotSize
@@ -168,11 +169,11 @@ function Inventory(options) {
 					y: pos.y-item.y
 				}
 
-				if(!this.nudge(otherItem, direction)) return false
+				if(!this.nudge(otherItem, direction)) legal = false
 			}
 		}
 
-		return true
+		return legal
    }
 
 	this.nudge = function(item, direction) {
@@ -207,7 +208,7 @@ new Inventory({
    items: [
       { x:0, y:0, w:1, h:1, content: "1x1", color: '#ffd54f' },
       { x:2, y:0, w:1, h:2, content: "1x2", color: '#66bb6a' },
-      //{ x:0, y:2, w:1, h:1, content: "1x1", color: '#e53935' },
-      //{ x:0, y:3, w:3, h:1, content: "3x1", color: '#9575cd' },
+      { x:0, y:2, w:1, h:1, content: "1x1", color: '#e53935' },
+      { x:0, y:3, w:3, h:1, content: "3x1", color: '#9575cd' },
    ]
 })
