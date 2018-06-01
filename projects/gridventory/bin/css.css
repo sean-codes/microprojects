@@ -52,8 +52,8 @@ inventory {
       padding: 12.5% 0;
       position: relative;
       opacity: 0;
-      -webkit-animation: fadeIn 1s forwards;
-      animation: fadeIn 1s forwards; }
+      -webkit-animation: fadeIn 0.5s forwards;
+      animation: fadeIn 0.5s forwards; }
       inventory ruler box:nth-of-type(1) {
         -webkit-animation-delay: 0.05s;
         animation-delay: 0.05s; }
@@ -142,7 +142,44 @@ inventory {
     -webkit-transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
     transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
     transition: transform 0.4s 0s, z-index 0s 0.4s;
-    transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s; }
+    transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+    opacity: 0;
+    --xpos: 0px;
+    --ypos: 0px;
+    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos));
+    transform: translateX(var(--xpos)) translateY(var(--ypos));
+    -webkit-animation: flyin 0.25s forwards;
+    animation: flyin 0.25s forwards; }
+    inventory item:nth-of-type(1) {
+      -webkit-animation-delay: 0.75s;
+      animation-delay: 0.75s; }
+    inventory item:nth-of-type(2) {
+      -webkit-animation-delay: 1s;
+      animation-delay: 1s; }
+    inventory item:nth-of-type(3) {
+      -webkit-animation-delay: 1.25s;
+      animation-delay: 1.25s; }
+    inventory item:nth-of-type(4) {
+      -webkit-animation-delay: 1.5s;
+      animation-delay: 1.5s; }
+    inventory item:nth-of-type(5) {
+      -webkit-animation-delay: 1.75s;
+      animation-delay: 1.75s; }
+    inventory item:nth-of-type(6) {
+      -webkit-animation-delay: 2s;
+      animation-delay: 2s; }
+    inventory item:nth-of-type(7) {
+      -webkit-animation-delay: 2.25s;
+      animation-delay: 2.25s; }
+    inventory item:nth-of-type(8) {
+      -webkit-animation-delay: 2.5s;
+      animation-delay: 2.5s; }
+    inventory item:nth-of-type(9) {
+      -webkit-animation-delay: 2.75s;
+      animation-delay: 2.75s; }
+    inventory item:nth-of-type(10) {
+      -webkit-animation-delay: 3s;
+      animation-delay: 3s; }
     inventory item icon {
       position: absolute;
       top: 10px;
@@ -178,3 +215,23 @@ inventory {
     opacity: 0; }
   to {
     opacity: 1; } }
+
+@-webkit-keyframes flyin {
+  from {
+    opacity: 0;
+    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
+  to {
+    opacity: 1;
+    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); } }
+
+@keyframes flyin {
+  from {
+    opacity: 0;
+    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
+  to {
+    opacity: 1;
+    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); } }

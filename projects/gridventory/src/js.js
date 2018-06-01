@@ -35,7 +35,8 @@ function Inventory(options) {
          var itemHTML = document.createElement('item')
 			itemHTML.style.width = item.w * (this.size.w / this.slots.w) + 'px'
 			itemHTML.style.height = item.h * (this.size.h / this.slots.h) + 'px'
-			itemHTML.style.transform = `translateX(${item.x * (this.size.w / this.slots.w) + 'px'}) translateY(${item.y * (this.size.h / this.slots.h) + 'px'})`
+			itemHTML.style.setProperty('--xpos', item.x * (this.size.w / this.slots.w) + 'px')
+			itemHTML.style.setProperty('--ypos', item.y * (this.size.h / this.slots.h) + 'px')
 			itemHTML.innerHTML = `<icon style="background: ${item.color}"><content>${item.content}</content></icon>`
 			itemHTML.addEventListener('mousedown', function(e) {
 				e.target.classList.add('held')
@@ -74,7 +75,9 @@ function Inventory(options) {
 			this.held.item.x = x / this.slotSize
 			this.held.item.y = y / this.slotSize
 			this.held.html.classList.remove('held')
-			this.held.html.style.transform = `translateX(${x + 'px'}) translateY(${y+ 'px'})`;
+			itemHTML.style.setProperty('--xpos', x+'px')
+			itemHTML.style.setProperty('--ypos', y+'px')
+			//this.held.html.style.transform = `translateX(${x + 'px'}) translateY(${y+ 'px'})`;
 			this.held.html = undefined
 		}.bind(this))
 
