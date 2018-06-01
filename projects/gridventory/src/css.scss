@@ -90,10 +90,10 @@ inventory {
 		--xpos: 0px;
 		--ypos: 0px;
 		transform:translateX(var(--xpos)) translateY(var(--ypos));
-		animation: flyin 0.25s forwards;
+		animation: flyin 0.25s, fadeIn 0.5s forwards;
 		@for $i from 1 through 10 {
 			&:nth-of-type(#{$i}) {
-				animation-delay: 0.5s + ($i * 0.25s);
+				animation-delay: 0.5s + ($i * 0.25s), 0.5s + ($i * 0.25s);
 			}
 		}
 
@@ -129,6 +129,6 @@ inventory {
 }
 
 @keyframes flyin {
-	from { opacity: 0; transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
-	to { opacity: 1; transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); }
+	from { transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
+	to { transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); }
 }
