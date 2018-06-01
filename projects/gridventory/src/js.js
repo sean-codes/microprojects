@@ -13,8 +13,7 @@ function Inventory(options) {
 			item: undefined,
 			html: undefined,
 			x: undefined, y: undefined,
-			offset: { x: undefined, y: undefined },
-			legal: { x: undefined, y: undefined }
+			offset: { x: undefined, y: undefined }
 		}
 
       // HTML
@@ -35,15 +34,14 @@ function Inventory(options) {
 			var item = this.items[itemID]
 			item.id = itemID
 			item.inventory = this
-
-         var itemHTML = document.createElement('item')
-			itemHTML.style.width = item.w * (this.size.w / this.slots.w) + 'px'
-			itemHTML.style.height = item.h * (this.size.h / this.slots.h) + 'px'
-			itemHTML.style.setProperty('--xpos', item.x * (this.size.w / this.slots.w) + 'px')
-			itemHTML.style.setProperty('--ypos', item.y * (this.size.h / this.slots.h) + 'px')
-			itemHTML.innerHTML = `<icon style="background: ${item.color}"><content>${item.content}</content></icon>`
+         item.html = document.createElement('item')
+			item.html.style.width = item.w * (this.size.w / this.slots.w) + 'px'
+			item.html.style.height = item.h * (this.size.h / this.slots.h) + 'px'
+			item.html.style.setProperty('--xpos', item.x * (this.size.w / this.slots.w) + 'px')
+			item.html.style.setProperty('--ypos', item.y * (this.size.h / this.slots.h) + 'px')
+			item.html.innerHTML = `<icon style="background: ${item.color}"><content>${item.content}</content></icon>`
 			// listen
-			itemHTML.addEventListener('mousedown', function(e) {
+			item.html.addEventListener('mousedown', function(e) {
 				if(this.inventory.held.html) {
 					this.inventory.drop()
 				}
@@ -55,12 +53,10 @@ function Inventory(options) {
 				this.inventory.held.offset.y = e.offsetY
 				this.inventory.held.x = this.inventory.held.item.x * this.inventory.slotSize
 				this.inventory.held.y = this.inventory.held.item.y * this.inventory.slotSize
-				this.inventory.held.legal.x = this.inventory.held.item.x
-				this.inventory.held.legal.y = this.inventory.held.item.y
 				console.log('grabbing item', e, this.inventory.held)
 			}.bind(item))
 
-         this.html.inventory.appendChild(itemHTML)
+         this.html.inventory.appendChild(item.html)
       }
 
 		this.html.inventory.addEventListener('mousemove', function(e) {
@@ -78,12 +74,12 @@ function Inventory(options) {
 				var x = this.held.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
 				var y = this.held.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
 
-				this.held.item.x = x / this.slotSize
-				this.held.item.y = y / this.slotSize
+				x = x / this.slotSize
+				y = y / this.slotSize
 
-				if(this.isLegal()) {
-					this.held.legal.x = x / this.slotSize
-					this.held.legal.y = y / this.slotSize
+				if(this.isLegal(this.held.item, {x: x, y: y} )) {
+					this.held.item.x = x
+					this.held.item.y = y
 				}
 			}
 		}.bind(this))
@@ -98,10 +94,10 @@ function Inventory(options) {
 			console.log('dropping item')
 			this.html.inventory.classList.remove('holding')
 			this.held.html.classList.remove('held')
-			this.held.item.x = this.held.legal.x
-			this.held.item.y = this.held.legal.y
-			this.held.html.style.setProperty('--xpos', this.held.legal.x*this.slotSize+'px')
-			this.held.html.style.setProperty('--ypos', this.held.legal.y*this.slotSize+'px')
+			this.held.item.x = this.held.item.x
+			this.held.item.y = this.held.item.y
+			this.held.html.style.setProperty('--xpos', this.held.item.x*this.slotSize+'px')
+			this.held.html.style.setProperty('--ypos', this.held.item.y*this.slotSize+'px')
 			//this.held.html.style.transform = `translateX(${x + 'px'}) translateY(${y+ 'px'})`;
 			this.held.html = undefined
 		}
@@ -116,43 +112,66 @@ function Inventory(options) {
 		}.bind(this), 1000/60)
    }
 
-   this.isLegal = function() {
+   this.isLegal = function(item, pos) {
 		// stop
 		// i stole it from above. relax
-		var xover = this.held.x % this.slotSize
-		var yover = this.held.y % this.slotSize
+		var xover = pos.x % this.slotSize
+		var yover = pos.y % this.slotSize
 
-		var x = this.held.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
-		var y = this.held.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
+		var x = pos.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
+		var y = pos.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
 
 		// Outside inventory
-		if(this.held.item.x*this.slotSize < 0) return false
-		if(this.held.item.y*this.slotSize < 0) return false
-		if(this.held.item.x*this.slotSize+this.held.item.w*this.slotSize > this.size.w) return false
-		if(this.held.item.y*this.slotSize+this.held.item.h*this.slotSize > this.size.h) { console.log('wtf'); return false}
+		if(pos.x*this.slotSize < 0) return false
+		if(pos.y*this.slotSize < 0) return false
+		if(pos.x*this.slotSize+item.w*this.slotSize > this.size.w) return false
+		if(pos.y*this.slotSize+item.h*this.slotSize > this.size.h) { console.log('wtf'); return false}
 
 		// Collisions with another
-		for(var item of this.items) {
+		for(var otherItem of this.items) {
 			// physics in a ui
 			var collisionParameters = [
-				item.id != this.held.item.id,
-				this.held.item.x*this.slotSize + this.held.item.w*this.slotSize > item.x*this.slotSize,
-				this.held.item.y*this.slotSize + this.held.item.h*this.slotSize > item.y*this.slotSize,
-				this.held.item.x*this.slotSize < item.x*this.slotSize + item.w*this.slotSize,
-				this.held.item.y*this.slotSize < item.y*this.slotSize + item.h*this.slotSize ]
+				item.id != otherItem.id,
+				pos.x*this.slotSize + item.w*this.slotSize > otherItem.x*this.slotSize,
+				pos.y*this.slotSize + item.h*this.slotSize > otherItem.y*this.slotSize,
+				pos.x*this.slotSize < otherItem.x*this.slotSize + otherItem.w*this.slotSize,
+				pos.y*this.slotSize < otherItem.y*this.slotSize + otherItem.h*this.slotSize ]
 
 			// for the <3 of console.log
 			// console.log(collisionParameters)
-			if(collisionParameters.every(item => item )) {
-				return false
+			if(collisionParameters.every(u=>u)) {
+				// attempt to nudge out of the way
+				var direction = {
+					x: pos.x-item.x,
+					y: pos.y-item.y
+				}
+
+				if(!this.nudge(otherItem, direction)) return false
 			}
 		}
 
 		return true
    }
 
-	// attempt to nudge out of the way
-	this.nudge = function() {
+	this.nudge = function(item, direction) {
+		console.log('nudging: ', item.content, direction)
+
+		if(this.isLegal(item, { x: item.x+direction.x, y: item.y+direction.y })) {
+			this.move(item, { x: item.x+direction.x, y: item.y+direction.y })
+		}
+		return false
+	}
+
+	this.move = function(item, pos) {
+		// yayayay
+		console.log('trying to move')
+		item.x = pos.x
+		item.y = pos.y
+		item.html.style.setProperty('--xpos', pos.x*this.slotSize+'px')
+		item.html.style.setProperty('--ypos', pos.y*this.slotSize+'px')
+	}
+
+	this.collision = function() {
 
 	}
 
