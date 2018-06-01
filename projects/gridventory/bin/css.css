@@ -35,9 +35,10 @@ inventory {
     top: -35px;
     width: 100%;
     text-align: center;
-    color: #999;
+    color: #aaa;
     font-size: 20px;
-    font-weight: 900; }
+    font-weight: 700;
+    letter-spacing: 3px; }
   inventory ruler {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -148,6 +149,7 @@ inventory {
       left: 10px;
       width: calc(100% - 20px);
       height: calc(100% - 20px);
+      border: 2px solid rgba(0, 0, 0, 0.1);
       pointer-events: none;
       border-radius: 2px;
       display: -webkit-box;
