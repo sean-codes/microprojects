@@ -20,8 +20,6 @@ if (!window.frameElement) {
    xhttp.send();
 }
 
-console.log('demo')
-
 function Inventory(options) {
 
    // Setup Rows and Items
@@ -30,19 +28,10 @@ function Inventory(options) {
       this.size = options.size
 		this.slots = options.slots
 		this.slotSize = options.size.w / this.slots.w
-
-		this.held = {
-			item: undefined,
-			html: undefined,
-			x: undefined, y: undefined,
-			offset: { x: undefined, y: undefined }
-		}
-
-      // HTML
-      this.html = {
-         inventory: options.selector,
-         rows: []
-      }
+		// HTML
+		this.html = { inventory: options.selector }
+		// for mousing around
+		this.held = {}
 
       // Create Ruler
       var ruler = document.createElement('ruler')
@@ -71,8 +60,7 @@ function Inventory(options) {
 				e.target.classList.add('held')
 				this.inventory.held.item = this
 				this.inventory.held.html = e.target
-				this.inventory.held.offset.x = e.offsetX
-				this.inventory.held.offset.y = e.offsetY
+				this.inventory.held.offset = { x: e.offsetX, y: e.offsetY }
 				this.inventory.held.x = this.inventory.held.item.x * this.inventory.slotSize
 				this.inventory.held.y = this.inventory.held.item.y * this.inventory.slotSize
 				console.log('grabbing item', e, this.inventory.held)
@@ -109,14 +97,10 @@ function Inventory(options) {
 				var collisions = this.collisions(this.held.item)
 				var nudge = collisions.length ? this.nudge(collisions, direction) : true
 
-				// var nudgeSuccess = this.nudge(collisions)
-				// if(!nudgeSuccess) this.trade(collisions)
-				console.log(collisions.length, nudge)
 				if(outOfBounds || collisions.length || !nudge) {
 					this.held.item.x = oldx
 					this.held.item.y = oldy
 				}
-
 			}
 		}.bind(this))
 
@@ -157,26 +141,25 @@ function Inventory(options) {
 	}
 
 	this.nudge = function(collisions, direction) {
-		console.log('wtf', collisions, direction)
-		if(!collisions.length) return true // not moving anything
+		nudged = true
+		if(!collisions.length) return nudged // not moving anything
 
 		for(var collision of collisions) {
-			console.log(collision)
 			collision.x += direction.x
 			collision.y += direction.y
 
-			if(!this.outOfBounds(collision) && !this.nudge(this.collisions(collision))) {
+			if(this.outOfBounds(collision) || !this.nudge(this.collisions(collision), direction)) {
 				// aaaaa wtf am i even doing
 				// this is going to bubble up and snap the fuck in half
 				collision.x -= direction.x
 				collision.y -= direction.y
-				console.log('cant nudge')
-				return false
+				nudged = false
 			}
+
+			this.move(collision)
 		}
-		console.log('move mother fucker')
-		this.move(collision)
-		return true
+
+		return nudged
 	}
 
 	// sure you want to run with this?
