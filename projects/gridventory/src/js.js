@@ -74,9 +74,9 @@ function Inventory(options) {
 				var outOfBounds = this.outOfBounds(this.held.item)
 				var collisions = this.collisions(this.held.item)
 				var notNudged = collisions.length ? this.nudge(collisions, direction) : []
-				var traded = this.trade(item, notNudged)
+				var cantTrade = this.trade(this.held.item, notNudged, direction)
 
-				if(outOfBounds || collisions.length || (notNudged.length && trade)) {
+				if(outOfBounds || collisions.length || (notNudged.length && cantTrade.length)) {
 					this.held.item.x = oldx
 					this.held.item.y = oldy
 				}
@@ -112,13 +112,25 @@ function Inventory(options) {
    }
 
 
-	this.trade = function(item, collisions) {
+	this.trade = function(item, collisions, direction) {
+		cantTrade = []
 		for(var collision of collisions) {
-			console.log('attempting to trade', item, collision)
+			console.log('brokering a trade')
+			// Test each one at a time
+			collision.x -= direction.x
+			collision.y -= direction.y
+
+			var onlyCollideWithItem = this.collisions(collision)
+			if(onlyCollideWithItem.length) {
+				collision.x += direction.x
+				collision.y += direction.y
+				cantTrade.push(item)
+			}
+
+			this.move(collision)
 		}
 
-
-		return false
+		return cantTrade
 	}
 
 	this.nudge = function(collisions, direction) {
@@ -127,7 +139,7 @@ function Inventory(options) {
 			collision.x += direction.x
 			collision.y += direction.y
 
-			if(this.outOfBounds(collision) || !this.nudge(this.collisions(collision), direction)) {
+			if(this.outOfBounds(collision) || this.nudge(this.collisions(collision), direction).length) {
 				// aaaaa wtf am i even doing
 				// this is going to bubble up and snap the fuck in half
 				collision.x -= direction.x
