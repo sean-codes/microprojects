@@ -99,10 +99,24 @@ function Inventory(options) {
 				x = x / this.slotSize
 				y = y / this.slotSize
 
-				if(this.isLegal(this.held.item, {x: x, y: y} )) {
-					this.held.item.x = x
-					this.held.item.y = y
+				var oldx = this.held.item.x
+				var oldy = this.held.item.y
+				this.held.item.x = x
+				this.held.item.y = y
+
+				var direction = { x: Math.sign(x - oldx), y: Math.sign(y - oldy) }
+				var outOfBounds = this.outOfBounds(this.held.item)
+				var collisions = this.collisions(this.held.item)
+				var nudge = collisions.length ? this.nudge(collisions, direction) : true
+
+				// var nudgeSuccess = this.nudge(collisions)
+				// if(!nudgeSuccess) this.trade(collisions)
+				console.log(collisions.length, nudge)
+				if(outOfBounds || collisions.length || !nudge) {
+					this.held.item.x = oldx
+					this.held.item.y = oldy
 				}
+
 			}
 		}.bind(this))
 
@@ -134,68 +148,72 @@ function Inventory(options) {
 		}.bind(this), 1000/60)
    }
 
-   this.isLegal = function(item, pos) {
-		legal = true
-		// stop
-		// i stole it from above. relax
-		var xover = pos.x % this.slotSize
-		var yover = pos.y % this.slotSize
 
-		var x = pos.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
-		var y = pos.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
+	this.trade = function(item, otherItem) {
+		console.log('attempting to trade', item, otherItem)
 
-		// Outside inventory
-		if(pos.x*this.slotSize < 0) return false
-		if(pos.y*this.slotSize < 0) return false
-		if(pos.x*this.slotSize+item.w*this.slotSize > this.size.w) return false
-		if(pos.y*this.slotSize+item.h*this.slotSize > this.size.h) { console.log('wtf'); return false}
 
-		// Collisions with another
-		for(var otherItem of this.items) {
-			// physics in a ui
-			var collisionParameters = [
-				item.id != otherItem.id,
-				pos.x*this.slotSize + item.w*this.slotSize > otherItem.x*this.slotSize,
-				pos.y*this.slotSize + item.h*this.slotSize > otherItem.y*this.slotSize,
-				pos.x*this.slotSize < otherItem.x*this.slotSize + otherItem.w*this.slotSize,
-				pos.y*this.slotSize < otherItem.y*this.slotSize + otherItem.h*this.slotSize ]
-
-			// for the <3 of console.log
-			// console.log(collisionParameters)
-			if(collisionParameters.every(u=>u)) {
-				// attempt to nudge out of the way
-				var direction = {
-					x: pos.x-item.x,
-					y: pos.y-item.y
-				}
-
-				if(!this.nudge(otherItem, direction)) legal = false
-			}
-		}
-
-		return legal
-   }
-
-	this.nudge = function(item, direction) {
-		console.log('nudging: ', item.content, direction)
-
-		if(this.isLegal(item, { x: item.x+direction.x, y: item.y+direction.y })) {
-			this.move(item, { x: item.x+direction.x, y: item.y+direction.y })
-		}
 		return false
 	}
 
-	this.move = function(item, pos) {
-		// yayayay
-		console.log('trying to move')
-		item.x = pos.x
-		item.y = pos.y
-		item.html.style.setProperty('--xpos', pos.x*this.slotSize+'px')
-		item.html.style.setProperty('--ypos', pos.y*this.slotSize+'px')
+	this.nudge = function(collisions, direction) {
+		console.log('wtf', collisions, direction)
+		if(!collisions.length) return true // not moving anything
+
+		for(var collision of collisions) {
+			console.log(collision)
+			collision.x += direction.x
+			collision.y += direction.y
+
+			if(!this.outOfBounds(collision) && !this.nudge(this.collisions(collision))) {
+				// aaaaa wtf am i even doing
+				// this is going to bubble up and snap the fuck in half
+				collision.x -= direction.x
+				collision.y -= direction.y
+				console.log('cant nudge')
+				return false
+			}
+		}
+		console.log('move mother fucker')
+		this.move(collision)
+		return true
 	}
 
-	this.collision = function() {
+	// sure you want to run with this?
+	this.collisions = function(otherItem) {
+		var collisions = []
+		for(var item of this.items) {
+			this.collision(item, otherItem) && collisions.push(item)
+		}
+		return collisions
+	}
 
+	this.collision = function(item, otherItem) {
+		var collisionParameters = [
+			item.id != otherItem.id,
+			item.x*this.slotSize + item.w*this.slotSize > otherItem.x*this.slotSize,
+			item.y*this.slotSize + item.h*this.slotSize > otherItem.y*this.slotSize,
+			item.x*this.slotSize < otherItem.x*this.slotSize + otherItem.w*this.slotSize,
+			item.y*this.slotSize < otherItem.y*this.slotSize + otherItem.h*this.slotSize ]
+
+		// for the <3 of console.log
+		// console.log(collisionParameters)
+		return collisionParameters.every(u=>u)
+	}
+
+	this.outOfBounds = function(item) {
+		if(item.x*this.slotSize < 0) return true
+		if(item.y*this.slotSize < 0) return true
+		if(item.x*this.slotSize+item.w*this.slotSize > this.size.w) return true
+		if(item.y*this.slotSize+item.h*this.slotSize > this.size.h) return true
+
+		return false
+	}
+
+	this.move = function(item) {
+		// sort of like render but it's not
+		item.html.style.setProperty('--xpos', item.x*this.slotSize+'px')
+		item.html.style.setProperty('--ypos', item.y*this.slotSize+'px')
 	}
 
    this.init(options)
