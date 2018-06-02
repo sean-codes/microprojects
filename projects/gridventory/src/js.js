@@ -73,9 +73,10 @@ function Inventory(options) {
 				var direction = { x: Math.sign(x - oldx), y: Math.sign(y - oldy) }
 				var outOfBounds = this.outOfBounds(this.held.item)
 				var collisions = this.collisions(this.held.item)
-				var nudge = collisions.length ? this.nudge(collisions, direction) : true
+				var notNudged = collisions.length ? this.nudge(collisions, direction) : []
+				var traded = this.trade(item, notNudged)
 
-				if(outOfBounds || collisions.length || !nudge) {
+				if(outOfBounds || collisions.length || (notNudged.length && trade)) {
 					this.held.item.x = oldx
 					this.held.item.y = oldy
 				}
@@ -111,17 +112,17 @@ function Inventory(options) {
    }
 
 
-	this.trade = function(item, otherItem) {
-		console.log('attempting to trade', item, otherItem)
+	this.trade = function(item, collisions) {
+		for(var collision of collisions) {
+			console.log('attempting to trade', item, collision)
+		}
 
 
 		return false
 	}
 
 	this.nudge = function(collisions, direction) {
-		nudged = true
-		if(!collisions.length) return nudged // not moving anything
-
+		var notNudged = []
 		for(var collision of collisions) {
 			collision.x += direction.x
 			collision.y += direction.y
@@ -131,13 +132,13 @@ function Inventory(options) {
 				// this is going to bubble up and snap the fuck in half
 				collision.x -= direction.x
 				collision.y -= direction.y
-				nudged = false
+				notNudged.push(collision)
 			}
 
 			this.move(collision)
 		}
 
-		return nudged
+		return notNudged
 	}
 
 	// sure you want to run with this?
