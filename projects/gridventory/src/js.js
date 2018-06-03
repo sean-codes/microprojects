@@ -14,7 +14,10 @@ function Inventory(options) {
       // Create Ruler
       var ruler = document.createElement('ruler')
       for(var i = 0; i < this.slots.w*this.slots.h; i++) {
-         ruler.appendChild(document.createElement('box'))
+			var box = document.createElement('box')
+			box.style.width = this.slotSize + 'px'
+			box.style.height = this.slotSize + 'px'
+         ruler.appendChild(box)
       }
 
       this.html.inventory.appendChild(ruler)
@@ -41,14 +44,15 @@ function Inventory(options) {
 				this.inventory.held.offset = { x: e.offsetX, y: e.offsetY }
 				this.inventory.held.x = this.inventory.held.item.x * this.inventory.slotSize
 				this.inventory.held.y = this.inventory.held.item.y * this.inventory.slotSize
-				console.log('grabbing item', e, this.inventory.held)
+				this.inventory.held.lastX = this.inventory.held.x
+				this.inventory.held.lastY = this.inventory.held.y
 			}.bind(item))
 
          this.html.inventory.appendChild(item.html)
       }
 
 		this.html.inventory.addEventListener('mousemove', function(e) {
-			if(this.held.html) {
+			if(this.held.html && !this.held.moving) {
 				this.held.x = e.clientX - this.html.inventory.offsetLeft - this.held.offset.x
 				this.held.y = e.clientY - this.html.inventory.offsetTop - this.held.offset.y
 
@@ -65,21 +69,33 @@ function Inventory(options) {
 				x = x / this.slotSize
 				y = y / this.slotSize
 
-				var oldx = this.held.item.x
-				var oldy = this.held.item.y
-				this.held.item.x = x
-				this.held.item.y = y
 
-				var direction = { x: Math.sign(x - oldx), y: Math.sign(y - oldy) }
-				var outOfBounds = this.outOfBounds(this.held.item)
-				var collisions = this.collisions(this.held.item)
-				var notNudged = collisions.length ? this.nudge(collisions, direction) : []
-				var cantTrade = this.trade(this.held.item, notNudged, direction)
+				var direction = { x: Math.sign(this.held.lastX - x), y: Math.sign(this.held.lastY - y) }
+				if(direction.x || direction.y) {
+					// going to use this for if we are inside.
+					// the direction is not based off safe pos
+					this.held.lastX = x
+					this.held.lastY = y
 
-				if(outOfBounds || collisions.length || (notNudged.length && cantTrade.length)) {
-					this.held.item.x = oldx
-					this.held.item.y = oldy
+					var oldx = this.held.item.x
+					var oldy = this.held.item.y
+					this.held.item.x = x
+					this.held.item.y = y
+
+					var outOfBounds = this.outOfBounds(this.held.item)
+					var collisions = this.collisions(this.held.item)
+					var notNudged = collisions.length ? this.nudge(collisions, direction) : []
+					var cantTrade = this.trade(this.held.item, notNudged, direction)
+
+					if(outOfBounds || (notNudged.length && cantTrade.length)) {
+						this.held.item.x = oldx
+						this.held.item.y = oldy
+					}
 				}
+
+
+
+				this.held.moving = false
 			}
 		}.bind(this))
 
@@ -90,7 +106,6 @@ function Inventory(options) {
 
 		this.drop = function() {
 			if(!this.held.html) return
-			console.log('dropping item')
 			this.html.inventory.classList.remove('holding')
 			this.held.html.classList.remove('held')
 			this.held.item.x = this.held.item.x
@@ -111,24 +126,30 @@ function Inventory(options) {
 		}.bind(this), 1000/60)
    }
 
-
 	this.trade = function(item, collisions, direction) {
 		cantTrade = []
 		for(var collision of collisions) {
-			console.log('brokering a trade')
-			// Test each one at a time
-			collision.x -= direction.x
-			collision.y -= direction.y
+			// collect a list of unfair trades
+			collision.x -= direction.x * item.w // this is not right
+			collision.y -= direction.y * item.h // where are you going scroll back up here
 
-			var onlyCollideWithItem = this.collisions(collision)
-			if(onlyCollideWithItem.length) {
-				collision.x += direction.x
-				collision.y += direction.y
-				cantTrade.push(item)
+			isItSafe = this.collisions(collision)
+			tryAndMakeIt = this.nudge(isItSafe, { x: direction.x*-1, y: direction.y*-1 })
+			if(tryAndMakeIt.length || this.outOfBounds(collision)) {
+				// density
+				cantTrade.push(collision)
 			}
+		}
 
+		makeSureItemNotSad = this.collisions(item).length
+		for(var collision of collisions) {
+			if(makeSureItemNotSad.length || this.outOfBounds(item) || cantTrade.length) {
+				collision.x += direction.x * item.w
+				collision.y += direction.y * item.h
+			}
 			this.move(collision)
 		}
+
 
 		return cantTrade
 	}
@@ -139,15 +160,23 @@ function Inventory(options) {
 			collision.x += direction.x
 			collision.y += direction.y
 
+			// aaaaa wat am i even doing
+			// this is going to bubble up and snap the fuck in half
 			if(this.outOfBounds(collision) || this.nudge(this.collisions(collision), direction).length) {
-				// aaaaa wtf am i even doing
-				// this is going to bubble up and snap the fuck in half
-				collision.x -= direction.x
-				collision.y -= direction.y
 				notNudged.push(collision)
 			}
 
-			this.move(collision)
+		}
+
+
+		for(var falllllback of collisions) {
+			if(notNudged.length) {
+				falllllback.x -= direction.x
+				falllllback.y -= direction.y
+				continue
+			}
+
+			this.move(falllllback)
 		}
 
 		return notNudged
@@ -193,14 +222,15 @@ function Inventory(options) {
    this.init(options)
 }
 
-new Inventory({
+var inventory = new Inventory({
    selector: document.querySelector('inventory'),
 	size: { w: 300, h: 300 },
    slots: { w: 4, h: 4 },
    items: [
-      { x:0, y:0, w:1, h:1, content: "1x1", color: '#ffd54f' },
+      { x:0, y:0, w:2, h:2, content: "1x1", color: '#ffd54f' },
       { x:2, y:0, w:1, h:2, content: "1x2", color: '#66bb6a' },
-      { x:0, y:2, w:1, h:1, content: "1x1", color: '#e53935' },
+      { x:3, y:3, w:1, h:1, content: "1x1", color: '#e53935' },
       { x:0, y:3, w:3, h:1, content: "3x1", color: '#9575cd' },
+      { x:0, y:2, w:4, h:1, content: "4x1", color: '#29b6f6' },
    ]
 })
