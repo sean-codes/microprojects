@@ -193,7 +193,7 @@ function Inventory(options) {
 
 
 		for(var falllllback of collisions) {
-			if(notNudged.length) {
+			if(notNudged.indexOf(falllllback) >= 0) {
 				falllllback.x -= direction.x
 				falllllback.y -= direction.y
 				continue
@@ -250,7 +250,7 @@ var inventory = new Inventory({
 	size: { w: 300, h: 300 },
    slots: { w: 4, h: 4 },
    items: [
-      { x:0, y:0, w:2, h:2, content: "1x1", color: '#ffd54f' },
+      { x:0, y:0, w:2, h:2, content: "2x2", color: '#ffd54f' },
       { x:2, y:0, w:1, h:2, content: "1x2", color: '#66bb6a' },
       { x:3, y:3, w:1, h:1, content: "1x1", color: '#e53935' },
       { x:0, y:3, w:3, h:1, content: "3x1", color: '#9575cd' },
