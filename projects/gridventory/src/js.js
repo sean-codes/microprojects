@@ -70,7 +70,7 @@ function Inventory(options) {
 				y = y / this.slotSize
 
 
-				var direction = { x: Math.sign(this.held.lastX - x), y: Math.sign(this.held.lastY - y) }
+				var direction = { x: Math.sign(x - this.held.lastX), y: Math.sign(y - this.held.lastY) }
 				if(direction.x || direction.y) {
 					// going to use this for if we are inside.
 					// the direction is not based off safe pos
@@ -132,6 +132,7 @@ function Inventory(options) {
 			// collect a list of unfair trades
 			collision.x -= direction.x * item.w // this is not right
 			collision.y -= direction.y * item.h // where are you going scroll back up here
+			// console.log('d.x: ' + direction.x + ' d.y: ' + direction.y + ' item.w: ' + item.w + ' item.h: ' + item.h + ' collision.x: ' + collision.x + ' collision.y: ' + collision.y)
 
 			isItSafe = this.collisions(collision)
 			tryAndMakeIt = this.nudge(isItSafe, { x: direction.x*-1, y: direction.y*-1 })
