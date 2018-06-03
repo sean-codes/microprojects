@@ -48,14 +48,11 @@ inventory {
       flex-wrap:wrap;
 		pointer-events:none;
       box {
-         min-width:25%;
-         max-width:25%;
-         padding:12.5% 0;
          position:relative;
          opacity:0;
          animation: fadeIn 0.5s forwards;
 
-         @for $i from 1 through 20 {
+         @for $i from 1 through 40 {
             &:nth-of-type(#{$i}) {
                animation-delay: $i * 0.05s;
             }
