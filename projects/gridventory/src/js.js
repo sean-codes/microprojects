@@ -163,12 +163,12 @@ function Inventory(options) {
 
 			// aaaaa wat am i even doing
 			// this is going to bubble up and snap the fuck in half
-			if(this.outOfBounds(collision) || this.nudge(this.collisions(collision), direction).length) {
+			var isItemLegal = this.collisions(this.held.item)
+			if(this.outOfBounds(collision) || this.nudge(this.collisions(collision), direction).length || isItemLegal.length) {
 				notNudged.push(collision)
 			}
 
 		}
-
 
 		for(var falllllback of collisions) {
 			if(notNudged.indexOf(falllllback) >= 0) {
