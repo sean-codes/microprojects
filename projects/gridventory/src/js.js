@@ -3,9 +3,9 @@ function Inventory(options) {
    // Setup Rows and Items
    this.init = function(options) {
       this.items = options.items
-      this.size = options.size
 		this.slots = options.slots
-		this.slotSize = options.size.w / this.slots.w
+		this.slotSize = 100/options.slots.w
+
 		// HTML
 		this.html = { inventory: options.selector }
 		// for mousing around
@@ -15,8 +15,8 @@ function Inventory(options) {
       var ruler = document.createElement('ruler')
       for(var i = 0; i < this.slots.w*this.slots.h; i++) {
 			var box = document.createElement('box')
-			box.style.width = this.slotSize + 'px'
-			box.style.height = this.slotSize + 'px'
+			box.style.width = this.slotSize + '%'
+			box.style.height = this.slotSize + '%'
          ruler.appendChild(box)
       }
 
@@ -27,10 +27,10 @@ function Inventory(options) {
 			item.id = itemID
 			item.inventory = this
          item.html = document.createElement('item')
-			item.html.style.width = item.w * (this.size.w / this.slots.w) + 'px'
-			item.html.style.height = item.h * (this.size.h / this.slots.h) + 'px'
-			item.html.style.setProperty('--xpos', item.x * (this.size.w / this.slots.w) + 'px')
-			item.html.style.setProperty('--ypos', item.y * (this.size.h / this.slots.h) + 'px')
+			item.html.style.width = item.w * this.slotSize + '%'
+			item.html.style.height = item.h * this.slotSize + '%'
+			item.html.style.setProperty('--xpos', item.x * item.w * 100 + '%')
+			item.html.style.setProperty('--ypos', item.y * item.h * 100 + '%')
 			item.html.innerHTML = `<icon style="background: ${item.color}"><content>${item.content}</content></icon>`
 			// listen
 			item.html.addEventListener('mousedown', function(e) {
@@ -42,8 +42,8 @@ function Inventory(options) {
 				this.inventory.held.item = this
 				this.inventory.held.html = e.target
 				this.inventory.held.offset = { x: e.offsetX, y: e.offsetY }
-				this.inventory.held.x = this.inventory.held.item.x * this.inventory.slotSize
-				this.inventory.held.y = this.inventory.held.item.y * this.inventory.slotSize
+				this.inventory.held.x = this.inventory.held.item.x * this.inventory.size().slotWidth
+				this.inventory.held.y = this.inventory.held.item.y * this.inventory.size().slotHeight // not remotely efficient! :]
 				this.inventory.held.lastX = this.inventory.held.x
 				this.inventory.held.lastY = this.inventory.held.y
 			}.bind(item))
@@ -59,16 +59,16 @@ function Inventory(options) {
 				// duplicate code again! why not just continue the trend :]
 				// cmon I am in the middle of a mission can I please just code?
 				// pls proceed <3
-				var xover = this.held.x % this.slotSize
-				var yover = this.held.y % this.slotSize
+				var xover = this.held.x % this.size().slotWidth
+				var yover = this.held.y % this.size().slotHeight
 
 				// all over the place but that is a interesting offset nearest slot move
-				var x = this.held.x + (xover < this.slotSize/2 ? -xover : this.slotSize - xover)
-				var y = this.held.y + (yover < this.slotSize/2 ? -yover : this.slotSize - yover)
+				var x = this.held.x + (xover < this.size().slotWidth/2 ? -xover : this.size().slotWidth - xover)
+				var y = this.held.y + (yover < this.size().slotHeight/2 ? -yover : this.size().slotHeight - yover)
 
-				x = x / this.slotSize
-				y = y / this.slotSize
-
+				x = x / this.size().slotWidth
+				y = y / this.size().slotHeight
+				console.log(x, y)
 
 				var direction = { x: Math.sign(x - this.held.lastX), y: Math.sign(y - this.held.lastY) }
 				if(direction.x || direction.y) {
@@ -110,8 +110,8 @@ function Inventory(options) {
 			this.held.html.classList.remove('held')
 			this.held.item.x = this.held.item.x
 			this.held.item.y = this.held.item.y
-			this.held.html.style.setProperty('--xpos', this.held.item.x*this.slotSize+'px')
-			this.held.html.style.setProperty('--ypos', this.held.item.y*this.slotSize+'px')
+			this.held.html.style.setProperty('--xpos', this.held.item.x * (100/this.held.item.w) + '%')
+			this.held.html.style.setProperty('--ypos', this.held.item.y * (100/this.held.item.h) + '%')
 			//this.held.html.style.transform = `translateX(${x + 'px'}) translateY(${y+ 'px'})`;
 			this.held.html = undefined
 		}
@@ -195,10 +195,10 @@ function Inventory(options) {
 	this.collision = function(item, otherItem) {
 		var collisionParameters = [
 			item.id != otherItem.id,
-			item.x*this.slotSize + item.w*this.slotSize > otherItem.x*this.slotSize,
-			item.y*this.slotSize + item.h*this.slotSize > otherItem.y*this.slotSize,
-			item.x*this.slotSize < otherItem.x*this.slotSize + otherItem.w*this.slotSize,
-			item.y*this.slotSize < otherItem.y*this.slotSize + otherItem.h*this.slotSize ]
+			item.x + item.w > otherItem.x,
+			item.y + item.h > otherItem.y,
+			item.x < otherItem.x + otherItem.w,
+			item.y < otherItem.y + otherItem.h ]
 
 		// for the <3 of console.log
 		// console.log(collisionParameters)
@@ -206,18 +206,28 @@ function Inventory(options) {
 	}
 
 	this.outOfBounds = function(item) {
-		if(item.x*this.slotSize < 0) return true
-		if(item.y*this.slotSize < 0) return true
-		if(item.x*this.slotSize+item.w*this.slotSize > this.size.w) return true
-		if(item.y*this.slotSize+item.h*this.slotSize > this.size.h) return true
+		if(item.x < 0) return true
+		if(item.y < 0) return true
+		if(item.x + item.w > this.slots.w) return true
+		if(item.y + item.h > this.slots.h) return true
 
 		return false
 	}
 
 	this.move = function(item) {
 		// sort of like render but it's not
-		item.html.style.setProperty('--xpos', item.x*this.slotSize+'px')
-		item.html.style.setProperty('--ypos', item.y*this.slotSize+'px')
+		item.html.style.setProperty('--xpos', item.x * (100/item.w) + '%')
+		item.html.style.setProperty('--ypos', item.y * (100/item.h) + '%')
+	}
+
+	this.size = function() {
+		var boundingBox = this.html.inventory.getBoundingClientRect()
+		return {
+			width: boundingBox.width,
+			height: boundingBox.height,
+			slotWidth: boundingBox.width / this.slots.w,
+			slotHeight: boundingBox.height / this.slots.h
+		}
 	}
 
    this.init(options)
