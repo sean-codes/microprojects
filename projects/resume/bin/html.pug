@@ -1,0 +1,40 @@
+#resume
+   a.viewsource(href="https://github.com/sean-codes/microprojects/tree/master/projects/resume") #[i.fa.fa-code]view source
+   section.full.whitespace.b-blue
+      article
+         h1 {{ name }}
+         h4.c-teal {{ title }}
+         p.whitespace {{ info }}
+   section.full.b-darkblue
+      article.nopadding
+         ul.fifty
+            li.whitespace.nowrap.nodot(v-for="method in contactMethods")
+               a(:href="method.url" target="_blank") #[i(:class="'fa fa-' + method.icon")]{{method.text}}
+   section
+      article.half
+         h3.c-teal.underline.upper Technical Skills
+         ul.fifty
+            li.small.nodot(v-for="skill in technicalSkills") {{skill}}
+      article.half
+         h3.c-teal.underline.upper Personal Projects
+         .whitespace(v-for="project in personalProjects")
+            h5.bold {{project.title}}
+            ul
+               li(v-for="sentence in project.info") {{sentence}}
+   section
+      article.half
+         h3.c-teal.underline.upper Work Experience
+         .whitespace(v-for="experience in workExperience")
+            h4 {{experience.role}}
+            h5 {{experience.company}}
+            h6.c-teal.hackflex.ital
+               span.left {{experience.duration}}
+               span.right {{experience.location}}
+            ul
+               li(v-for="info in experience.info") {{info}}
+      article.half
+         h3.c-teal.underline.upper Education
+         .whitespace(v-for="education in education")
+            h5.bold {{education.title}}
+            h5 {{education.location}}
+            h6.ital.c-teal {{education.duration}}
