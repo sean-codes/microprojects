@@ -21,7 +21,7 @@ body {
   background: #FFF;
   color: #333;
   max-width: 850px;
-  margin: 40px auto;
+  margin: 0px auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
