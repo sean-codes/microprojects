@@ -25,7 +25,7 @@ var resume = new Vue({
    data: {
       name: "Sean Mann",
       title: "Software Developer",
-      info: "High energy software developer, passionate about creating scalable code and building paradigm-shifting tech that provides solutions to daily problems. Devoted team-player. Always eager tto learn and adapt to new technologies.",
+      info: "High energy software developer, passionate about creating scalable code and building paradigm-shifting tech that provides solutions to daily problems. Devoted team-player. Always eager to learn and adapt to new technologies.",
       contactMethods: [
          { icon: 'envelope', url: 'mailto:sean_codes@outlook.com', text: 'sean_codes@outlook.com' },
          { icon: 'phone', url: 'tel:219-682-8575', text: '219-682-8575' },

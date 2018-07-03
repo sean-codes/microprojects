@@ -130,7 +130,7 @@ body {
     #resume section.full {
       width: 100%; }
     #resume section article {
-      padding: 1em 3em;
+      padding: 1em 3em 1.5em 3em;
       -webkit-box-flex: 1;
       -ms-flex: 1;
       flex: 1; }
