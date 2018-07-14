@@ -47,17 +47,18 @@ ctx.canvas.addEventListener('mouseup', function() {
       speed: { x:(pointer.pos.x-pointer.move.x)/10, y:(pointer.pos.y-pointer.move.y)/10 },
       weight: 1,
       name: 'move',
-      bounce: 0.9
+      bounce: 0.25,
+		friction: { x: 0.8, y: 1 }
    })
    // create it
    console.log('up')
 })
 var settings = {
-   gravity: 5
+   gravity: { x: 0, y: 2, pull: 0.25 }
 }
 var objects = []
 
-var size = 50
+var size = 20
 
 // create a ground
 var x = 0
@@ -70,7 +71,8 @@ while(x<ctx.canvas.width){
       speed: { x:0, y:0 },
       weight: 0,
       name: 'solid',
-      bounce: 0.5
+      bounce: 1,
+		friction: { x: 0.8, y: 1 }
    })
    x+=size
 }
@@ -84,7 +86,8 @@ while(x<ctx.canvas.width){
       speed: { x:0, y:0 },
       weight: 0,
       name: 'solid',
-      bounce: 0.5
+      bounce: 1,
+		friction: { x: 0.8, y: 1 }
    })
    x+=size
 }
@@ -99,7 +102,8 @@ while(y<ctx.canvas.height-size){
       speed: { x:0, y:0 },
       weight: 0,
       name: 'solid',
-      bounce: 0.5
+      bounce: 1,
+		friction: { x: 0.8, y: 1 }
    })
    y+=size
 }
@@ -114,7 +118,8 @@ while(y<ctx.canvas.height-size){
       speed: { x:0, y:0 },
       weight: 0,
       name: 'solid',
-      bounce: 0.5
+      bounce: 1,
+		friction: { x: 0.8, y: 1 }
    })
    y+=size
 }
@@ -125,11 +130,14 @@ while(y<ctx.canvas.height-size){
       objects.push({
          id: objects.length,
          size: { w: size, h: size },
-         pos: {x: Math.random()*ctx.canvas.width, y:Math.random()*ctx.canvas.height },
+         pos: {
+				x: Math.min(Math.random()*ctx.canvas.width+size, ctx.canvas.width-size),
+				y: Math.min(Math.random()*ctx.canvas.height+size, ctx.canvas.height-size) },
          speed: { x:2, y:3 },
          weight: 1,
          name: 'move',
-         bounce: 0.9
+         bounce: 0.05,
+			friction: { x: 0.8, y: 1 }
       })
    }
 // }, 200)
@@ -149,21 +157,34 @@ var loop = setInterval(function() {
    }
    for(var object of objects) {
       ctx.strokeRect(Math.round(object.pos.x), Math.round(object.pos.y), object.size.w, object.size.h)
-      ctx.fillText(Math.round(object.speed.x*100)/100 + ', ' + Math.round(object.speed.y*100)/100, object.pos.x, Math.round(object.pos.y)+10)
-      ctx.fillText( Math.round(object.pos.x*100)/100 + ', ' + Math.round(object.pos.y*100)/100, object.pos.x, Math.round(object.pos.y)+20)
+      // ctx.fillText(Math.round(object.speed.x*100)/100 + ', ' + Math.round(object.speed.y*100)/100, object.pos.x, Math.round(object.pos.y)+10)
+      // ctx.fillText( Math.round(object.pos.x*100)/100 + ', ' + Math.round(object.pos.y*100)/100, object.pos.x, Math.round(object.pos.y)+20)
+		// ctx.fillText(object.weight, object.pos.x, object.pos.y + 30)
+		// ctx.fillText(object.id, object.pos.x, object.pos.y + 40)
       if(object.weight) {
-         object.pos.x += object.speed.x
-         object.pos.y += object.speed.y
+			var gravity = {
+				x: Math.sign(settings.gravity.x - object.speed.x) * settings.gravity.pull,
+				y: Math.sign(settings.gravity.y - object.speed.y) * settings.gravity.pull
+			}
 
-         //if(object.speed.y < settings.gravity) object.speed.y += 0.1
+			object.speed.x += gravity.x
+			object.speed.y += gravity.y
+
          //object.speed.x *= 0.98
-         // object.speed.x *= 0.995
-         // object.speed.y *= 0.995
+
+			keepInsideCanvas(object)
+			// global friction
+			if(Math.abs(object.speed.x) < 0.001) object.speed.x = 0
+			if(Math.abs(object.speed.y) < 0.001) object.speed.y = 0
+			//move em
+			object.pos.x += object.speed.x
+			object.pos.y += object.speed.y
+			collision(object)
+			object.speed.x *= 0.99
+			object.speed.y *= 0.99
       }
 
       // check for collisions and solve
-      collision(object)
-      keepInsideCanvas(object)
    }
 
 
@@ -224,61 +245,34 @@ function collision(object) {
       //console.log(smallestCollision)
       //clearInterval(loop)
 
-      // get the total speed of the collision
-      var force = {
-         x: Math.abs(object.speed.x)+Math.abs(other.speed.x),
-         y: Math.abs(object.speed.y)+Math.abs(other.speed.y)
-      }
+		var totalWeight = object.weight+other.weight
+		var avgWeight = totalWeight/2
+		var absorb = {
+			object: object.weight / totalWeight,
+			other: other.weight / totalWeight
+		}
 
-      // get the absorbtion
-      var totalWeigth = object.weight+other.weight
-      var avgWeight = totalWeight / 2
-
-      var absorb = {
-         object: Math.min(object.weight/avgWeight, 1),
-         other: Math.min(other.weight/avgWeight, 1)
-      }
-
-      console.log(absorb.object, absorb.other)
       // trade forces or reflec them (dampen here)
-      if(smallestCollision.axis.x) {
-         var collisionDirection = Math.sign(object.speed.x) == Math.sign(other.speed.x) ? 1 : -1
+		for(var axis of ['x', 'y']){
+	      if(smallestCollision.axis[axis]) {
+				var objForce = other.weight ? other.speed[axis] : -object.speed[axis]
+				var othForce = object.weight ? object.speed[axis] : -other.speed[axis]
+				// console.log(axis, object.id, objForce)
 
-         var objSpeed = force.x * absorb.object * Math.sign(object.speed.x) * collisionDirection
-         var othSpeed = force.x * absorb.other * Math.sign(other.speed.x) * collisionDirection
-         console.log(objSpeed, othSpeed)
-         object.speed.x = objSpeed
-         other.speed.x = othSpeed
-         // apply friction
-         // object.speed.y *= other.bounce
-         // other.speed.y *= object.bounce
-      }
+	         object.speed[axis] = objForce*object.bounce * (!object.weight ? 0 : 1)
+	         other.speed[axis] = othForce*other.bounce * (!other.weight ? 0 : 1)
 
-      if(smallestCollision.axis.y) {
-         var collisionDirection = Math.sign(object.speed.y) == Math.sign(other.speed.y) ? 1 : -1
+	         // apply friction ( darn that is not looking to good)
+				var frictionAxis = axis == 'x' ? 'y' : 'x'
+	         object.speed[frictionAxis] *= other.friction[frictionAxis]
+	         other.speed[frictionAxis] *= object.friction[frictionAxis]
 
-         console.log(collisionDirection)
-         var objSpeed = force.y * absorb.object.y * Math.sign(object.speed.y) * collisionDirection
-         var othSpeed = force.y * absorb.other.y * Math.sign(other.speed.y) * collisionDirection
-         object.speed.y = objSpeed
-         other.speed.y = othSpeed
-         // apply friction
-         // object.speed.x *= other.bounce
-         // other.speed.x *= object.bounce
-      }
-
-      object.pos.x += (smallestCollision.axis.x * smallestCollision.depth) * absorb.object.x
-      object.pos.y += (smallestCollision.axis.y * smallestCollision.depth) * absorb.object.y
-
-      other.pos.x -= (smallestCollision.axis.x * smallestCollision.depth) * absorb.other.x
-      other.pos.y -= (smallestCollision.axis.y * smallestCollision.depth) * absorb.other.y
-      //console.log(object, other, smallestCollision.axis.y * smallestCollision.depth)
-      //clearInterval(loop)
-
-      // get surface area
-
-      // looop collisions or only use the one with most surface area
-   }
+				// move out
+				object.pos[axis] += smallestCollision.axis[axis]*smallestCollision.depth * (!object.weight ? 0 : 1)
+				other.pos[axis] -= smallestCollision.axis[axis]*smallestCollision.depth * (!other.weight ? 0 : 1)
+	      }
+		}
+	}
 }
 
 function keepInsideCanvas(object) {
