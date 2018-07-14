@@ -37,6 +37,10 @@
 			"path": "projects/Walker"
 		},
 		{
+			"title": "aabb physics",
+			"path": "projects/aabb physics"
+		},
+		{
 			"title": "gridventory",
 			"path": "projects/gridventory"
 		},
