@@ -104,7 +104,7 @@ while(y<ctx.canvas.height-size){
 
 // create a block to collide
 // setInterval(() => {
-   for(var i = 0; i < 0; i++) {
+   for(var i = 0; i < 100; i++) {
       objects.push({
          id: objects.length,
          size: { w: size, h: size },
