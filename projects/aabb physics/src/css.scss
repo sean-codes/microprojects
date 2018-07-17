@@ -1,8 +1,6 @@
-html, body{
-   padding:0px;
-   margin:0px;
-   background:#222;
-   color:#FFF;
+html, body {
+   padding:0; margin:0;
+   background:#000;
    height:100%;
 }
 
@@ -11,8 +9,11 @@ body {
 }
 
 canvas {
-   width:340px;
-   height:340px;
-   background:#FFF;
+   width:400px;
+   min-width:400px;
+   height:300px;
    margin:auto;
+   background:#FFF;
+   display:block;
+   outline: none;
 }
