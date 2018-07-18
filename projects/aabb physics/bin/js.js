@@ -32,17 +32,17 @@ var map = {
       '                    ',
       '                    ',
       '                    ',
-      ' x          O       ',
+      '            O       ',
       ' x          O       ',
       '     OO      h    OO',
-      '     OOFFFFFFFFFFFOO',
+      ' X   OOFFFFFFFFFFFOO',
       '     OOOOOOOOOOOOOOO',
       '_    OOOOOOOOOOOOOOO',
       '                    ',
       '                    ',
-      '      X             ',
+      '                    ',
       '                x   ',
-      '            O h    O',
+      '        O     h    O',
       'OOOOOOOOOOOOOOOOOOOO',
    ],
    linkTo: {
@@ -53,7 +53,7 @@ var map = {
          type: 'block', height: 20, width:20
       }),
       _: JSON.stringify({
-         type: 'platform', height: 20, width:80, vSpeed: 3, hSpeed: 0, pull: []
+         type: 'platform', height: 20, width:80, vSpeed: 1, hSpeed: 0, pull: []
       }),
       h: JSON.stringify({
          type: 'platform', height: 20, width:80, vSpeed: 0, hSpeed: 1
@@ -169,7 +169,7 @@ var game = {
             game.draw.fillRect(this.x, this.y, this.width, this.height)
          }
       },
-      fire: {
+		fire: {
 			create: function() {
 				game.script.physics.init(this)
 			},
@@ -314,11 +314,15 @@ var game = {
 
 					// step 2. check collisions
 					var softCollisions = this.collisions(collision, ['block', 'platform', 'crate', 'player'])
+					if(collision.x < 0 || collision.x + collision.width > game.width) {
+						for(var failed of transaction) failed[cord] -= speed
+						break
+					}
 
 					if(softCollisions.length) {
 						// step 3. check collision type
 						var soft = softCollisions.some((e) => ['crate', 'player'].includes(e.other.type))
-						var hard = softCollisions.some((e) => ['block'].includes(e.other.type))
+						var hard = softCollisions.some((e) => ['block', 'platform'].includes(e.other.type))
 
 						// step 4. fail and revert
 						if(hard) {
@@ -362,12 +366,11 @@ var game = {
 	            if(response[axis.cord].collisions.length) {
                   for(var collision of response[axis.cord].collisions) {
 							// if we are moving in the same direction and collide pull the next step
-							var sameDirection = Math.sign(collision.other[axis.speed]) == Math.sign(object[axis.speed]) || collision.other[axis.speed] == 0
+							var sameDirection = (Math.sign(collision.other[axis.speed]) == Math.sign(object[axis.speed]))
 							var goingFaster = Math.abs(object[axis.speed]) > Math.abs(collision.other[axis.speed])
 							if(sameDirection && goingFaster){
 								collision.other.pull.push({ other: object, cord: axis.cord, dir: axis.speed, speed: collision.other[axis.speed], size: axis.size })
 							}
-
 							// console.log(object.pull)
 							// clearTimeout(game.loop)
 	                  if(collision.depth[axis.cord] > depth) {
@@ -377,6 +380,17 @@ var game = {
 	                        : collision.other[axis.cord] + collision.other[axis.size]
 	                  }
 
+							if(['crate', 'player'].includes(collision.other.type)) {
+								if(object.type == 'player') {
+									console.log('transfering', object.type)
+								}
+								if(axis.cord == 'x' || (axis.cord == 'y' && object[axis.speed] < 0)) {
+									console.log('wtf', object.type)
+								collision.other[axis.speed] = object[axis.speed]
+							}
+								//collision.other[axis.cord] += object[axis.speed]
+								//object[axis.cord] -= object[axis.speed]
+							}
 	                  // not using these yet
 	                  if(object[axis.cord] + object[axis.size] <= collision.other[axis.cord]) response[axis.greater] = collision
 	                  if(collision.other[axis.cord] + collision.other[axis.size] >= object[axis.cord]) response[axis.lessthan] = collision
@@ -391,7 +405,7 @@ var game = {
             var collisions = []
             for(var other of game.objects) {
 
-               if(object == other || !typeList.includes(other.type)) continue
+               if(object.id == other.id || !typeList.includes(other.type)) continue
 
                if(object.x >= other.x + other.width || object.x+object.width <= other.x ||
                   object.y >= other.y + other.height || object.y+object.height <= other.y) continue
