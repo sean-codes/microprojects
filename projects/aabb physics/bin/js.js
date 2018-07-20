@@ -33,16 +33,16 @@ var map = {
       '                    ',
       '                    ',
       '            O       ',
-      ' x          O       ',
-      '     OO      h    OO',
-      ' X   OOFFFFFFFFFFFOO',
+      '            O       ',
+      'x    OO      h    OO',
+      'x    OOFFFFFFFFFFFOO',
       '     OOOOOOOOOOOOOOO',
       '_    OOOOOOOOOOOOOOO',
       '                    ',
       '                    ',
-      '                    ',
+      '     X A            ',
       '                x   ',
-      '        O     h    O',
+      '           O  h    O',
       'OOOOOOOOOOOOOOOOOOOO',
    ],
    linkTo: {
@@ -63,6 +63,9 @@ var map = {
       }),
       x: JSON.stringify({
          type: 'crate', height: 20, width:20, vSpeed:0, hSpeed:0
+      }),
+      A: JSON.stringify({
+         type: 'box', height: 40, width:40, vSpeed:0, hSpeed:0
       })
    }
 }
@@ -126,11 +129,12 @@ var game = {
    objectTypes: {
       player: {
 			create: function() {
+				this.physics = 'solid'
 				game.script.physics.init(this)
 			},
          step: function() {
             // the evil math
-            var response = game.script.physics.player(this)
+            var response = game.script.physics.step(this)
 
             // movement ( this is weird but I kind of like it )
             for(var move of [
@@ -157,10 +161,11 @@ var game = {
       },
       block: {
 			create: function() {
+				this.physics = 'lock'
 				game.script.physics.init(this)
 			},
          step: function() {
-
+				// game.script.physics.step(this)
          },
          draw: function() {
             // draw
@@ -171,6 +176,7 @@ var game = {
       },
 		fire: {
 			create: function() {
+				this.physics = 'solid'
 				game.script.physics.init(this)
 			},
          step: function() {
@@ -188,12 +194,29 @@ var game = {
             game.draw.fillRect(this.x, this.y, this.width, this.height)
          }
       },
+		box: {
+			create: function() {
+				this.physics = 'empty'
+				this.wall = { x: 0, y: -1 }
+				game.script.physics.init(this)
+			},
+			step: function() {
+				game.script.physics.step(this)
+			},
+			draw: function() {
+				// draw
+				game.ctx.strokeRect(this.x, this.y, this.width, this.height)
+				game.ctx.fillStyle = '#1bca'
+				game.ctx.fillRect(this.x, this.y, this.width, this.height)
+			}
+		},
       crate: {
 			create: function() {
+				this.physics = 'solid'
 				game.script.physics.init(this)
 			},
          step: function() {
-            game.script.physics.crate(this)
+            game.script.physics.step(this)
          },
          draw: function() {
             // draw
@@ -204,11 +227,11 @@ var game = {
       },
       platform: {
 			create: function() {
-				game.script.physics.init(this)
+				game.script.physics.init(this, 'solid')
 			},
          step: function() {
             // more math
-            game.script.physics.platform(this)
+            game.script.physics.step(this)
             if(!this.startY) this.startY = this.y
             // if stalled change direction
             if(
@@ -236,13 +259,39 @@ var game = {
             gravity: { x: 0, y: 5, accel: 0.5 }
          },
 			init: function(object) {
+				object.physics = object.physics || 'lock'
 				object.hSpeed = object.hSpeed || 0
 				object.vSpeed = object.vSpeed || 0
 				object.pull = []
 			},
-         crate: function(object) {
+			step: function(object) {
+				return this['step_' + object.physics](object)
+			},
+			step_empty: function(object) {
+				this.gravity(object)
+
+				var response = { x: [], y: [] }
+
+				// vertical/horizontal
+				for(var axis of [{ cord: 'y', speed: 'vSpeed'},{ cord: 'x', speed: 'hSpeed'}]) {
+					object[axis.cord] += object[axis.speed]
+					response[axis.cord] = this.collisions(object, ['lock', 'solid'])
+					if(response[axis.cord].length) {
+						object[axis.cord] -= object[axis.speed]
+						object[axis.speed] = 0
+					}
+				}
+
+				return response
+			},
+         step_solid: function(object) {
             this.gravity(object)
             var response = this.move(object)
+
+				if(response.left || response.right) {
+					object.hSpeed = 0
+				}
+
             if(response.top || response.bottom) {
 					// match vspeed down
 					object.vSpeed = response.y.collisions[0].other.vSpeed
@@ -253,31 +302,10 @@ var game = {
                var current = object.hSpeed
                object.hSpeed += (target - current) * 0.25
             }
+
+				return response
          },
-         player: function(object) {
-            this.gravity(object)
-            var vSpeed = object.vSpeed
-            var hSpeed = object.hSpeed
-            var response = this.move(object)
-
-            if(response.top || response.bottom) {
-					// match vspeed down
-               object.vSpeed = response.y.collisions[0].other.vSpeed
-					if(object.vSpeed < 0) object.vSpeed = 0
-
-					// match hspeed
-               var target = response.y.collisions[0].other.hSpeed || 0
-               var current = object.hSpeed
-               object.hSpeed += (target - current) * 0.25
-            }
-
-            if(response.left || response.right) {
-               object.hSpeed = 0
-            }
-
-            return response
-         },
-         platform: function(object) {
+         step_lock: function(object) {
             // ( and the axis loop )
 				for(var axis of [{ cord: 'x', speed: 'hSpeed'}, { cord: 'y', speed: 'vSpeed'}]) {
 					// the one line
@@ -295,7 +323,7 @@ var game = {
 
 					pull.other[pull.cord] += pull.speed
 
-					var pullCollisions = this.collisions(pull.other, ['block', 'platform', 'crate', 'player'])
+					var pullCollisions = this.collisions(pull.other, ['lock', 'solid'])
 					if(pullCollisions.length) {
 						console.log('failed', pull.other.id, pull.speed)
 						pull.other[pull.cord] -= pull.speed
@@ -313,7 +341,7 @@ var game = {
 					collision[cord] += speed
 
 					// step 2. check collisions
-					var softCollisions = this.collisions(collision, ['block', 'platform', 'crate', 'player'])
+					var softCollisions = this.collisions(collision, ['lock', 'solid'])
 					if(collision.x < 0 || collision.x + collision.width > game.width) {
 						for(var failed of transaction) failed[cord] -= speed
 						break
@@ -321,8 +349,8 @@ var game = {
 
 					if(softCollisions.length) {
 						// step 3. check collision type
-						var soft = softCollisions.some((e) => ['crate', 'player'].includes(e.other.type))
-						var hard = softCollisions.some((e) => ['block', 'platform'].includes(e.other.type))
+						var soft = softCollisions.some((e) => ['solid'].includes(e.other.physics))
+						var hard = softCollisions.some((e) => ['lock'].includes(e.other.physics))
 
 						// step 4. fail and revert
 						if(hard) {
@@ -336,7 +364,6 @@ var game = {
 					}
 				}
 			},
-
          gravity: function(object) {
             // Gravity
             if(object.vSpeed < this.setting.gravity.y){
@@ -360,7 +387,7 @@ var game = {
 
 				for(var axis of axisList){
 	            object[axis.cord] += object[axis.speed]
-	            response[axis.cord].collisions = this.collisions(object, ['block', 'platform', 'player', 'crate'])
+	            response[axis.cord].collisions = this.collisions(object, ['lock', 'solid'])
 
 	            var depth = 0
 	            if(response[axis.cord].collisions.length) {
@@ -380,17 +407,13 @@ var game = {
 	                        : collision.other[axis.cord] + collision.other[axis.size]
 	                  }
 
-							if(['crate', 'player'].includes(collision.other.type)) {
-								if(object.type == 'player') {
-									console.log('transfering', object.type)
-								}
+							// transfering speed upwards or left/right
+							if(collision.other.physics == 'solid') {
 								if(axis.cord == 'x' || (axis.cord == 'y' && object[axis.speed] < 0)) {
-									console.log('wtf', object.type)
-								collision.other[axis.speed] = object[axis.speed]
+									collision.other[axis.speed] = object[axis.speed]
+								}
 							}
-								//collision.other[axis.cord] += object[axis.speed]
-								//object[axis.cord] -= object[axis.speed]
-							}
+
 	                  // not using these yet
 	                  if(object[axis.cord] + object[axis.size] <= collision.other[axis.cord]) response[axis.greater] = collision
 	                  if(collision.other[axis.cord] + collision.other[axis.size] >= object[axis.cord]) response[axis.lessthan] = collision
@@ -405,7 +428,7 @@ var game = {
             var collisions = []
             for(var other of game.objects) {
 
-               if(object.id == other.id || !typeList.includes(other.type)) continue
+               if(object.id == other.id || !typeList.includes(other.physics)) continue
 
                if(object.x >= other.x + other.width || object.x+object.width <= other.x ||
                   object.y >= other.y + other.height || object.y+object.height <= other.y) continue
