@@ -23,8 +23,8 @@ if (!window.frameElement) {
 console.clear()
 
 var ctx = document.querySelector('canvas').getContext('2d')
-ctx.canvas.width = ctx.canvas.getBoundingClientRect().width
-ctx.canvas.height = ctx.canvas.getBoundingClientRect().height
+ctx.canvas.width = ctx.canvas.getBoundingClientRect().width/2
+ctx.canvas.height = ctx.canvas.getBoundingClientRect().height/2
 
 var map = {
    grid: { x: 20, y: 20},
@@ -32,16 +32,16 @@ var map = {
       '                    ',
       '                    ',
       '                    ',
-      '            O       ',
+      'x           O       ',
       '            O       ',
       'x    OO      h    OO',
-      'x    OOFFFFFFFFFFFOO',
-      '     OOOOOOOOOOOOOOO',
-      '_    OOOOOOOOOOOOOOO',
+      'A    OOFFFFFFFFFFFOO',
+      '       OOOOOOOOOOOOO',
+      '_      OOOOOOOOOOOOO',
+      '     A              ',
       '                    ',
-      '                    ',
-      '     X A            ',
-      '                x   ',
+      '       X            ',
+      '     A          x   ',
       '           O  h    O',
       'OOOOOOOOOOOOOOOOOOOO',
    ],
@@ -123,8 +123,8 @@ var game = {
    },
 	draw: {
 		// for testing floor/ceil locking draws
-		fillRect: function(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), w, h)},
-		strokeRect: function(x, y, w, h) { game.ctx.strokeRect(Math.round(x), Math.round(y), w, h)}
+		fillRect: function(x, y, w, h) { game.ctx.fillRect(Math.round(x)+0.5, Math.round(y)+0.5, w-0.5, h-0.5)},
+		strokeRect: function(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5, w-1, h-1)}
 	},
    objectTypes: {
       player: {
@@ -140,13 +140,13 @@ var game = {
             for(var move of [
                { x:  1, y:  0, down: game.keys[39], require: true },
                { x: -1, y:  0, down: game.keys[37], require: true },
-               { x:  0, y: -10, down: game.keys[38], require: response.bottom }
+               { x:  0, y: -8, down: game.keys[38], require: response.bottom }
             ]) {
                if(move.require && move.down) {
                   this.hSpeed += move.x;
                   this.vSpeed += move.y
                   // throttling
-                  var max = { hSpeed: 3.5, vSpeed: 10 }
+                  var max = { hSpeed: 3.5, vSpeed: 8 }
                   if(Math.abs(this.hSpeed) > max.hSpeed) this.hSpeed = Math.sign(this.hSpeed) * max.hSpeed
                   if(Math.abs(this.vSpeed) > max.vSpeed) this.vSpeed = Math.sign(this.vSpeed) * max.vSpeed
                }
@@ -154,9 +154,10 @@ var game = {
          },
          draw: function() {
             // draw
-            game.draw.strokeRect(this.x, this.y, this.width, this.height)
             game.ctx.fillStyle = '#465a'
             game.draw.fillRect(this.x, this.y, this.width, this.height)
+				game.ctx.strokeStyle = '#000'
+				game.draw.strokeRect(this.x, this.y, this.width, this.height)
          }
       },
       block: {
@@ -169,6 +170,7 @@ var game = {
          },
          draw: function() {
             // draw
+				game.ctx.strokeStyle = '#000'
             game.draw.strokeRect(this.x, this.y, this.width, this.height)
             game.ctx.fillStyle = '#222a'
             game.draw.fillRect(this.x, this.y, this.width, this.height)
@@ -189,9 +191,10 @@ var game = {
          },
          draw: function() {
             // draw
-            game.draw.strokeRect(this.x, this.y, this.width, this.height)
             game.ctx.fillStyle = '#F22a'
             game.draw.fillRect(this.x, this.y, this.width, this.height)
+				game.draw.strokeRect(this.x, this.y, this.width, this.height)
+				game.ctx.strokeStyle = '#000'
          }
       },
 		box: {
@@ -205,9 +208,10 @@ var game = {
 			},
 			draw: function() {
 				// draw
-				game.ctx.strokeRect(this.x, this.y, this.width, this.height)
-				game.ctx.fillStyle = '#1bca'
-				game.ctx.fillRect(this.x, this.y, this.width, this.height)
+            game.ctx.fillStyle = '#1bca'
+            game.draw.fillRect(this.x, this.y, this.width, this.height)
+				game.ctx.strokeStyle = '#000'
+				game.draw.strokeRect(this.x, this.y, this.width, this.height)
 			}
 		},
       crate: {
@@ -220,9 +224,10 @@ var game = {
          },
          draw: function() {
             // draw
-            game.ctx.strokeRect(this.x, this.y, this.width, this.height)
             game.ctx.fillStyle = '#960a'
-            game.ctx.fillRect(this.x, this.y, this.width, this.height)
+            game.draw.fillRect(this.x, this.y, this.width, this.height)
+				game.ctx.strokeStyle = '#000'
+				game.draw.strokeRect(this.x, this.y, this.width, this.height)
          }
       },
       platform: {
@@ -247,9 +252,10 @@ var game = {
          },
          draw: function() {
             // draw
-            game.ctx.strokeRect(this.x, this.y, this.width, this.height)
             game.ctx.fillStyle = '#a5aa'
-            game.ctx.fillRect(this.x, this.y, this.width, this.height)
+            game.draw.fillRect(this.x, this.y, this.width, this.height)
+				game.ctx.strokeStyle = '#000'
+				game.draw.strokeRect(this.x, this.y, this.width, this.height)
          }
       }
    },
@@ -269,20 +275,7 @@ var game = {
 			},
 			step_empty: function(object) {
 				this.gravity(object)
-
-				var response = { x: [], y: [] }
-
-				// vertical/horizontal
-				for(var axis of [{ cord: 'y', speed: 'vSpeed'},{ cord: 'x', speed: 'hSpeed'}]) {
-					object[axis.cord] += object[axis.speed]
-					response[axis.cord] = this.collisions(object, ['lock', 'solid'])
-					if(response[axis.cord].length) {
-						object[axis.cord] -= object[axis.speed]
-						object[axis.speed] = 0
-					}
-				}
-
-				return response
+				return this.move(object)
 			},
          step_solid: function(object) {
             this.gravity(object)
@@ -294,8 +287,7 @@ var game = {
 
             if(response.top || response.bottom) {
 					// match vspeed down
-					object.vSpeed = response.y.collisions[0].other.vSpeed
-					if(object.vSpeed < 0) object.vSpeed = 0
+
 
 					// match hspeed
 					var target = response.y.collisions[0].other.hSpeed || 0
@@ -307,13 +299,14 @@ var game = {
          },
          step_lock: function(object) {
             // ( and the axis loop )
-				for(var axis of [{ cord: 'x', speed: 'hSpeed'}, { cord: 'y', speed: 'vSpeed'}]) {
+				for(var axis of [{ cord: 'x', speed: 'hSpeed', size: 'width'}, { cord: 'y', speed: 'vSpeed', size: 'height'}]) {
 					// the one line
-					this.push([object], axis.cord, object[axis.speed])
+					this.push([object], axis, object[axis.speed])
             }
 				this.pull(object)
          },
 			pull: function(object) {
+				// pull does not even exist
 				while(object.pull.length) {
 					var pull = object.pull.shift()
 					var savePose = pull.other[pull.cord]
@@ -323,8 +316,13 @@ var game = {
 
 					pull.other[pull.cord] += pull.speed
 
-					var pullCollisions = this.collisions(pull.other, ['lock', 'solid'])
+					var pullCollisions = pull.other.physics == 'empty'
+						? this.collisions(pull.other, ['lock'])
+						: this.collisions(pull.other, ['lock', 'solid'])
+
 					if(pullCollisions.length) {
+						// all might not be losts
+
 						console.log('failed', pull.other.id, pull.speed)
 						pull.other[pull.cord] -= pull.speed
 						//pull.other[pull.cord] = savePose
@@ -334,42 +332,52 @@ var game = {
 					this.pull(pull.other)
 				}
 			},
-			push: function(softObjects, cord, speed, transaction=[]) {
+			push: function(softObjects, axis, speed, transaction=[]) {
 				// step 1. move the first object. add to transaction
 				for(var collision of softObjects) {
 					transaction.push(collision)
-					collision[cord] += speed
+					collision[axis.cord] += speed
 
-					// step 2. check collisions
-					var softCollisions = this.collisions(collision, ['lock', 'solid'])
+					// if outside break
 					if(collision.x < 0 || collision.x + collision.width > game.width) {
 						for(var failed of transaction) failed[cord] -= speed
 						break
 					}
 
-					if(softCollisions.length) {
+					// step 2. check collisions
+					var pushedCollisions = this.collisions(collision, ['lock', 'solid', 'empty'])
+
+					if(pushedCollisions.length) {
 						// step 3. check collision type
-						var soft = softCollisions.some((e) => ['solid'].includes(e.other.physics))
-						var hard = softCollisions.some((e) => ['lock'].includes(e.other.physics))
+						//var empty =
+						var soft = pushedCollisions.some((e) => ['solid', 'empty'].includes(e.other.physics))
+						var hard = pushedCollisions.some((e) => ['lock'].includes(e.other.physics))
 
 						// step 4. fail and revert
 						if(hard) {
 							// revert! we failed!
-							for(var failed of transaction) failed[cord] -= speed
+							for(var failed of transaction) failed[axis.cord] -= speed
 							break
 						}
 
 						// step 5. recurse here
-						this.push(softCollisions.map((e) => e.other), cord, speed, transaction)
+						// remove emptys that are not onvery top
+						var emptyRemoved = pushedCollisions.reduce((sum, num) => {
+								// only push if greater
+								var safe = speed < 0
+									? (num.other[axis.cord] + num.other[axis.size]) + speed <= collision[axis.cord] - speed
+									: (collision[axis.cord] + collision[axis.size]) - speed <= num.other[axis.cord] + speed
+
+								if(safe) {
+									//console.log('push')
+									sum.push(num.other)
+								}
+							return sum
+						}, [])
+						this.push(emptyRemoved, axis, speed, transaction)
 					}
 				}
 			},
-         gravity: function(object) {
-            // Gravity
-            if(object.vSpeed < this.setting.gravity.y){
-               object.vSpeed += this.setting.gravity.accel
-            }
-         },
          move: function(object) {
             var response = {
                x: { collisions: [] },
@@ -386,18 +394,54 @@ var game = {
 				]
 
 				for(var axis of axisList){
+					// move on the axis and check for a collision
 	            object[axis.cord] += object[axis.speed]
-	            response[axis.cord].collisions = this.collisions(object, ['lock', 'solid'])
 
-	            var depth = 0
-	            if(response[axis.cord].collisions.length) {
-                  for(var collision of response[axis.cord].collisions) {
-							// if we are moving in the same direction and collide pull the next step
+					var axisCollisions = this.collisions(object, ['lock', 'solid', 'empty'])
+					// if there is a collision
+	            if(axisCollisions.length) {
+						var depth = 0 // use this to snap to the deepest collision
+                  for(var collision of axisCollisions) {
+							// if collide on empty only process if we are on top
+							if(collision.other.physics == 'empty') {
+								//console.log('empty', axis.cord)
+								// make sure we are above right meow!
+								if(axis.cord == 'x') continue
+								if(object[axis.speed] <= 0 || object[axis.cord] + object[axis.size] - object[axis.speed] > collision.other[axis.cord]){
+									console.log('skipping')
+									continue
+								}
+							}
+
+							// what if I am empty?
+							if(object.physics == 'empty') {
+								//console.log('i have no soul')
+								if(axis.cord == 'x') continue
+								// make sure we are falling on a top or solid
+								if(!['lock', 'empty'].includes(collision.other.physics)) {
+									//console.log('wtf you are not even locked')
+									//console.log(collision.other[axis.speed])
+									if(collision.other[axis.speed] <= 0 || collision.other[axis.cord] + collision.other[axis.size] > object[axis.cord]) {
+										//console.log('we are slipping through time and space')
+										//console.log(collision.other[axis.speed])
+										continue
+									}
+								}
+							}
+							response[axis.cord].collisions.push(collision)
+
 							var sameDirection = (Math.sign(collision.other[axis.speed]) == Math.sign(object[axis.speed]))
 							var goingFaster = Math.abs(object[axis.speed]) > Math.abs(collision.other[axis.speed])
 							if(sameDirection && goingFaster){
 								collision.other.pull.push({ other: object, cord: axis.cord, dir: axis.speed, speed: collision.other[axis.speed], size: axis.size })
 							}
+
+							// if we are moving in the same direction and collide pull the next step
+							// var sameDirection = (Math.sign(collision.other[axis.speed]) == Math.sign(object[axis.speed]))
+							// var goingFaster = Math.abs(object[axis.speed]) > Math.abs(collision.other[axis.speed])
+							// if(sameDirection && goingFaster){
+							// 	collision.other.pull.push({ other: object, cord: axis.cord, dir: axis.speed, speed: collision.other[axis.speed], size: axis.size })
+							// }
 							// console.log(object.pull)
 							// clearTimeout(game.loop)
 	                  if(collision.depth[axis.cord] > depth) {
@@ -409,7 +453,9 @@ var game = {
 
 							// transfering speed upwards or left/right
 							if(collision.other.physics == 'solid') {
+								console.log('objecttype: ' + object.type + ' trying to transfer to ' + collision.other.type + ': ' + object[axis.speed])
 								if(axis.cord == 'x' || (axis.cord == 'y' && object[axis.speed] < 0)) {
+									console.log('trasnsfering')
 									collision.other[axis.speed] = object[axis.speed]
 								}
 							}
@@ -417,12 +463,23 @@ var game = {
 	                  // not using these yet
 	                  if(object[axis.cord] + object[axis.size] <= collision.other[axis.cord]) response[axis.greater] = collision
 	                  if(collision.other[axis.cord] + collision.other[axis.size] >= object[axis.cord]) response[axis.lessthan] = collision
+
+							if(axis.cord == 'y') {
+								object.vSpeed = collision.other.vSpeed
+								if(object.vSpeed < 0) object.vSpeed = 0
+							}
 	               }
 	            }
 				}
 
             this.stayInside(object)
             return response
+         },
+			gravity: function(object) {
+            // Gravity
+            if(object.vSpeed < this.setting.gravity.y){
+               object.vSpeed += this.setting.gravity.accel
+            }
          },
          collisions: function(object, typeList) {
             var collisions = []
