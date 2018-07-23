@@ -88,12 +88,12 @@ var game = {
                object.y = y
 					object.id = game.objects.length
 					object.depth = object.depth || 0
-					console.log(object.type, 'depth', object.depth)
-					for(var i = 0; i < game.objects.length; i++){
+					// find position to draw in right order (more depth = later drawn)
+					for(var i = 0; i < game.objects.length; i++)
 						if(object.depth > game.objects[i].depth) break
-					}
-					console.log('pos', i)
+
 					game.objects.splice(i, 0, object)
+
 					game.objectTypes[object.type].create.call(object)
             }
             x += map.grid.x
@@ -206,7 +206,7 @@ var game = {
 		box: {
 			create: function() {
 				this.physics = 'empty'
-				this.wall = { x: 0, y: -1 }
+				this.wall = { cord: 'y', direction: -1 }
 				game.script.physics.init(this)
 			},
 			step: function() {
@@ -287,20 +287,7 @@ var game = {
 			},
          step_solid: function(object) {
             this.gravity(object)
-            var response = this.move(object)
-				// should move this inhouse the .move function
-				if(response.left || response.right) {
-					object.hSpeed = 0
-				}
-
-            if(response.top || response.bottom) {
-					// match hspeed
-					var target = response.y.collisions[0].other.hSpeed || 0
-               var current = object.hSpeed
-               object.hSpeed += (target - current) * 0.25
-            }
-
-				return response
+            return this.move(object)
          },
          step_lock: function(object) {
             // ( and the axis loop )
@@ -408,8 +395,17 @@ var game = {
 				for(var axis of axisList){
 					// move on the axis and check for a collision
 	            object[axis.cord] += object[axis.speed]
-
 					var axisCollisions = this.collisions(object, ['lock', 'solid', 'empty'])
+
+					// if(axisCollisions.length) {
+					// 	var directions = [1, -1]
+					// 	// loop directions (left/right, top/bottom)
+					// 	for(var direction of directions) {
+					//
+					// 		//check
+					//
+					// 	}
+					// }
 					// if there is a collision
 	            if(axisCollisions.length) {
 						var depth = 0 // use this to snap to the deepest collision
@@ -469,9 +465,10 @@ var game = {
 								// console.log('objecttype: ' + object.type + ' trying to transfer to ' + collision.other.type + ': ' + object[axis.speed])
 								if(axis.cord == 'x' || (axis.cord == 'y' && object[axis.speed] < 0)) {
 									// console.log('trasnsfering')
-									var oppositeAxis = axis.cord == 'x' ? 'y' : 'x'
+									var oppositeSpeed = axis.cord == 'x' ? 'vSpeed' : 'hSpeed'
+									// var oppositeAxis = axis.cord == 'x' ? 'y' : 'x'
 									collision.other[axis.speed] = object[axis.speed]
-									collision.other[oppositeAxis] = object[oppositeAxis]
+									collision.other[oppositeSpeed] = object[oppositeSpeed] // should target this
 								}
 							}
 
@@ -481,10 +478,21 @@ var game = {
 								if(object[axis.speed] < 0) object[axis.speed] = 0
 							}
 
+							// friction
+							if(axis.cord == 'x') {
+								object.hSpeed = 0
+							}
+
+			            if(axis.cord == 'y') {
+								// match hspeed
+								var target = response.y.collisions[0].other.hSpeed || 0
+			               var current = object.hSpeed
+			               object.hSpeed += (target - current) * 0.25
+			            }
+
 	                  // not using these yet
 	                  if(object[axis.cord] + object[axis.size] <= collision.other[axis.cord]) response[axis.greater] = collision
 	                  if(collision.other[axis.cord] + collision.other[axis.size] >= object[axis.cord]) response[axis.lessthan] = collision
-
 	               }
 	            }
 				}
