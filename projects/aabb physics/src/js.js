@@ -375,15 +375,38 @@ var game = {
 	            object[axis.cord] += object[axis.speed]
 					var axisCollisions = this.collisions(object, ['lock', 'solid', 'empty'])
 
-					// if(axisCollisions.length) {
-					// 	var directions = [1, -1]
-					// 	// loop directions (left/right, top/bottom)
-					// 	for(var direction of directions) {
-					//
-					// 		//check
-					//
-					// 	}
-					// }
+					// if there is collision(s)
+					if(axisCollisions.length) {
+						var directions = [1, -1]
+						// loop directions (left/right, top/bottom)
+						for(var direction of directions) {
+
+							//check
+							for(var collision of axisCollisions) {
+								// for easier reading
+								var other = collision.other
+
+								if(other.wall) {
+									// location of the walls
+									var otherWall = other[axis.cord] + (direction > 0 ? other[axis.size] : 0)
+									var objectWall = object[axis.cord] + (direction > 0 ? object[axis.size] : 0)
+
+									// Need all this to be true! Short circuit this. ok!
+									if(
+											direction != other.wall.direction // no wall in this direction
+										|| axis.cord != object.wall.axis // no wall on this cord
+										|| Math.sign(object[axis.speed]) == other.wall.direction // need to be opposite direction
+										|| direction > 0 ? objectWall > otherWall : otherWall > objectWall // not already through
+									) continue
+								}
+
+								if(object.wall) {
+
+								}
+							}
+						}
+					}
+
 					// if there is a collision
 	            if(axisCollisions.length) {
 						var depth = 0 // use this to snap to the deepest collision
