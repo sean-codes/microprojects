@@ -29,20 +29,20 @@ ctx.canvas.height = ctx.canvas.getBoundingClientRect().height
 var map = {
    grid: { x: 20, y: 20},
    visual: [
-      '    X A             ',
       '                    ',
+      '                    ',
+      '                    ',
+      '         X          ',
       '      A             ',
-      '                    ',
-      '                    ',
-      '      A   OO      OO',
-      '          OOFFFFFFOO',
-      'A   _     OOOOOOOOOO',
-      '          OOOOOOOOOO',
-      '                    ',
-      '                    ',
+      '         OO h     OO',
+      '         OOOFFFFFFOO',
+      '      A  OOOOOOOOOOO',
+      'A        OOOOOOOOOOO',
+      '    _               ',
+      '           x        ',
       'A                   ',
-		'                    ',
-      '                    ',
+		'          OOOO      ',
+      '          OOOO      ',
       'OOOOOOOOOOOOOOOOOOOO',
    ],
    linkTo: {
@@ -56,7 +56,7 @@ var map = {
          type: 'platform', height: 20, width:80, vSpeed: -1, hSpeed: 0, pull: []
       }),
       h: JSON.stringify({
-         type: 'platform', height: 20, width:80, vSpeed: 0, hSpeed: 1
+         type: 'platform', height: 20, width:80, vSpeed: 0, hSpeed: 1, friction: { x: 0.8, y: 0}
       }),
       F: JSON.stringify({
          type: 'fire', height: 20, width:20
@@ -65,7 +65,7 @@ var map = {
          type: 'crate', height: 20, width:20, vSpeed:0, hSpeed:0
       }),
       A: JSON.stringify({
-         type: 'box', height: 20, width:40, vSpeed:0, hSpeed: 0, depth: 10
+         type: 'box', height:40, width:40, vSpeed:0, hSpeed: 0, depth: 10
       })
    }
 }
@@ -106,7 +106,7 @@ var game = {
       ctx.canvas.addEventListener('keydown', e => game.keys[e.keyCode] = true)
       ctx.canvas.addEventListener('keyup', e => game.keys[e.keyCode] = false)
 
-      this.loopInterval = setInterval(this.loop.bind(this), 1000/100)
+      this.loopInterval = setInterval(this.loop.bind(this), 1000/30)
    },
    loop: function() {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
@@ -277,14 +277,16 @@ var game = {
 				object.physics = object.physics || 'lock'
 				object.hSpeed = object.hSpeed || 0
 				object.vSpeed = object.vSpeed || 0
-				object.bounce = { x: 0, y: 0 }
-				object.friction = { x: 0.5, y: 1 }
+				object.bounce = { x: 0, y: 0.5 }
+				object.air = 0.99
+				object.friction = object.friction || { x: 0.25, y: 0 }
 				object.pull = []
 			},
 			step: function(object) {
 				return this['step_' + object.physics](object)
 			},
          step_solid: function(object) {
+            this.air(object)
             this.gravity(object)
             return this.move(object)
          },
@@ -304,7 +306,7 @@ var game = {
 					if(Math.sign(pull.other[pull.speed]) != Math.sign(object[pull.speed])) continue
 
 					pull.other[pull.cord] += pull.amount
-					var pullCollisions = pull.other.physics == 'empty'
+					var pullCollisions = pull.other.wall
 						? this.collisions(pull.other, ['lock'])
 						: this.collisions(pull.other, ['lock', 'solid'])
 
@@ -331,12 +333,12 @@ var game = {
 					}
 
 					// step 2. check collisions
-					var pushedCollisions = this.collisions(collision, ['lock', 'solid', 'empty'])
+					var pushedCollisions = this.collisions(collision, ['lock', 'solid'])
 
 					if(pushedCollisions.length) {
 						// step 3. check collision type
 						//var empty =
-						var soft = pushedCollisions.some((e) => ['solid', 'empty'].includes(e.other.physics))
+						var soft = pushedCollisions.some((e) => ['solid'].includes(e.other.physics))
 						var hard = pushedCollisions.some((e) => ['lock'].includes(e.other.physics))
 
 						// step 4. fail and revert
@@ -434,12 +436,14 @@ var game = {
 
 								// Reflect / Mirror other speed / Stabalize
 								object[axis.speed] = (-initial[axis.speed] * object.bounce[axis.cord]) + (other[axis.speed] * object.bounce[axis.cord])
-								// if(Math.abs(object[axis.speed]) < Math.abs(other[axis.speed])) object[axis.speed] = other[axis.speed] // stabalize
-								// if(object[axis.speed] < 0 && object[axis.speed] >= -Math.abs(other[axis.speed]) && axis.cord == 'y') object[axis.speed] = 0 // more stable
+								if(Math.abs(object[axis.speed]) < Math.abs(other[axis.speed])) object[axis.speed] = other[axis.speed] // stabalize
+								if(object[axis.speed] < 0 && object[axis.speed] >= -Math.abs(other[axis.speed]) && axis.cord == 'y') object[axis.speed] = 0 // more stable
 
 								// Friction
-								object[axis.oSpeed] = initial[axis.oSpeed] * other.friction[axis.oCord]
-
+								if(other.friction[axis.oCord]) {
+									var difference = other[axis.oSpeed] - initial[axis.oSpeed]
+									object[axis.oSpeed] = initial[axis.oSpeed] + difference*other.friction[axis.oCord]
+								}
 								// set (top, bottom, left, right) for user usage
 								response[axis[axis.direction > 0 ? 'greater' : 'lessthan']] = other
 							}
@@ -454,7 +458,7 @@ var game = {
 
 							// transfer speed to other
 							if(collision.other.physics == 'solid') {
-								other[axis.speed] = initial[axis.speed] * other.bounce[axis.cord]
+								if(axis.cord == 'x' || (axis.cord == 'y' && axis.direction < 0)) other[axis.speed] = initial[axis.speed]// somethings wrong here
 								if(axis.cord == 'x') other[axis.oSpeed] = object[axis.oSpeed] * object.friction[axis.cord] // prevent transfer x from y
 							}
 						}
@@ -463,6 +467,11 @@ var game = {
 
             this.stayInside(object)
             return response
+         },
+			air: function(object) {
+            // Gravity
+            object.vSpeed *= object.air
+				object.hSpeed *= object.air
          },
 			gravity: function(object) {
             // Gravity
