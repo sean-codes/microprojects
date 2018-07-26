@@ -7,18 +7,18 @@ ctx.canvas.height = ctx.canvas.getBoundingClientRect().height
 var map = {
    grid: { x: 20, y: 20},
    visual: [
-      '     A              ',
-      '   X                ',
-      '     A              ',
+      '    X A             ',
       '                    ',
-      '     A              ',
-      '        x OO      OO',
-      '     A  x OOFFFFFFOO',
-      '        x OOOOOOOOOO',
-      '        x OOOOOOOOOO',
-      '     _              ',
+      '      A             ',
       '                    ',
       '                    ',
+      '      A   OO      OO',
+      '          OOFFFFFFOO',
+      'A   _     OOOOOOOOOO',
+      '          OOOOOOOOOO',
+      '                    ',
+      '                    ',
+      'A                   ',
 		'                    ',
       '                    ',
       'OOOOOOOOOOOOOOOOOOOO',
@@ -31,7 +31,7 @@ var map = {
          type: 'block', height: 20, width:20
       }),
       _: JSON.stringify({
-         type: 'platform', height: 20, width:80, vSpeed: 1, hSpeed: 0, pull: []
+         type: 'platform', height: 20, width:80, vSpeed: -1, hSpeed: 0, pull: []
       }),
       h: JSON.stringify({
          type: 'platform', height: 20, width:80, vSpeed: 0, hSpeed: 1
@@ -84,26 +84,27 @@ var game = {
       ctx.canvas.addEventListener('keydown', e => game.keys[e.keyCode] = true)
       ctx.canvas.addEventListener('keyup', e => game.keys[e.keyCode] = false)
 
-      this.loopInterval = setInterval(this.loop.bind(this), 1000/60)
+      this.loopInterval = setInterval(this.loop.bind(this), 1000/100)
    },
    loop: function() {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
 
       // Run object steps
+		for(var object of this.objects) {
+			this.objectTypes[object.type].draw.call(object)
+
+			// draw id
+			game.ctx.fillStyle = '#000b'
+			game.ctx.textAlign = 'center'
+			game.ctx.textBaseline = 'middle'
+			game.ctx.fillText(object.id, object.x+object.width/2, object.y+object.height/2)
+		}
+
       for(var object of this.objects) {
          this.objectTypes[object.type].step.call(object)
       }
 
       var count = 0
-      for(var object of this.objects) {
-         this.objectTypes[object.type].draw.call(object)
-
-         // draw id
-         game.ctx.fillStyle = '#000b'
-         game.ctx.textAlign = 'center'
-         game.ctx.textBaseline = 'middle'
-         game.ctx.fillText(object.id, object.x+object.width/2, object.y+object.height/2)
-      }
    },
 	draw: {
 		// for testing floor/ceil locking draws
@@ -183,7 +184,7 @@ var game = {
       },
 		box: {
 			create: function() {
-				this.physics = 'empty'
+				this.physics = 'solid'
 				this.wall = { cord: 'y', direction: -1 }
 				game.script.physics.init(this)
 			},
@@ -254,14 +255,12 @@ var game = {
 				object.physics = object.physics || 'lock'
 				object.hSpeed = object.hSpeed || 0
 				object.vSpeed = object.vSpeed || 0
+				object.bounce = { x: 0, y: 0 }
+				object.friction = { x: 0.5, y: 1 }
 				object.pull = []
 			},
 			step: function(object) {
 				return this['step_' + object.physics](object)
-			},
-			step_empty: function(object) {
-				this.gravity(object)
-				return this.move(object)
 			},
          step_solid: function(object) {
             this.gravity(object)
@@ -271,32 +270,24 @@ var game = {
             // ( and the axis loop )
 				for(var axis of [{ cord: 'x', speed: 'hSpeed', size: 'width'}, { cord: 'y', speed: 'vSpeed', size: 'height'}]) {
 					// the one line
+					//object[axis.cord] += object[axis.speed]
 					this.push([object], axis, object[axis.speed])
             }
 				this.pull(object)
          },
 			pull: function(object) {
 				for(var id in object.pull) {
-				// while(object.pull.length) {
-					//var pull = object.pull.shift()
 					var pull = object.pull[id]
-
-					if(pull.amount != object[pull.speed]) continue
+					// not moving in the same direction anymore
 					if(Math.sign(pull.other[pull.speed]) != Math.sign(object[pull.speed])) continue
-					var savePose = pull.other[pull.cord]
-					// pull.other[pull.cord] = pull.other[pull.cord]+pull.other[pull.size]/2 <= object[pull.cord]+object[pull.size]/2
-					// 	? object[pull.cord] - pull.other[pull.size]
-					// 	: object[pull.cord] + object[pull.size]
-					pull.other[pull.cord] += pull.amount
 
+					pull.other[pull.cord] += pull.amount
 					var pullCollisions = pull.other.physics == 'empty'
 						? this.collisions(pull.other, ['lock'])
 						: this.collisions(pull.other, ['lock', 'solid'])
 
 					if(pullCollisions.length) {
-						// all might not be losts
 						pull.other[pull.cord] -= pull.amount
-						// pull.other[pull.cord] = savePose
 						continue
 					}
 
@@ -365,10 +356,12 @@ var game = {
                right: false
             }
 
+				var initial = { vSpeed: object.vSpeed, hSpeed: object.hSpeed }
 				var axisList = [
-					{ cord: 'x', size: 'width', speed: 'hSpeed', greater: 'right', lessthan: 'left' },
-					{ cord: 'y', size: 'height', speed: 'vSpeed', greater: 'bottom', lessthan: 'top' },
+					{ cord: 'x', oCord: 'y', size: 'width', speed: 'hSpeed', oSpeed: 'vSpeed', greater: 'right', lessthan: 'left', direction: Math.sign(object.hSpeed) },
+					{ cord: 'y', oCord: 'x', size: 'height', speed: 'vSpeed', oSpeed: 'hSpeed', greater: 'bottom', lessthan: 'top', direction: Math.sign(object.vSpeed)  },
 				]
+
 
 				for(var axis of axisList){
 					// move on the axis and check for a collision
@@ -377,124 +370,72 @@ var game = {
 
 					// if there is collision(s)
 					if(axisCollisions.length) {
-						var directions = [1, -1]
-						// loop directions (left/right, top/bottom)
-						for(var direction of directions) {
+						var depth = 0 // for moving to deepest
 
-							//check
-							for(var collision of axisCollisions) {
-								// for easier reading
-								var other = collision.other
+						// loop each collision on this axis
+						for(var collision of axisCollisions) {
+							// for easier reading
+							var other = collision.other
 
-								if(other.wall) {
-									// location of the walls
-									var otherWall = other[axis.cord] + (direction > 0 ? other[axis.size] : 0)
-									var objectWall = object[axis.cord] + (direction > 0 ? object[axis.size] : 0)
+							if(other.wall) {
+								// location of the walls
+								var otherWall = other[axis.cord] + (other.wall.direction > 0 ? other[axis.size] : 0) + initial[axis.speed]
+								var objectWall = object[axis.cord] + (other.wall.direction < 0 ? object[axis.size] : 0) - initial[axis.speed]
 
-									// Need all this to be true! Short circuit this. ok!
-									if(
-											direction != other.wall.direction // no wall in this direction
-										|| axis.cord != object.wall.axis // no wall on this cord
-										|| Math.sign(object[axis.speed]) == other.wall.direction // need to be opposite direction
-										|| direction > 0 ? objectWall > otherWall : otherWall > objectWall // not already through
-									) continue
-								}
-
-								if(object.wall) {
-
-								}
-							}
-						}
-					}
-
-					// if there is a collision
-	            if(axisCollisions.length) {
-						var depth = 0 // use this to snap to the deepest collision
-                  for(var collision of axisCollisions) {
-							// if collide on empty only process if we are on top
-							if(collision.other.physics == 'empty') {
-								//console.log('empty', axis.cord)
-								// make sure we are above right meow!
-								if(axis.cord == 'x') continue
-								if(object[axis.speed] <= 0 || object[axis.cord] + object[axis.size] - object[axis.speed] > collision.other[axis.cord]){
-									//console.log('skipping')
-									continue
-								}
+								// Need all this to be false!
+								if(
+									   (axis.cord != other.wall.cord) // need to be on same cord
+									|| (axis.direction == other.wall.direction) // wall needs to be opposite
+									|| (other.wall.direction < 0 ? objectWall > otherWall : objectWall < otherWall) // not already through
+								) { continue }
 							}
 
-							// what if I am empty?
-							if(object.physics == 'empty') {
-								//console.log('i have no soul')
-								if(axis.cord == 'x') continue
-								// make sure we are falling on a top or solid
-								if(!['lock', 'empty'].includes(collision.other.physics)) {
-									//console.log('wtf you are not even locked')
-									//console.log(collision.other[axis.speed])
-									if(collision.other[axis.speed] <= 0 || collision.other[axis.cord] + collision.other[axis.size] > object[axis.cord]) {
-										//console.log('we are slipping through time and space')
-										//console.log(collision.other[axis.speed])
-										continue
-									}
-								}
+							if(object.wall) {
+								// location of the walls
+								if(
+									   axis.direction == object.wall.direction
+									|| axis.cord != object.wall.cord
+									|| !(other.physics == 'lock' || other.wall)
+									|| (other.wall && other.wall.direction == axis.direction)
+								) { continue }
 							}
+
+							// This collision is not a drill! Resolve it! :]
 							response[axis.cord].collisions.push(collision)
 
-							// if we are moving in the same direction and collide pull the next step
-							var sameDirection = (Math.sign(collision.other[axis.speed]) == Math.sign(object[axis.speed]))
-							var goingFaster = Math.abs(object[axis.speed]) > Math.abs(collision.other[axis.speed])
-							if(sameDirection && goingFaster){
-								collision.other.pull[object.id] = {
-								// collision.other.pull.push({
-									other: object,
-									cord: axis.cord,
-									speed: axis.speed,
-									amount: collision.other[axis.speed],
-									size: axis.size }
+							// More accurate solution. Move to the deepest collision. Reflect
+							if(collision.depth[axis.cord] >= depth) {
+								depth = collision.depth[axis.cord]
+								object[axis.cord] = (object[axis.cord] + object[axis.size]/2) < (other[axis.cord] + other[axis.size]/2)
+		                        ? other[axis.cord] - object[axis.size]
+		                        : other[axis.cord] + other[axis.size]
+
+								// Reflect / Mirror other speed / Stabalize
+								object[axis.speed] = (-initial[axis.speed] * object.bounce[axis.cord]) + (other[axis.speed] * object.bounce[axis.cord])
+								// if(Math.abs(object[axis.speed]) < Math.abs(other[axis.speed])) object[axis.speed] = other[axis.speed] // stabalize
+								// if(object[axis.speed] < 0 && object[axis.speed] >= -Math.abs(other[axis.speed]) && axis.cord == 'y') object[axis.speed] = 0 // more stable
+
+								// Friction
+								object[axis.oSpeed] = initial[axis.oSpeed] * other.friction[axis.oCord]
+
+								// set (top, bottom, left, right) for user usage
+								response[axis[axis.direction > 0 ? 'greater' : 'lessthan']] = other
 							}
 
-							// console.log(object.pull)
-							// clearTimeout(game.loop)
-	                  if(collision.depth[axis.cord] > depth) {
-	                     depth = collision.depth[axis.cord]
-	                     object[axis.cord] = (object[axis.cord] + object[axis.size]/2) < (collision.other[axis.cord] + collision.other[axis.size]/2)
-	                        ? collision.other[axis.cord] - object[axis.size]
-	                        : collision.other[axis.cord] + collision.other[axis.size]
-	                  }
+							// if moving in the same direction and faster. request the other pulls us along
+							var isGoingSameDirection = Math.sign(initial[axis.speed]) == Math.sign(other[axis.speed])
+							var isGoingFaster = Math.abs(initial[axis.speed]) > Math.abs(other[axis.speed])
 
-							// transfering speed to collision object
+							if(isGoingSameDirection && isGoingFaster) {
+								other.pull[object.id] = { other: object, cord: axis.cord, speed: axis.speed, amount: other[axis.speed] }
+							}
+
+							// transfer speed to other
 							if(collision.other.physics == 'solid') {
-								// console.log('objecttype: ' + object.type + ' trying to transfer to ' + collision.other.type + ': ' + object[axis.speed])
-								if(axis.cord == 'x' || (axis.cord == 'y' && object[axis.speed] < 0)) {
-									// console.log('trasnsfering')
-									var oppositeSpeed = axis.cord == 'x' ? 'vSpeed' : 'hSpeed'
-									// var oppositeAxis = axis.cord == 'x' ? 'y' : 'x'
-									collision.other[axis.speed] = object[axis.speed]
-									collision.other[oppositeSpeed] = object[oppositeSpeed] // should target this
-								}
+								other[axis.speed] = initial[axis.speed] * other.bounce[axis.cord]
+								if(axis.cord == 'x') other[axis.oSpeed] = object[axis.oSpeed] * object.friction[axis.cord] // prevent transfer x from y
 							}
-
-							// taking speed from collision object
-							if(axis.cord == 'y') {
-								object[axis.speed] = collision.other[axis.speed]
-								if(object[axis.speed] < 0) object[axis.speed] = 0
-							}
-
-							// friction
-							if(axis.cord == 'x') {
-								object.hSpeed = 0
-							}
-
-			            if(axis.cord == 'y') {
-								// match hspeed
-								var target = response.y.collisions[0].other.hSpeed || 0
-			               var current = object.hSpeed
-			               object.hSpeed += (target - current) * 0.25
-			            }
-
-	                  // not using these yet
-	                  if(object[axis.cord] + object[axis.size] <= collision.other[axis.cord]) response[axis.greater] = collision
-	                  if(collision.other[axis.cord] + collision.other[axis.size] >= object[axis.cord]) response[axis.lessthan] = collision
-	               }
+						}
 	            }
 				}
 
