@@ -33,14 +33,15 @@ var map = {
 		'                    ',
 		'                    ',
 		'                    ',
-		'    P               ',
+		'    P     C         ',
 		'                    ',
-		'                    ',
-		'                    ',
+		'          C       BB',
+		'B               BBBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
 	link: {
 		B: { type: 'block', size: { x: 20, y: 20 } },
+		C: { type: 'crate', size: { x: 40, y: 40 } },
 		P: { type: 'player', size: { x: 20, y: 30 } },
 	}
 }
@@ -84,9 +85,9 @@ var game = {
 		}
 	},
 	draw: {
-		fillRect(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), Math.round(w)+0.5, Math.round(h)+0.5) },
-		strokeRect(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5,Math.round(w)-1, Math.round(h)-1) },
-		fillText(text, x, y) { game.ctx.fillText(text, x, y) },
+		fillRect: function(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), Math.round(w)+0.5, Math.round(h)+0.5) },
+		strokeRect: function(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5,Math.round(w)-1, Math.round(h)-1) },
+		fillText: function(text, x, y) { game.ctx.fillText(text, x, y) },
 	},
 	mapLoad: function(map){
 		for(var rowID in map.visual) {
@@ -107,7 +108,10 @@ var game = {
 	objectTypes: {
 		block: {
 			create: function(object) {
-
+				game.script.physics.init(object, {
+					type: 'block',
+					wall: { cord: 'y', direction: -1 }
+				})
 			},
 			step: function(object) {
 
@@ -118,9 +122,28 @@ var game = {
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 			}
 		},
+		crate: {
+			create: function(object) {
+				game.script.physics.init(object, {
+					type: 'ghost',
+					wall: { cord: 'y', direction: -1 }
+				})
+			},
+			step: function(object) {
+
+			},
+			draw: function(object) {
+				game.ctx.fillStyle = '#ff8822aa'
+				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
+				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
+			}
+		},
 		player: {
 			create: function(object) {
-				game.script.physics.init(object)
+				game.script.physics.init(object, {
+					type: 'ghost',
+					wall: { cord: 'y', direction: -1 }
+				})
 			},
 			step: function(object) {
 				game.script.physics.air(object)
@@ -129,18 +152,16 @@ var game = {
 
 				if(object.physics.manifold.bottom) console.log('bottom')
 
-				var max = { x: 2 }
 				for(var move of [
 					{ x: -1, y: 0, required: game.keys.down[37] },
 					{ x: 1, y: 0, required: game.keys.down[39] },
-					{ x: 0, y: -8, required: game.keys.down[38] && object.physics.manifold.bottom },
+					{ x: 0, y: -14, required: game.keys.down[38] && object.physics.manifold.bottom },
 				]) {
 					if(move.required) {
-						object.physics.speed.x += move.x
 						object.physics.speed.y += move.y
 
-					 	var dampen = object.physics.speed.x - Math.sign(move.x) * 2
-						object.physics.speed.x -= dampen
+						if(Math.abs(object.physics.speed.x + move.x) < 3)
+							object.physics.speed.x += move.x
 					}
 				}
 			},
@@ -148,6 +169,8 @@ var game = {
 				game.ctx.fillStyle = '#7766AAaa'
 				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
+
+				game.draw.fillText(object.physics.speed.x, object.x, object.y-20)
 			}
 		}
 	},
@@ -155,13 +178,15 @@ var game = {
 		physics: {
 			settings: {
 				gravity: { x: 0, y: 1, max: { x: 0, y: 5 }},
-				air: { x: 0.98, y: 0.98 }
+				air: { x: 0.95, y: 0.95 }
 			},
 			axisList: [ // Going to use these for extra information
 				{ cord: 'x', greater: 'right', lessThan: 'left' },
 				{ cord: 'y', greater: 'bottom', lessThan: 'top' }],
-			init: function(object) {
+			init: function(object, options={}) {
 				object.physics = {
+					type: options.type || 'solid',
+					wall: options.wall,
 					speed: { x: 0, y: 0 },
 					moved: { x: 0, y: 0 },
 					manifold: this.clearManifold
@@ -181,22 +206,40 @@ var game = {
 				object.physics.manifold = this.clearManifold()
 
 				for(var axis of this.axisList) {
-					object[axis.cord] += Math.floor(object.physics.speed[axis.cord])
-
-					// going to use this for depth
-					var objectWall = object.physics.speed[axis.cord] > 0
-						? object[axis.cord] + object.size[axis.cord]
-						: object[axis.cord]
+					var direction = Math.sign(object.physics.speed[axis.cord])
+					var depth = Math.round(object.physics.speed[axis.cord])
+					object[axis.cord] += depth
 
 					var collisions = game.script.collision.check(object)
-					if(collisions.length){
-						object[axis.cord] -= Math.floor(object.physics.speed[axis.cord])
+					var solidCollision = collisions.some((other) => other.physics.type == 'block')
 
-						var other = collisions[0] // going to attempt with a single
+					if(!solidCollision) {
+						// check the walls
+						var objectWall = object.physics.speed[axis.cord] > 0
+							? object[axis.cord] + object.size[axis.cord]
+							: object[axis.cord]
+
+						for(var other of collisions) {
+							if(!other.physics.wall || axis.cord != other.physics.wall.cord || direction == other.physics.wall.direction) continue
+							otherWall = object.physics.speed[axis.cord] > 0
+								? other[axis.cord]
+								: other[axis.cord] + other.size[axis.cord]
+
+							solidCollision = object.physics.speed[axis.cord] > 0
+								? objectWall > otherWall && (objectWall - depth) <= otherWall
+								: objectWall + depth < otherWall
+
+							if(solidCollision) break
+						}
+					}
+
+					// its over
+					if(solidCollision){
+						object[axis.cord] -= depth
 						lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
-						object.physics.manifold[lessOrGreater] = other
-
+						object.physics.manifold[lessOrGreater] = true
 						object.physics.speed[axis.cord] = 0
+						continue
 					}
 				}
 			},
@@ -207,7 +250,10 @@ var game = {
 				}
 			},
 			air: function(object) {
-				for(var axis of this.axisList) object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
+				for(var axis of this.axisList){
+					object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
+					if(Math.abs(object.physics.speed[axis.cord]) < 0.01) object.physics.speed[axis.cord] = 0
+				}
 			}
 		},
 		collision: {
