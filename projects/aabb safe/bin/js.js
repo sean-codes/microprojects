@@ -33,9 +33,9 @@ var map = {
 		'                    ',
 		'                    ',
 		'                    ',
-		'    P     C         ',
+		'   _      C         ',
 		'                    ',
-		'          C       BB',
+		'   P      C       BB',
 		'B               BBBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
@@ -43,6 +43,7 @@ var map = {
 		B: { type: 'block', size: { x: 20, y: 20 } },
 		C: { type: 'crate', size: { x: 40, y: 40 } },
 		P: { type: 'player', size: { x: 20, y: 30 } },
+		_: { type: 'platform', size: { x: 70, y: 15 }, speed: { x: 0, y: 1 } }
 	}
 }
 
@@ -122,6 +123,27 @@ var game = {
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 			}
 		},
+		platform: {
+			create: function(object) {
+				game.script.physics.init(object, {
+					type: 'block',
+					speed: object.speed
+				})
+			},
+			step: function(object) {
+				game.script.physics.block(object)
+
+				if(object.physics.moved.x == 0 && object.physics.moved.y == 0) {
+					object.physics.speed.x *= -1
+					object.physics.speed.y *= -1
+				}
+			},
+			draw: function(object) {
+				game.ctx.fillStyle = '#999999aa'
+				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
+				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
+			}
+		},
 		crate: {
 			create: function(object) {
 				game.script.physics.init(object, {
@@ -130,7 +152,7 @@ var game = {
 				})
 			},
 			step: function(object) {
-
+				game.script.physics.ghost(object)
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#ff8822aa'
@@ -146,11 +168,7 @@ var game = {
 				})
 			},
 			step: function(object) {
-				game.script.physics.air(object)
-				game.script.physics.gravity(object)
-				game.script.physics.move(object)
-
-				if(object.physics.manifold.bottom) console.log('bottom')
+				game.script.physics.ghost(object)
 
 				for(var move of [
 					{ x: -1, y: 0, required: game.keys.down[37] },
@@ -187,7 +205,7 @@ var game = {
 				object.physics = {
 					type: options.type || 'solid',
 					wall: options.wall,
-					speed: { x: 0, y: 0 },
+					speed: options.speed || { x: 0, y: 0 },
 					moved: { x: 0, y: 0 },
 					manifold: this.clearManifold
 				}
@@ -200,6 +218,36 @@ var game = {
 					left: undefined,
 					right: undefined
 				}
+			},
+			ghost: function(object) {
+				game.script.physics.air(object)
+				game.script.physics.gravity(object)
+				game.script.physics.move(object)
+			},
+			block: function(object) {
+				for(var axis of this.axisList) {
+					if(!object.speed[axis.cord]) continue // not moving on this axis. skip
+
+					var safe = game.script.physics.push(object, axis)
+				}
+			},
+			push: function(object, axis, amount) {
+				var direction = Math.sign(object.physics.speed[axis.cord])
+				var moved = Math.round(object.physics.speed[axis.cord])
+
+				object[axis.cord] += moved
+
+				var collisions = game.script.collision.check(object)
+				var solidCollision = collisions.some((other) => other.physics.type == 'block')
+				var outside = game.script.physics.outside(object)
+
+				if(outside || solidCollision) {
+					object[axis.cord] -= moved
+					moved = 0
+				}
+
+				object.physics.moved[axis.cord] = moved
+
 			},
 			move: function(object) {
 				// reset collision
@@ -254,6 +302,10 @@ var game = {
 					object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
 					if(Math.abs(object.physics.speed[axis.cord]) < 0.01) object.physics.speed[axis.cord] = 0
 				}
+			},
+			outside: function(object) {
+				return ( object.x < 0 || object.x+object.size.x > game.width
+					|| object.y < 0 || object.y+object.size.y > game.height )
 			}
 		},
 		collision: {
