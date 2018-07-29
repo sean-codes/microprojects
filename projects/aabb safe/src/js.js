@@ -11,9 +11,9 @@ var map = {
 		'                    ',
 		'                    ',
 		'                    ',
-		'   _      C         ',
+		'   P      C         ',
 		'                    ',
-		'   P      C       BB',
+		'   _      C       BB',
 		'B               BBBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
@@ -205,19 +205,25 @@ var game = {
 			block: function(object) {
 				for(var axis of this.axisList) {
 					if(!object.speed[axis.cord]) continue // not moving on this axis. skip
-
-					var safe = game.script.physics.push(object, axis)
+					game.script.physics.push(object, axis, object.physics.speed[axis.cord])
 				}
 			},
 			push: function(object, axis, amount) {
-				var direction = Math.sign(object.physics.speed[axis.cord])
-				var moved = Math.round(object.physics.speed[axis.cord])
-
+				var moved = Math.round(amount)
+				
 				object[axis.cord] += moved
 
 				var collisions = game.script.collision.check(object)
 				var solidCollision = collisions.some((other) => other.physics.type == 'block')
 				var outside = game.script.physics.outside(object)
+
+				if(!solidCollision) {
+					for(var other of collisions) {
+						// attempt to push
+						solidCollision = !game.script.physics.push(other, axis, amount)
+						if(solidCollision) break
+					}
+				}
 
 				if(outside || solidCollision) {
 					object[axis.cord] -= moved
@@ -225,7 +231,7 @@ var game = {
 				}
 
 				object.physics.moved[axis.cord] = moved
-
+				return moved
 			},
 			move: function(object) {
 				// reset collision
