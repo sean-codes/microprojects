@@ -1,0 +1,28 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   background:#333;
+   font-family: 'Karla', sans-serif;
+   color:#FFF;
+   height:100%;
+}
+
+body {
+	display:flex;
+}
+
+canvas {
+	width:400px;
+	height:300px;
+	background:#FFF;
+	margin:auto;
+
+	image-rendering:optimizeSpeed;             /* Legal fallback */
+	image-rendering:-moz-crisp-edges;          /* Firefox        */
+	image-rendering:-o-crisp-edges;            /* Opera          */
+	image-rendering:-webkit-optimize-contrast; /* Safari         */
+	image-rendering:optimize-contrast;         /* CSS3 Proposed  */
+	image-rendering:crisp-edges;               /* CSS4 Proposed  */
+	image-rendering:pixelated;                 /* CSS4 Proposed  */
+	-ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
+}

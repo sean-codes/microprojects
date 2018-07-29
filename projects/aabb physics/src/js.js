@@ -87,7 +87,7 @@ var game = {
       ctx.canvas.addEventListener('keydown', e => game.keys[e.keyCode] = true)
       ctx.canvas.addEventListener('keyup', e => game.keys[e.keyCode] = false)
 
-      this.loopInterval = setInterval(this.loop.bind(this), 1000/60 )
+      this.loopInterval = setInterval(this.loop.bind(this), 1000/30 )
    },
    loop: function() {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
@@ -128,7 +128,7 @@ var game = {
             for(var move of [
                { x:  1, y:  0, down: game.keys[39], require: true },
                { x: -1, y:  0, down: game.keys[37], require: true },
-               { x:  0, y: -8, down: game.keys[38], require: response.bottom }
+               { x:  0, y: -8, down: game.keys[38], require: this.response.bottom }
             ]) {
                if(move.require && move.down) {
                   this.hSpeed += move.x
@@ -265,11 +265,18 @@ var game = {
 				object.physics = object.physics || 'lock'
 				object.hSpeed = object.hSpeed || 0
 				object.vSpeed = object.vSpeed || 0
-				object.bounce = { x: 0.1, y: 0.25 }
+				object.bounce = { x: 0.1, y: 0.3 }
 				object.moved = { x: 0, y: 0 }
 				object.air = 0.99
 				object.friction = object.friction || { x: 0.25, y: 0 }
 				object.pull = []
+				object.response = {
+					top: undefined,
+					bottom: undefined,
+					right: undefined,
+					left: undefined,
+					collisions: []
+				}
 			},
 			step: function(object) {
 				return this['step_' + object.physics](object)
@@ -277,7 +284,11 @@ var game = {
          step_solid: function(object) {
             this.air(object)
             this.gravity(object)
-            return this.move(object)
+				this.move(object)
+				if(object.moved.x || object.moved.y) {
+					this.pull(object)
+				}
+				this.stayInside(object)
          },
          step_lock: function(object) {
             // ( and the axis loop )
@@ -286,7 +297,6 @@ var game = {
 					{ cord: 'y', speed: 'vSpeed', size: 'height', start:object.y }
 				]) {
 					// the one line
-					//object[axis.cord] += object[axis.speed]
 					this.push([object], axis, object[axis.speed])
 					object.moved[axis.cord] = object[axis.cord] - axis.start
             }
@@ -296,18 +306,19 @@ var game = {
 				for(var id in object.pull) {
 					var pull = object.pull[id]
 					// not moving in the same direction anymore
-					if(Math.sign(pull.other[pull.speed]) != Math.sign(object[pull.speed])) continue
+					if(Math.sign(pull.other[pull.speed]) != Math.sign(object.moved[pull.cord])) continue
 
-					pull.other[pull.cord] += pull.amount
+					pull.other[pull.cord] += object.moved[pull.cord]
 					var pullCollisions = pull.other.wall
 						? this.collisions(pull.other, ['lock'])
 						: this.collisions(pull.other, ['lock', 'solid'])
 
-					if(pullCollisions.length && !pullCollisions.every((e) => e.other.wall )) {
-						pull.other[pull.cord] -= pull.amount
+					if(this.isOutside(pull.other) || (pullCollisions.length && !pullCollisions.every((e) => e.other.wall ))) {
+						pull.other[pull.cord] -= object.moved[pull.cord]
 						continue
 					}
 
+					pull.other.moved[pull.cord] = object.moved[pull.cord]
 					this.pull(pull.other)
 				}
 
@@ -364,7 +375,7 @@ var game = {
 				return true
 			},
          move: function(object) {
-            var response = {
+            object.response = {
                x: { collisions: [] },
                y: { collisions: [] },
                bottom: false,
@@ -419,7 +430,7 @@ var game = {
 							}
 
 							// This collision is not a drill! Resolve it! :]
-							response[axis.cord].collisions.push(collision)
+							object.response[axis.cord].collisions.push(collision)
 
 							// More accurate solution. Move to the deepest collision. Reflect
 							if(collision.depth[axis.cord] >= depth) {
@@ -434,20 +445,21 @@ var game = {
 								if(Math.abs(object[axis.speed]) < Math.abs(other[axis.speed])) object[axis.speed] = other[axis.speed] // stabalize
 								if(object[axis.speed] < 0 && object[axis.speed] >= -Math.abs(other[axis.speed]) && axis.cord == 'y') object[axis.speed] = 0 // more stable
 
+
 								// Friction
 								if(other.friction[axis.oCord]) {
 									var difference = other.moved[axis.oCord] - initial[axis.oSpeed]
 									object[axis.oSpeed] = initial[axis.oSpeed] + difference*other.friction[axis.oCord]
 								}
 								// set (top, bottom, left, right) for user usage
-								response[axis[axis.direction > 0 ? 'greater' : 'lessthan']] = other
+								object.response[axis[axis.direction > 0 ? 'greater' : 'lessthan']] = other
 							}
 
 							// if moving in the same direction and faster. request the other pulls us along
 							var isGoingSameDirection = Math.sign(initial[axis.speed]) == Math.sign(other[axis.speed])
 							var isGoingFaster = Math.abs(initial[axis.speed]) > Math.abs(other[axis.speed])
 
-							if(axis.cord == 'y' && isGoingSameDirection && isGoingFaster) {
+							if(isGoingSameDirection && isGoingFaster) {
 								other.pull[object.id] = { other: object, cord: axis.cord, speed: axis.speed, amount: other[axis.speed] }
 							}
 
@@ -462,9 +474,6 @@ var game = {
 
 					object.moved[axis.cord] = object[axis.cord] - axis.start
 				}
-
-            this.stayInside(object)
-            return response
          },
 			air: function(object) {
             // Gravity
@@ -472,8 +481,8 @@ var game = {
 				object.hSpeed *= object.air
 
 				// Stabalize
-				if(Math.abs(object.hSpeed) < 0.001) object.hSpeed = 0
-				if(Math.abs(object.vSpeed) < 0.001) object.vSpeed = 0
+				if(Math.abs(object.hSpeed) < 0.01) object.hSpeed = 0
+				if(Math.abs(object.vSpeed) < 0.01) object.vSpeed = 0
          },
 			gravity: function(object) {
             // Gravity
@@ -511,7 +520,13 @@ var game = {
                object.y += object.y < 0 ? -object.y : game.height - (object.y+object.height)
                object.vSpeed = 0
             }
-         }
+         },
+			isOutside: function(object) {
+				return (
+					object.x < 0 || object.x+object.width > game.width ||
+					object.y < -100 || object.y+object.height > game.height
+				)
+			}
       }
    }
 }

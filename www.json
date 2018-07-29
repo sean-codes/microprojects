@@ -41,6 +41,10 @@
 			"path": "projects/aabb physics"
 		},
 		{
+			"title": "aabb safe",
+			"path": "projects/aabb safe"
+		},
+		{
 			"title": "gridventory",
 			"path": "projects/gridventory"
 		},
