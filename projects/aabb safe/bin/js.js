@@ -64,7 +64,13 @@ var game = {
 	loop: function() {
 		this.ctx.clearRect(0, 0, this.width, this.height)
 		for(var object of this.objects) this.objectTypes[object.type].step(object)
-		for(var object of this.objects) this.objectTypes[object.type].draw(object)
+		for(var object of this.objects){
+			this.objectTypes[object.type].draw(object)
+			this.ctx.textBaseline = 'middle'
+			this.ctx.textAlign = 'center'
+			this.ctx.fillStyle = '#000'
+			this.draw.fillText(object.id, object.x+object.size.x/2, object.y+object.size.y/2)
+		}
 	},
 	keys: {
 		down: {},
@@ -78,8 +84,8 @@ var game = {
 		}
 	},
 	draw: {
-		fillRect(x, y, w, h) { game.ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w)-0.5, Math.floor(h)-0.5) },
-		strokeRect(x, y, w, h) { game.ctx.strokeRect(Math.floor(x)+0.5, Math.floor(y)+0.5,Math.floor(w)-1, Math.floor(h)-1) },
+		fillRect(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), Math.round(w)+0.5, Math.round(h)+0.5) },
+		strokeRect(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5,Math.round(w)-1, Math.round(h)-1) },
 		fillText(text, x, y) { game.ctx.fillText(text, x, y) },
 	},
 	mapLoad: function(map){
@@ -117,10 +123,26 @@ var game = {
 				game.script.physics.init(object)
 			},
 			step: function(object) {
+				game.script.physics.air(object)
 				game.script.physics.gravity(object)
 				game.script.physics.move(object)
 
 				if(object.physics.manifold.bottom) console.log('bottom')
+
+				var max = { x: 2 }
+				for(var move of [
+					{ x: -1, y: 0, required: game.keys.down[37] },
+					{ x: 1, y: 0, required: game.keys.down[39] },
+					{ x: 0, y: -8, required: game.keys.down[38] && object.physics.manifold.bottom },
+				]) {
+					if(move.required) {
+						object.physics.speed.x += move.x
+						object.physics.speed.y += move.y
+
+					 	var dampen = object.physics.speed.x - Math.sign(move.x) * 2
+						object.physics.speed.x -= dampen
+					}
+				}
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#7766AAaa'
@@ -132,7 +154,8 @@ var game = {
 	script: {
 		physics: {
 			settings: {
-				gravity: { x: 0, y: 1, max: { x: 0, y: 5 }}
+				gravity: { x: 0, y: 1, max: { x: 0, y: 5 }},
+				air: { x: 0.98, y: 0.98 }
 			},
 			axisList: [ // Going to use these for extra information
 				{ cord: 'x', greater: 'right', lessThan: 'left' },
@@ -144,7 +167,7 @@ var game = {
 					manifold: this.clearManifold
 				}
 			},
-			clearManifold: function() {
+			clearManifold: function(object) {
 				return { // im making this up
 					list: [],
 					top: undefined,
@@ -155,8 +178,10 @@ var game = {
 			},
 			move: function(object) {
 				// reset collision
+				object.physics.manifold = this.clearManifold()
+
 				for(var axis of this.axisList) {
-					object[axis.cord] += object.physics.speed[axis.cord]
+					object[axis.cord] += Math.floor(object.physics.speed[axis.cord])
 
 					// going to use this for depth
 					var objectWall = object.physics.speed[axis.cord] > 0
@@ -165,7 +190,7 @@ var game = {
 
 					var collisions = game.script.collision.check(object)
 					if(collisions.length){
-						object[axis.cord] -= object.physics.speed[axis.cord]
+						object[axis.cord] -= Math.floor(object.physics.speed[axis.cord])
 
 						var other = collisions[0] // going to attempt with a single
 						lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
@@ -177,9 +202,12 @@ var game = {
 			},
 			gravity: function(object) {
 				for(var axis of this.axisList) {
-					if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
-				   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
+					//if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
+			   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
 				}
+			},
+			air: function(object) {
+				for(var axis of this.axisList) object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
 			}
 		},
 		collision: {
