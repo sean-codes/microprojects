@@ -126,8 +126,8 @@ var game = {
 
             // movement ( this is weird but I kind of like it )
             for(var move of [
-               { x:  1.5, y:  0, down: game.keys[39], require: true },
-               { x: -1.5, y:  0, down: game.keys[37], require: true },
+               { x:  1, y:  0, down: game.keys[39], require: true },
+               { x: -1, y:  0, down: game.keys[37], require: true },
                { x:  0, y: -8, down: game.keys[38], require: response.bottom }
             ]) {
                if(move.require && move.down) {
@@ -147,7 +147,7 @@ var game = {
 				game.ctx.strokeStyle = '#000'
 				game.draw.strokeRect(this.x, this.y, this.width, this.height)
 
-				game.ctx.fillText(Math.floor(this.hSpeed*100)/100, this.x, this.y-10)
+				game.ctx.fillText(Math.floor(this.hSpeed*1000)/1000, this.x, this.y-15)
          }
       },
       block: {
@@ -437,7 +437,6 @@ var game = {
 								// Friction
 								if(other.friction[axis.oCord]) {
 									var difference = other.moved[axis.oCord] - initial[axis.oSpeed]
-									if(object.id == 3) console.log(difference, initial[axis.oSpeed])
 									object[axis.oSpeed] = initial[axis.oSpeed] + difference*other.friction[axis.oCord]
 								}
 								// set (top, bottom, left, right) for user usage
@@ -454,8 +453,8 @@ var game = {
 
 							// transfer speed to other
 							if(collision.other.physics == 'solid') {
-								// var difference = (other[axis.speed] - initial[axis.speed]) * 0.75
-								if(axis.cord == 'x' || (axis.cord == 'y' && axis.direction < 0)) other[axis.speed] = initial[axis.speed]// somethings wrong here
+								var difference = (other[axis.speed] - initial[axis.speed]) * 0.75
+								if(axis.cord == 'x' || (axis.cord == 'y' && axis.direction < 0)) other[axis.speed] -= difference// = initial[axis.speed]// somethings wrong here
 								if(axis.cord == 'x' && other[axis.oSpeed] < 0) other[axis.oSpeed] = object[axis.oSpeed] * object.friction[axis.cord] // prevent transfer x from y
 							}
 						}
