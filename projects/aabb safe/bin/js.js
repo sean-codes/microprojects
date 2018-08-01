@@ -217,7 +217,6 @@ var game = {
 					if(!game.script.collision.check(other).some(other => other.physics.type == 'block')) {
 						other.physics.moved.x += move.x
 						other.physics.moved.y += move.y
-						if(other.id==4)console.log('wtf')
 						this.pull(other, move)
 					} else {
 						other.x -= move.x
@@ -262,7 +261,7 @@ var game = {
 					object[axis.cord] -= moved
 					moved = 0
 				}
-
+				if(object.physics.moved.x || object.physics.moved.y) this.pull(object, { x:object.physics.moved.x, y:object.physics.moved.y })
 				object.physics.moved[axis.cord] = moved
 				return moved
 			},
@@ -309,19 +308,20 @@ var game = {
 						// there is something wrong here
 						//console.log(`${axis.cord} collision resolution  ${object.id} and ${other.id} (${deepest.depth}) ${object[axis.cord]} ~ ${object[axis.cord] + deepest.depth}`)
 						object[axis.cord] += deepest.depth
-						moved = 0
+						moved += deepest.depth
 
 						// add collision to manifold
 						lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
 						object.physics.manifold[lessOrGreater] = true
 
-						// set the speed to the colliding object
+						// reflect / stabalize here (we will simple ax for now)
 						object.physics.speed[axis.cord] = 0
 
 						// request pull next to other moved
-						var otherDirection = Math.sign(other.physics.speed[axis.cord])
-						if(otherDirection == direction || otherDirection == 0){ // this is going to bubble
-							other.physics.pull.push({ axis, object, direction })
+						var otherHasMoved = deepest.other.physics.moved[axis.cord]
+						var otherDirection = Math.sign(otherHasMoved)
+						if(otherDirection == direction){ // this is going to bubble
+							deepest.other.physics.pull.push({ axis, object, direction })
 						}
 					}
 
@@ -370,7 +370,7 @@ game.init()
 var map = {
 	scale: { x: 20, y: 20 },
 	visual: [
-		'                    ',
+		'             C      ',
 		'                    ',
 		'              C     ',
 		'                    ',
@@ -380,10 +380,10 @@ var map = {
 		'             _      ',
 		'                    ',
 		'     C              ',
+		'             C      ',
 		'                    ',
-		'                    ',
-		'        P    C    BB',
-		'B               BBBB',
+		'        P   C  C  BB',
+		'B                BBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
 	link: {

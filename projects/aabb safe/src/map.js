@@ -1,7 +1,7 @@
 var map = {
 	scale: { x: 20, y: 20 },
 	visual: [
-		'                    ',
+		'             C      ',
 		'                    ',
 		'              C     ',
 		'                    ',
@@ -11,10 +11,10 @@ var map = {
 		'             _      ',
 		'                    ',
 		'     C              ',
+		'             C      ',
 		'                    ',
-		'                    ',
-		'        P    C    BB',
-		'B               BBBB',
+		'        P   C  C  BB',
+		'B                BBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
 	link: {
