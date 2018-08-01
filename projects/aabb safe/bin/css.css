@@ -9,7 +9,9 @@ html, body {
 body {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  -webkit-transform: scale(3);
+  transform: scale(3); }
 
 canvas {
   width: 400px;

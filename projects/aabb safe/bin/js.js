@@ -24,18 +24,18 @@ var map = {
 	scale: { x: 20, y: 20 },
 	visual: [
 		'                    ',
+		'            C       ',
+		'                    ',
+		'           C        ',
+		'                    ',
+		'                    ',
+		'           _        ',
 		'                    ',
 		'                    ',
 		'                    ',
 		'                    ',
 		'                    ',
-		'                    ',
-		'                    ',
-		'                    ',
-		'                    ',
-		'   P      C         ',
-		'                    ',
-		'   _      C       BB',
+		'   _              BB',
 		'B               BBBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
@@ -55,13 +55,13 @@ var game = {
 	objects: [],
 	interval: undefined,
 	init: function() {
-		this.width = this.canvas.getBoundingClientRect().width
-		this.height = this.canvas.getBoundingClientRect().height
+		this.width = 400//this.canvas.getBoundingClientRect().width
+		this.height = 300//this.canvas.getBoundingClientRect().height
 		this.canvas.width = this.width; this.canvas.height = this.height
 
 		this.mapLoad(map)
 		this.keys.listen()
-		this.interval = setInterval(this.loop.bind(this), 1000/60)
+		this.interval = setInterval(this.loop.bind(this), 1000/5)
 	},
 	loop: function() {
 		this.ctx.clearRect(0, 0, this.width, this.height)
@@ -86,8 +86,8 @@ var game = {
 		}
 	},
 	draw: {
-		fillRect: function(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), Math.round(w)+0.5, Math.round(h)+0.5) },
-		strokeRect: function(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5,Math.round(w)-1, Math.round(h)-1) },
+		fillRect: function(x, y, w, h) { game.ctx.fillRect(Math.round(x), Math.round(y), Math.round(w)-0.5, Math.round(h)-0.5) },
+		strokeRect: function(x, y, w, h) { game.ctx.strokeRect(Math.round(x)+0.5, Math.round(y)+0.5,w-1, h-1) },
 		fillText: function(text, x, y) { game.ctx.fillText(text, x, y) },
 	},
 	mapLoad: function(map){
@@ -152,7 +152,9 @@ var game = {
 				})
 			},
 			step: function(object) {
+				if(object.physics.manifold.crush) console.log('crushed')
 				game.script.physics.ghost(object)
+
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#ff8822aa'
@@ -188,7 +190,7 @@ var game = {
 				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 
-				game.draw.fillText(object.physics.speed.x, object.x, object.y-20)
+				game.draw.fillText(object.physics.speed.y, object.x, object.y-20)
 			}
 		}
 	},
@@ -207,7 +209,8 @@ var game = {
 					wall: options.wall,
 					speed: options.speed || { x: 0, y: 0 },
 					moved: { x: 0, y: 0 },
-					manifold: this.clearManifold
+					manifold: this.clearManifold,
+					pull: []
 				}
 			},
 			clearManifold: function(object) {
@@ -229,10 +232,26 @@ var game = {
 					if(!object.speed[axis.cord]) continue // not moving on this axis. skip
 					game.script.physics.push(object, axis, object.physics.speed[axis.cord])
 				}
+
+				if(object.physics.moved.x || object.physics.moved.y) this.pull(object, {x:object.physics.moved.x, y:object.physics.moved.y})
+			},
+			pull: function(object, move) {
+				while(object.physics.pull.length) {
+					var pull = object.physics.pull.shift()
+					var other = pull.object
+					console.log(`pulling ${object.id} - ${other.id} - ${move.y}`)
+					other.x += move.x
+					other.y += move.y
+					other.physics.moved.x += move.x
+					other.physics.moved.y += move.y
+
+					this.pull(other, {x:move.x+object.physics.moved.x, y:move.y+object.physics.moved.y})
+				}
 			},
 			push: function(object, axis, amount) {
 				var moved = Math.round(amount)
-				
+				var direction = Math.sign(moved)
+
 				object[axis.cord] += moved
 
 				var collisions = game.script.collision.check(object)
@@ -240,9 +259,30 @@ var game = {
 				var outside = game.script.physics.outside(object)
 
 				if(!solidCollision) {
+					// attempt to push
 					for(var other of collisions) {
-						// attempt to push
-						solidCollision = !game.script.physics.push(other, axis, amount)
+						if(object.physics.type == 'block') {
+							// try and push everything
+							solidCollision = !game.script.physics.push(other, axis, amount) // a fail here would indicate crushing
+							if(solidCollision) other.physics.manifold.crush = true
+						} else {
+							// im a ghost trying to push other ghosts!
+							if(!other.physics.wall || axis.cord != other.physics.wall.cord || direction != other.physics.wall.direction) continue
+
+							var objectWall = direction > 0
+								? object[axis.cord] + object.size[axis.cord]
+								: object[axis.cord]
+
+							otherWall = direction > 0
+								? other[axis.cord]
+								: other[axis.cord] + other.size[axis.cord]
+
+							if(direction < 0 ? objectWall-moved >= otherWall : true) {
+								// try and push. if it doesnt work it's a ghost doesnt really matter
+								game.script.physics.push(other, axis, amount)
+							}
+						}
+
 						if(solidCollision) break
 					}
 				}
@@ -253,6 +293,7 @@ var game = {
 				}
 
 				object.physics.moved[axis.cord] = moved
+
 				return moved
 			},
 			move: function(object) {
@@ -261,40 +302,51 @@ var game = {
 
 				for(var axis of this.axisList) {
 					var direction = Math.sign(object.physics.speed[axis.cord])
-					var depth = Math.round(object.physics.speed[axis.cord])
-					object[axis.cord] += depth
+					var moved = Math.round(object.physics.speed[axis.cord])
+					object[axis.cord] += moved
 
+					var solidCollision = false
 					var collisions = game.script.collision.check(object)
-					var solidCollision = collisions.some((other) => other.physics.type == 'block')
 
-					if(!solidCollision) {
-						// check the walls
-						var objectWall = object.physics.speed[axis.cord] > 0
-							? object[axis.cord] + object.size[axis.cord]
-							: object[axis.cord]
+					for(var other of collisions) {
+						solidCollision = other.physics.type == 'block'
+						if(!solidCollision) {
+							// check the walls
+							var objectWall = object.physics.speed[axis.cord] > 0
+								? object[axis.cord] + object.size[axis.cord]
+								: object[axis.cord]
 
-						for(var other of collisions) {
 							if(!other.physics.wall || axis.cord != other.physics.wall.cord || direction == other.physics.wall.direction) continue
-							otherWall = object.physics.speed[axis.cord] > 0
+							otherWall = direction > 0
 								? other[axis.cord]
 								: other[axis.cord] + other.size[axis.cord]
 
-							solidCollision = object.physics.speed[axis.cord] > 0
-								? objectWall > otherWall && (objectWall - depth) <= otherWall
-								: objectWall + depth < otherWall
+							solidCollision = direction > 0
+								? objectWall > otherWall && (objectWall - moved) <= otherWall
+								: objectWall + moved < otherWall
 
-							if(solidCollision) break
+						}
+
+						// its over
+						if(solidCollision){
+							lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
+							object[axis.cord] -= moved
+							moved = 0
+
+							object.physics.manifold[lessOrGreater] = true
+							object.physics.speed[axis.cord] = other.physics.speed[axis.cord]//0
+
+							var otherDirection = Math.sign(other.physics.speed[axis.cord])
+							if(otherDirection == direction){
+								console.log(`requesting pull ${object.id} - ${other.id}`)
+								other.physics.pull.push({ axis, object, direction })
+							}
+
+							break
 						}
 					}
 
-					// its over
-					if(solidCollision){
-						object[axis.cord] -= depth
-						lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
-						object.physics.manifold[lessOrGreater] = true
-						object.physics.speed[axis.cord] = 0
-						continue
-					}
+					object.physics.moved[axis.cord] = moved
 				}
 			},
 			gravity: function(object) {
