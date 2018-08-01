@@ -10,8 +10,8 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-transform: scale(3);
-  transform: scale(3); }
+  -webkit-transform: scale(1);
+  transform: scale(1); }
 
 canvas {
   width: 400px;
