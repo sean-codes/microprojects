@@ -111,6 +111,25 @@ var game = {
 				game.ctx.fillStyle = '#ff8822aa'
 				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
+
+				game.ctx.fillText(object.physics.speed.y, object.x+object.size.x+5, object.y)
+			}
+		},
+		ladder: {
+			create: function(object) {
+				game.script.physics.init(object, {
+					type: 'ghost',
+					wall: { cord: 'y', direction: -1 }
+				})
+			},
+			step: function(object) {
+				game.script.physics.ghost(object)
+
+			},
+			draw: function(object) {
+				game.ctx.fillStyle = '#ff2222aa'
+				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
+				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 			}
 		},
 		player: {
@@ -121,8 +140,7 @@ var game = {
 				})
 			},
 			step: function(object) {
-				game.script.physics.ghost(object)
-
+				//game.script.physics.
 				for(var move of [
 					{ x: -1, y: 0, required: game.keys.down[37] },
 					{ x: 1, y: 0, required: game.keys.down[39] },
@@ -135,6 +153,9 @@ var game = {
 							object.physics.speed.x += move.x
 					}
 				}
+
+				// run physics
+				game.script.physics.ghost(object)
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#7766AAaa'
@@ -148,8 +169,9 @@ var game = {
 	script: {
 		physics: {
 			settings: {
-				gravity: { x: 0, y: 0.25, max: { x: 0, y: 5 }},
-				air: { x: 0.95, y: 0.95 }
+				gravity: { x: 0, y: 1, max: { x: 0, y: 5 }},
+				air: { x: 0.95, y: 0.95 },
+				accuracy: 0.001
 			},
 			axisList: [ // Going to use these for extra information
 				{ cord: 'x', greater: 'right', lessThan: 'left' },
@@ -159,6 +181,7 @@ var game = {
 					type: options.type || 'solid',
 					wall: options.wall,
 					speed: options.speed || { x: 0, y: 0 },
+					bounce: { x: 1, y: 0.5 },
 					moved: { x: 0, y: 0 },
 					manifold: this.clearManifold,
 					pull: []
@@ -185,7 +208,10 @@ var game = {
 
 				this.pull(object, {x:object.physics.moved.x, y:object.physics.moved.y})
 			},
-			pull: function(object, move) {
+			pull: function(object) {
+				var move = object.physics.moved
+				if(!move.x && !move.y) return
+
 				while(object.physics.pull.length) {
 					var pull = object.physics.pull.shift()
 					var other = pull.object
@@ -195,7 +221,7 @@ var game = {
 					if(!game.script.collision.check(other).some(other => other.physics.type == 'block')) {
 						other.physics.moved.x += move.x
 						other.physics.moved.y += move.y
-						this.pull(other, move)
+						this.pull(other)
 					} else {
 						other.x -= move.x
 						other.y -= move.y
@@ -213,7 +239,6 @@ var game = {
 				var solidCollision = collisions.some((other) => other.physics.type == 'block')
 				var outside = game.script.physics.outside(object)
 
-				//console.log(`attemping to axis=${axis.cord} push=${object.id} amount=${moved} solid=${solidCollision} collisions=${collisions.length}`)
 				if(!solidCollision && !outside && (object.physics.type == 'block' || object.physics.wall)) {
 					// attempt to push
 					for(var other of collisions) {
@@ -226,9 +251,16 @@ var game = {
 							: other[axis.cord] + other.size[axis.cord]
 
 						// if collision with wall attempt to push
-						if(direction < 0 ? objectWall-moved >= otherWall : true) {
+						var shouldPush = direction < 0
+							? Math.round(((objectWall - moved) - otherWall)*1000)/1000 >= 0 // fp
+							: true // not sure yet!
+
+						if(shouldPush) {
 							// try and push. if it doesnt work it's a ghost doesnt really matter
-							solidCollision = !game.script.physics.push(other, axis, moved) && object.physics.type == 'block'
+							var pushed = game.script.physics.push(other, axis, moved)
+							if(!pushed && object.physics.type == 'block') {
+								solidCollision = true
+							}
 						}
 
 						if(solidCollision) break
@@ -239,7 +271,7 @@ var game = {
 					object[axis.cord] -= moved
 					moved = 0
 				}
-				if(object.physics.moved.x || object.physics.moved.y) this.pull(object, { x:object.physics.moved.x, y:object.physics.moved.y })
+
 				object.physics.moved[axis.cord] = moved
 				return moved
 			},
@@ -271,12 +303,12 @@ var game = {
 							if(!other.physics.wall) continue // a wall
 							if(other.physics.wall.cord != axis.cord) continue // wall on this axis
 							if(other.physics.wall.direction == direction) continue // needs to be coming towards
-							if(direction > 0 ? objectWall-moved > otherWall : objectWall-moved < otherWall) continue
+							if(direction > 0 ? (objectWall - moved) - otherWall > 0.0001 : objectWall-moved < otherWall) continue //fp :<
 						}
 
 						var depth = otherWall - objectWall
 
-						if(Math.abs(depth) > Math.abs(deepest.depth)) {
+						if(Math.abs(depth) - Math.abs(deepest.depth) > 0.0001) {
 							deepest.other = other
 							deepest.depth = depth
 						}
@@ -284,7 +316,8 @@ var game = {
 
 					if(deepest.other) {
 						// there is something wrong here
-						//console.log(`${axis.cord} collision resolution  ${object.id} and ${other.id} (${deepest.depth}) ${object[axis.cord]} ~ ${object[axis.cord] + deepest.depth}`)
+						//if(object.id == 17) console.log(`${axis.cord} collision resolution  ${object.id} and ${other.id} (${deepest.depth}) ${object[axis.cord]} ~ ${object[axis.cord] + deepest.depth}`)
+						deepest.depth = deepest.depth // evil fp
 						object[axis.cord] += deepest.depth
 						moved += deepest.depth
 
@@ -293,7 +326,10 @@ var game = {
 						object.physics.manifold[lessOrGreater] = true
 
 						// reflect / stabalize here (we will simple ax for now)
-						object.physics.speed[axis.cord] = 0
+						object.physics.speed[axis.cord] *= -object.physics.bounce[axis.cord]
+						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(other.physics.moved[axis.cord])*3) < 0.001) {
+							object.physics.speed[axis.cord] = 0//-other.physics.speed[axis.cord]*0.01
+						}
 
 						// request pull next to other moved
 						var otherHasMoved = deepest.other.physics.moved[axis.cord]
@@ -305,6 +341,9 @@ var game = {
 
 					object.physics.moved[axis.cord] = moved
 				}
+
+				// prevent bubbling
+				this.pull(object)
 			},
 			gravity: function(object) {
 				for(var axis of this.axisList) {
@@ -313,9 +352,12 @@ var game = {
 				}
 			},
 			air: function(object) {
+				return
 				for(var axis of this.axisList){
 					object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
-					if(Math.abs(object.physics.speed[axis.cord]) < 0.01) object.physics.speed[axis.cord] = 0
+					if(Math.abs(object.physics.speed[axis.cord]) < 0.001) {
+						object.physics.speed[axis.cord] = 0
+					}
 				}
 			},
 			outside: function(object) {
@@ -329,10 +371,10 @@ var game = {
 				for(var other of game.objects) {
 					if(other.id == object.id) continue // skip same
 
-					if(object.x + object.size.x > other.x
-						&& object.x < other.x + other.size.x
-						&& object.y + object.size.y > other.y
-						&& object.y < other.y + other.size.y
+					if((object.x + object.size.x) - other.x > 0.0001
+						&& (other.x + other.size.x) - object.x > 0.0001
+						&& (object.y + object.size.y) - other.y > 0.0001
+						&& (other.y + other.size.y) - object.y > 0.0001
 					) collisions.push(other) // add to collision list
 				}
 
