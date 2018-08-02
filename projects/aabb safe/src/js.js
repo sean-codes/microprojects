@@ -112,19 +112,16 @@ var game = {
 				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 
-				game.ctx.fillText(object.physics.speed.y, object.x+object.size.x+5, object.y)
+				game.ctx.fillText(object.physics.speed.x, object.x+object.size.x+5, object.y)
 			}
 		},
 		ladder: {
 			create: function(object) {
 				game.script.physics.init(object, {
-					type: 'ghost',
-					wall: { cord: 'y', direction: -1 }
+					type: 'ghost'
 				})
 			},
 			step: function(object) {
-				game.script.physics.ghost(object)
-
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#ff2222aa'
@@ -141,19 +138,26 @@ var game = {
 			},
 			step: function(object) {
 				//game.script.physics.
+				var onLadder = object.physics.manifold.list.some(other => other.type == 'ladder')
+				if(onLadder) {
+					object.physics.skipGravity = true
+					object.physics.speed.y = 0
+					object.physics.speed.x = 0
+				}
 				for(var move of [
 					{ x: -1, y: 0, required: game.keys.down[37] },
 					{ x: 1, y: 0, required: game.keys.down[39] },
-					{ x: 0, y: -14, required: game.keys.down[38] && object.physics.manifold.bottom },
+					{ x: 0, y: onLadder ? -1 : -14, required: game.keys.down[38] && (object.physics.manifold.bottom || onLadder) },
+					{ x: 0, y: 1, required: game.keys.down[40] && (onLadder) },
 				]) {
 					if(move.required) {
-						object.physics.speed.y += move.y
+						if(move.y) object.physics.speed.y = move.y
 
 						if(Math.abs(object.physics.speed.x + move.x) < 3)
-							object.physics.speed.x += move.x
+							if(move.x) object.physics.speed.x += move.x
 					}
 				}
-
+				if(object.physics.manifold.crushed) console.log('play crushed')
 				// run physics
 				game.script.physics.ghost(object)
 			},
@@ -181,10 +185,11 @@ var game = {
 					type: options.type || 'solid',
 					wall: options.wall,
 					speed: options.speed || { x: 0, y: 0 },
+					skipGravity: false,
 					bounce: { x: 1, y: 0.75 },
-					friction: { x: 0.5, y: 1 },
+					friction: { x: 0.8, y: 1 },
 					moved: { x: 0, y: 0 },
-					manifold: this.clearManifold,
+					manifold: this.clearManifold(),
 					pull: []
 				}
 			},
@@ -194,13 +199,14 @@ var game = {
 					top: undefined,
 					bottom: undefined,
 					left: undefined,
-					right: undefined
+					right: undefined,
+					crushed: undefined
 				}
 			},
 			ghost: function(object) {
-				game.script.physics.air(object)
-				game.script.physics.gravity(object)
 				game.script.physics.move(object)
+				//game.script.physics.air(object)
+				game.script.physics.gravity(object)
 			},
 			block: function(object) {
 				for(var axis of this.axisList) {
@@ -260,6 +266,7 @@ var game = {
 							// try and push. if it doesnt work it's a ghost doesnt really matter
 							var pushed = game.script.physics.push(other, axis, moved)
 							if(!pushed && object.physics.type == 'block') {
+								other.physics.manifold.crushed = true
 								solidCollision = true
 							}
 						}
@@ -290,6 +297,8 @@ var game = {
 					var deepest = { other: undefined, depth: 0 }
 
 					for(var other of collisions) {
+						object.physics.manifold.list.push(other)
+
 						var objectWall = direction > 0
 							? object[axis.cord] + object.size[axis.cord]
 							: object[axis.cord]
@@ -326,13 +335,15 @@ var game = {
 						object.physics.manifold[lessOrGreater] = true
 
 						// reflect / stabalize here (we will simple ax for now)
-						object.physics.speed[axis.cord] =moved * -object.physics.bounce[axis.cord]
+						object.physics.speed[axis.cord] = moved * -object.physics.bounce[axis.cord]
 						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(other.physics.moved[axis.cord])*2) < 0.001) {
 							object.physics.speed[axis.cord] = 0//-other.physics.speed[axis.cord]*0.01
 						}
 
 						// apply friction
-						object.physics.speed[axis.oCord] *= other.physics.friction[axis.oCord]
+						var target = other.physics.moved[axis.oCord]//other.physics.friction[axis.oCord]
+						var difference = (object.physics.speed[axis.oCord] - target)
+						object.physics.speed[axis.oCord] -= difference * (1-other.physics.friction[axis.oCord])
 
 						// request pull next to other moved
 						var otherHasMoved = deepest.other.physics.moved[axis.cord]
@@ -345,10 +356,14 @@ var game = {
 					object.physics.moved[axis.cord] = moved
 				}
 
+				if(!object.physics.moved.x && !object.physics.moved.y) {
+					this.air(object)
+				}
 				// prevent bubbling
 				this.pull(object)
 			},
 			gravity: function(object) {
+				if(object.physics.skipGravity ) return object.physics.skipGravity = false
 				for(var axis of this.axisList) {
 					//if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
 			   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
