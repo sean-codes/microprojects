@@ -174,14 +174,15 @@ var game = {
 				accuracy: 0.001
 			},
 			axisList: [ // Going to use these for extra information
-				{ cord: 'x', greater: 'right', lessThan: 'left' },
-				{ cord: 'y', greater: 'bottom', lessThan: 'top' }],
+				{ cord: 'x', oCord: 'y', greater: 'right', lessThan: 'left' },
+				{ cord: 'y', oCord: 'x', greater: 'bottom', lessThan: 'top' }],
 			init: function(object, options={}) {
 				object.physics = {
 					type: options.type || 'solid',
 					wall: options.wall,
 					speed: options.speed || { x: 0, y: 0 },
-					bounce: { x: 1, y: 0.5 },
+					bounce: { x: 1, y: 0.75 },
+					friction: { x: 0.5, y: 1 },
 					moved: { x: 0, y: 0 },
 					manifold: this.clearManifold,
 					pull: []
@@ -252,8 +253,8 @@ var game = {
 
 						// if collision with wall attempt to push
 						var shouldPush = direction < 0
-							? Math.round(((objectWall - moved) - otherWall)*1000)/1000 >= 0 // fp
-							: true // not sure yet!
+							? (otherWall - (objectWall - moved)) < 0.001 // fp
+							: true // this is clearly a gapping hole sean
 
 						if(shouldPush) {
 							// try and push. if it doesnt work it's a ghost doesnt really matter
@@ -303,12 +304,12 @@ var game = {
 							if(!other.physics.wall) continue // a wall
 							if(other.physics.wall.cord != axis.cord) continue // wall on this axis
 							if(other.physics.wall.direction == direction) continue // needs to be coming towards
-							if(direction > 0 ? (objectWall - moved) - otherWall > 0.0001 : objectWall-moved < otherWall) continue //fp :<
+							if(direction > 0 ? (objectWall - moved) - otherWall > 0.001 : objectWall-moved < otherWall) continue //fp :<
 						}
 
 						var depth = otherWall - objectWall
 
-						if(Math.abs(depth) - Math.abs(deepest.depth) > 0.0001) {
+						if(Math.abs(depth) - Math.abs(deepest.depth) > 0.001) {
 							deepest.other = other
 							deepest.depth = depth
 						}
@@ -316,20 +317,22 @@ var game = {
 
 					if(deepest.other) {
 						// there is something wrong here
-						//if(object.id == 17) console.log(`${axis.cord} collision resolution  ${object.id} and ${other.id} (${deepest.depth}) ${object[axis.cord]} ~ ${object[axis.cord] + deepest.depth}`)
 						deepest.depth = deepest.depth // evil fp
 						object[axis.cord] += deepest.depth
 						moved += deepest.depth
 
 						// add collision to manifold
-						lessOrGreater = (object.physics.speed[axis.cord] > 0) ? axis.greater : axis.lessThan
+						lessOrGreater = direction > 0 ? axis.greater : axis.lessThan
 						object.physics.manifold[lessOrGreater] = true
 
 						// reflect / stabalize here (we will simple ax for now)
-						object.physics.speed[axis.cord] *= -object.physics.bounce[axis.cord]
-						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(other.physics.moved[axis.cord])*3) < 0.001) {
+						object.physics.speed[axis.cord] =moved * -object.physics.bounce[axis.cord]
+						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(other.physics.moved[axis.cord])*2) < 0.001) {
 							object.physics.speed[axis.cord] = 0//-other.physics.speed[axis.cord]*0.01
 						}
+
+						// apply friction
+						object.physics.speed[axis.oCord] *= other.physics.friction[axis.oCord]
 
 						// request pull next to other moved
 						var otherHasMoved = deepest.other.physics.moved[axis.cord]
@@ -352,7 +355,6 @@ var game = {
 				}
 			},
 			air: function(object) {
-				return
 				for(var axis of this.axisList){
 					object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
 					if(Math.abs(object.physics.speed[axis.cord]) < 0.001) {
@@ -371,10 +373,10 @@ var game = {
 				for(var other of game.objects) {
 					if(other.id == object.id) continue // skip same
 
-					if((object.x + object.size.x) - other.x > 0.0001
-						&& (other.x + other.size.x) - object.x > 0.0001
-						&& (object.y + object.size.y) - other.y > 0.0001
-						&& (other.y + other.size.y) - object.y > 0.0001
+					if((object.x + object.size.x) - other.x > 0.001
+						&& (other.x + other.size.x) - object.x > 0.001
+						&& (object.y + object.size.y) - other.y > 0.001
+						&& (other.y + other.size.y) - object.y > 0.001
 					) collisions.push(other) // add to collision list
 				}
 
