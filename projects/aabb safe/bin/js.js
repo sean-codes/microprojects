@@ -430,7 +430,7 @@ var game = {
 				if(object.physics.skipGravity) return
 				for(var axis of this.axisList) {
 					//if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
-			   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
+			   	object.physics.speed[axis.cord] += object.physics.gravity[axis.cord]
 				}
 			},
 			air: function(object) {
@@ -479,11 +479,11 @@ var map = {
 		'                    ',
 		'                    ',
 		'                    ',
-		'     C              ',
+		' C   C              ',
 		'                    ',
 		'             _    E ',
 		'                 -E ',
-		'BC B         P    E ',
+		'B  B         P    E ',
 		'B  B              E ',
 		'BC           B    BB',
 		'B       -    BB  BBB',

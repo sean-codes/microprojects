@@ -408,7 +408,7 @@ var game = {
 				if(object.physics.skipGravity) return
 				for(var axis of this.axisList) {
 					//if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
-			   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
+			   	object.physics.speed[axis.cord] += object.physics.gravity[axis.cord]
 				}
 			},
 			air: function(object) {
