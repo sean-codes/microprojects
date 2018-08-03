@@ -220,6 +220,7 @@ var game = {
 	},
 	script: {
 		physics: {
+			objects: [],
 			settings: {
 				gravity: { x: 0, y: 1, max: { x: 0, y: 5 }},
 				air: { x: 0.95, y: 0.95 },
@@ -229,6 +230,7 @@ var game = {
 				{ cord: 'x', oCord: 'y', greater: 'right', lessThan: 'left' },
 				{ cord: 'y', oCord: 'x', greater: 'bottom', lessThan: 'top' }],
 			init: function(object, options={}) {
+				this.objects.push(object)
 				object.physics = {
 					type: options.type || 'block',
 					wall: options.wall,
@@ -297,7 +299,7 @@ var game = {
 				object[axis.cord] += moved
 
 				// check for collisions
-				var collisions = game.script.collision.check(object)
+				var collisions = this.collisions(object)
 				var solidCollision = collisions.some((other) => other.physics.type == 'block')
 				var outside = game.script.physics.outside(object)
 
@@ -355,7 +357,7 @@ var game = {
 					object[axis.cord] += moved
 
 					var solidCollision = false
-					var collisions = game.script.collision.check(object)
+					var collisions = this.collisions(object)
 					var deepest = { other: undefined, depth: 0 }
 
 					for(var other of collisions) {
@@ -446,22 +448,20 @@ var game = {
 			outside: function(object) {
 				return ( object.x < 0 || object.x+object.size.x > game.width
 					|| object.y < 0 || object.y+object.size.y > game.height )
-			}
-		},
-		collision: {
-			check: function(object) {
+			},
+			collisions: function(object) {
 				collisions = []
-				for(var other of game.objects) {
+				for(var other of this.objects) {
 					if(other.id == object.id) continue // skip same
 
 					if((object.x + object.size.x) - other.x > 0.001
-						&& (other.x + other.size.x) - object.x > 0.001
-						&& (object.y + object.size.y) - other.y > 0.001
-						&& (other.y + other.size.y) - object.y > 0.001
-					) collisions.push(other) // add to collision list
-				}
+					&& (other.x + other.size.x) - object.x > 0.001
+					&& (object.y + object.size.y) - other.y > 0.001
+					&& (other.y + other.size.y) - object.y > 0.001
+				) collisions.push(other) // add to collision list
+			}
 
-				return collisions
+			return collisions
 			}
 		}
 	}
@@ -481,7 +481,7 @@ var map = {
 		'                    ',
 		' C   C              ',
 		'                    ',
-		'             _    E ',
+		'        V    _    E ',
 		'                 -E ',
 		'B  B         P    E ',
 		'B  B              E ',
@@ -496,6 +496,7 @@ var map = {
 		'_': { type: 'platform', size: { x: 60, y: 15 }, speed: { x: 0, y: 1 } },
 		'H': { type: 'platform', size: { x: 60, y: 15 }, speed: { x: 1, y: 0 } },
 		'-': { type: 'ghostplatform', size: { x: 60, y: 15 }, speed: { x: 1, y: 0 } },
+		'V': { type: 'ghostplatform', size: { x: 60, y: 15 }, speed: { x: 0, y: 1 } },
 		'E': { type: 'ladder', size: { x: 20, y: 20 }, speed: { x: 0, y: 0 } }
 	}
 }

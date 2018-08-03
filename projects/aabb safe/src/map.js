@@ -9,7 +9,7 @@ var map = {
 		'                    ',
 		' C   C              ',
 		'                    ',
-		'             _    E ',
+		'        V    _    E ',
 		'                 -E ',
 		'B  B         P    E ',
 		'B  B              E ',
@@ -24,6 +24,7 @@ var map = {
 		'_': { type: 'platform', size: { x: 60, y: 15 }, speed: { x: 0, y: 1 } },
 		'H': { type: 'platform', size: { x: 60, y: 15 }, speed: { x: 1, y: 0 } },
 		'-': { type: 'ghostplatform', size: { x: 60, y: 15 }, speed: { x: 1, y: 0 } },
+		'V': { type: 'ghostplatform', size: { x: 60, y: 15 }, speed: { x: 0, y: 1 } },
 		'E': { type: 'ladder', size: { x: 20, y: 20 }, speed: { x: 0, y: 0 } }
 	}
 }
