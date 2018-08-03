@@ -79,7 +79,15 @@ function updateIndex() {
 function updateWWWJSON(projectFolders) {
    var wwwJSON = JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')))
    wwwJSON.projectsList = projectFolders.map(function(folderPath) {
-      return { title: path.basename(folderPath), path: folderPath }
+		var projectConfig = {}
+		try {
+			configPath = path.join(folderPath, 'config.json')
+			projectConfig = JSON.parse(fs.readFileSync(configPath))
+		} catch(e) {
+			// that is okay we dont need a config
+		}
+
+      return { title: path.basename(folderPath), path: folderPath, ...projectConfig }
    })
    fs.writeFileSync(path.join(__dirname, 'www.json'), JSON.stringify(wwwJSON, null, '\t'))
 }

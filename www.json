@@ -38,7 +38,8 @@
 		},
 		{
 			"title": "aabb physics",
-			"path": "projects/aabb physics"
+			"path": "projects/aabb physics",
+			"archive": "true"
 		},
 		{
 			"title": "aabb safe",
