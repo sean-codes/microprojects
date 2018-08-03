@@ -61,8 +61,7 @@ var game = {
 		block: {
 			create: function(object) {
 				game.script.physics.init(object, {
-					type: 'block',
-					wall: { cord: 'y', direction: -1 }
+					type: 'block'
 				})
 			},
 			step: function(object) {
@@ -103,12 +102,36 @@ var game = {
 				})
 			},
 			step: function(object) {
-				if(object.physics.manifold.crush) console.log('crushed')
 				game.script.physics.ghost(object)
 
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#ff8822aa'
+				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
+				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
+
+				game.ctx.fillText(object.physics.speed.x, object.x+object.size.x+5, object.y)
+			}
+		},
+		ghostplatform: {
+			create: function(object) {
+				game.script.physics.init(object, {
+					type: 'ghost',
+					speed: object.speed,
+					wall: { cord: 'y', direction: -1 },
+					pinned: true,
+				})
+			},
+			step: function(object) {
+				game.script.physics.block(object)
+				if(object.physics.moved.x == 0 && object.physics.moved.y == 0) {
+					object.physics.speed.x *= -1
+					object.physics.speed.y *= -1
+				}
+
+			},
+			draw: function(object) {
+				game.ctx.fillStyle = '#1155DD99'
 				game.draw.fillRect(object.x, object.y, object.size.x, object.size.y)
 				game.draw.strokeRect(object.x, object.y, object.size.x, object.size.y)
 
@@ -138,6 +161,7 @@ var game = {
 			},
 			step: function(object) {
 				//game.script.physics.
+
 				var onLadder = object.physics.manifold.list.some(other => other.type == 'ladder')
 				if(onLadder) {
 					object.physics.skipGravity = true
@@ -147,12 +171,14 @@ var game = {
 				for(var move of [
 					{ x: -1, y: 0, required: game.keys.down[37] },
 					{ x: 1, y: 0, required: game.keys.down[39] },
-					{ x: 0, y: onLadder ? -1 : -14, required: game.keys.down[38] && (object.physics.manifold.bottom || onLadder) },
-					{ x: 0, y: 1, required: game.keys.down[40] && (onLadder) },
+					{ x: 0, y: onLadder ? -1 : -14, required: game.keys.down[38] },
+					{ x: 0, y: 1, required: game.keys.down[40] },
 				]) {
 					if(move.required) {
-						if(move.y) object.physics.speed.y = move.y
-
+						if(onLadder || object.physics.manifold.bottom) {
+							object.physics.speed.y = move.y
+						}
+						if(move.y > 0) object.physics.fallThrough = true
 						if(Math.abs(object.physics.speed.x + move.x) < 3)
 							if(move.x) object.physics.speed.x += move.x
 					}
@@ -182,13 +208,16 @@ var game = {
 				{ cord: 'y', oCord: 'x', greater: 'bottom', lessThan: 'top' }],
 			init: function(object, options={}) {
 				object.physics = {
-					type: options.type || 'solid',
+					type: options.type || 'block',
 					wall: options.wall,
+					gravity: options.gravity || this.settings.gravity,
 					speed: options.speed || { x: 0, y: 0 },
-					skipGravity: false,
 					bounce: { x: 1, y: 0.75 },
 					friction: { x: 0.8, y: 1 },
 					moved: { x: 0, y: 0 },
+					skipGravity: false,
+					fallThrough: false,
+					breakAir: false,
 					manifold: this.clearManifold(),
 					pull: []
 				}
@@ -205,11 +234,15 @@ var game = {
 			},
 			ghost: function(object) {
 				game.script.physics.move(object)
-				//game.script.physics.air(object)
+				game.script.physics.air(object)
 				game.script.physics.gravity(object)
+				object.physics.fallThrough = false
+				object.physics.skipGravity = false
+				object.physics.breakAir = false
 			},
 			block: function(object) {
 				for(var axis of this.axisList) {
+					object.physics.moved[axis.cord] = 0
 					if(object.physics.speed[axis.cord]) game.script.physics.push(object, axis, object.physics.speed[axis.cord])
 				}
 
@@ -222,7 +255,7 @@ var game = {
 				while(object.physics.pull.length) {
 					var pull = object.physics.pull.shift()
 					var other = pull.object
-					//console.log(`pulling ${object.id} - ${other.id} - ${move.y}`)
+
 					other.x += move.x
 					other.y += move.y
 					if(!game.script.collision.check(other).some(other => other.physics.type == 'block')) {
@@ -246,7 +279,14 @@ var game = {
 				var solidCollision = collisions.some((other) => other.physics.type == 'block')
 				var outside = game.script.physics.outside(object)
 
-				if(!solidCollision && !outside && (object.physics.type == 'block' || object.physics.wall)) {
+				var isABlockOrWallInDirection = (
+					object.physics.type == 'block'
+					|| (object.physics.wall
+						&& object.physics.wall.cord == axis.cord
+						&& object.physics.wall.direction == direction)
+				)
+
+				if(!solidCollision && !outside && isABlockOrWallInDirection) {
 					// attempt to push
 					for(var other of collisions) {
 						var objectWall = direction > 0
@@ -259,8 +299,8 @@ var game = {
 
 						// if collision with wall attempt to push
 						var shouldPush = direction < 0
-							? (otherWall - (objectWall - moved)) < 0.001 // fp
-							: true // this is clearly a gapping hole sean
+							? otherWall - (objectWall - moved) < 0.001 // fp
+							: (objectWall - moved) - otherWall < 0.001 // this is clearly a gapping hole sean
 
 						if(shouldPush) {
 							// try and push. if it doesnt work it's a ghost doesnt really matter
@@ -310,6 +350,7 @@ var game = {
 						// if not a block consider skipping
 						if(other.physics.type != 'block') {
 							// skip no wall / no wall in direction
+							if(object.physics.fallThrough) continue
 							if(!other.physics.wall) continue // a wall
 							if(other.physics.wall.cord != axis.cord) continue // wall on this axis
 							if(other.physics.wall.direction == direction) continue // needs to be coming towards
@@ -343,6 +384,7 @@ var game = {
 						// apply friction
 						var target = other.physics.moved[axis.oCord]//other.physics.friction[axis.oCord]
 						var difference = (object.physics.speed[axis.oCord] - target)
+						object.physics.breakAir = true
 						object.physics.speed[axis.oCord] -= difference * (1-other.physics.friction[axis.oCord])
 
 						// request pull next to other moved
@@ -363,14 +405,16 @@ var game = {
 				this.pull(object)
 			},
 			gravity: function(object) {
-				if(object.physics.skipGravity ) return object.physics.skipGravity = false
+				if(object.physics.skipGravity) return
 				for(var axis of this.axisList) {
 					//if(Math.abs(object.physics.speed[axis.cord]) < this.settings.gravity.max[axis.cord])
 			   	object.physics.speed[axis.cord] += this.settings.gravity[axis.cord]
 				}
 			},
 			air: function(object) {
+				if(object.physics.breakAir) return
 				for(var axis of this.axisList){
+					// dont run if collisions
 					object.physics.speed[axis.cord] *= this.settings.air[axis.cord]
 					if(Math.abs(object.physics.speed[axis.cord]) < 0.001) {
 						object.physics.speed[axis.cord] = 0
