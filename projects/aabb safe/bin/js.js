@@ -452,16 +452,22 @@ var game = {
 			collisions: function(object) {
 				collisions = []
 				for(var other of this.objects) {
-					if(other.id == object.id) continue // skip same
-
-					if((object.x + object.size.x) - other.x > 0.001
-					&& (other.x + other.size.x) - object.x > 0.001
-					&& (object.y + object.size.y) - other.y > 0.001
-					&& (other.y + other.size.y) - object.y > 0.001
-				) collisions.push(other) // add to collision list
+					// check and all to list
+					game.script.collision.check(object, other) && collisions.push(other)
+				}
+				return collisions
 			}
+		},
+		collision: {
+			check: function(object, other) {
+				if(other.id == object.id) return false // skip same
 
-			return collisions
+				if((object.x + object.size.x) - other.x > 0.001
+				&& (other.x + other.size.x) - object.x > 0.001
+				&& (object.y + object.size.y) - other.y > 0.001
+				&& (other.y + other.size.y) - object.y > 0.001) return true
+
+				return false
 			}
 		}
 	}
