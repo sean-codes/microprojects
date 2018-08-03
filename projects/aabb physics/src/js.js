@@ -87,7 +87,7 @@ var game = {
       ctx.canvas.addEventListener('keydown', e => game.keys[e.keyCode] = true)
       ctx.canvas.addEventListener('keyup', e => game.keys[e.keyCode] = false)
 
-      this.loopInterval = setInterval(this.loop.bind(this), 1000/30 )
+      this.loopInterval = setInterval(this.loop.bind(this), 1000/60 )
    },
    loop: function() {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
