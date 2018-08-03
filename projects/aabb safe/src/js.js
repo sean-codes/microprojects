@@ -128,7 +128,6 @@ var game = {
 					object.physics.speed.x *= -1
 					object.physics.speed.y *= -1
 				}
-
 			},
 			draw: function(object) {
 				game.ctx.fillStyle = '#1155DD99'
@@ -217,6 +216,7 @@ var game = {
 					bounce: { x: 1, y: 0.75 },
 					friction: { x: 0.8, y: 1 },
 					moved: { x: 0, y: 0 },
+					pinned: options.pinned,
 					skipGravity: false,
 					fallThrough: false,
 					breakAir: false,
@@ -260,7 +260,7 @@ var game = {
 
 					other.x += move.x
 					other.y += move.y
-					if(!game.script.collision.check(other).some(other => other.physics.type == 'block')) {
+					if(!this.collisions(other).some(other => other.physics.type == 'block')) {
 						other.physics.moved.x += move.x
 						other.physics.moved.y += move.y
 						this.pull(other)
@@ -278,7 +278,7 @@ var game = {
 
 				// check for collisions
 				var collisions = this.collisions(object)
-				var solidCollision = collisions.some((other) => other.physics.type == 'block')
+				var solidCollision = collisions.some((other) => other.physics.type == 'block' || other.physics.pinned)
 				var outside = game.script.physics.outside(object)
 
 				var isABlockOrWallInDirection = (

@@ -14,7 +14,7 @@ var map = {
 		'B  B         P    E ',
 		'B  B              E ',
 		'BC           B    BB',
-		'B       -    BB  BBB',
+		'B    B  H    BB  BBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
 	link: {
