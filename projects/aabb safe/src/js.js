@@ -118,7 +118,7 @@ var game = {
 				game.script.physics.init(object, {
 					type: 'ghost',
 					speed: object.speed,
-					wall: { cord: 'y', direction: -1 },
+					wall: object.wall || { cord: 'y', direction: -1 },
 					pinned: true,
 				})
 			},
@@ -162,6 +162,7 @@ var game = {
 				//game.script.physics.
 
 				var onLadder = object.physics.manifold.list.some(other => other.type == 'ladder')
+
 				if(onLadder) {
 					object.physics.skipGravity = true
 					object.physics.speed.y = 0
@@ -213,7 +214,7 @@ var game = {
 					wall: options.wall,
 					gravity: options.gravity || this.settings.gravity,
 					speed: options.speed || { x: 0, y: 0 },
-					bounce: { x: 1, y: 0.75 },
+					bounce: { x: 1, y: 0.25 },
 					friction: { x: 0.8, y: 1 },
 					moved: { x: 0, y: 0 },
 					pinned: options.pinned,
@@ -334,6 +335,12 @@ var game = {
 					var direction = Math.sign(moved)
 					object[axis.cord] += moved
 
+					if(this.outside(object)) {
+						object[axis.cord] -= moved
+						object.physics.speed[axis.cord] = 0
+						continue
+					}
+
 					var solidCollision = false
 					var collisions = this.collisions(object)
 					var deepest = { other: undefined, depth: 0 }
@@ -356,7 +363,7 @@ var game = {
 							if(!other.physics.wall) continue // a wall
 							if(other.physics.wall.cord != axis.cord) continue // wall on this axis
 							if(other.physics.wall.direction == direction) continue // needs to be coming towards
-							if(direction > 0 ? (objectWall - moved) - otherWall > 0.001 : objectWall-moved < otherWall) continue //fp :<
+							if(direction > 0 ? (objectWall - moved) - otherWall > 0.001 : otherWall - (objectWall-moved) > 0.001) continue //fp :<
 						}
 
 						var depth = otherWall - objectWall
@@ -378,16 +385,17 @@ var game = {
 						object.physics.manifold[lessOrGreater] = true
 
 						// reflect / stabalize here (we will simple ax for now)
-						object.physics.speed[axis.cord] = moved * -object.physics.bounce[axis.cord]
-						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(other.physics.moved[axis.cord])*2) < 0.001) {
+						object.physics.speed[axis.cord] = object.physics.speed[axis.cord] * -object.physics.bounce[axis.cord]
+						var magnet = 1 / (1-object.physics.bounce[axis.cord]) // scaling to damping bouncing when moving down
+						if((Math.abs(object.physics.speed[axis.cord]) - Math.abs(deepest.other.physics.moved[axis.cord])*magnet) < 0.001) {
 							object.physics.speed[axis.cord] = 0//-other.physics.speed[axis.cord]*0.01
 						}
 
 						// apply friction
-						var target = other.physics.moved[axis.oCord]//other.physics.friction[axis.oCord]
+						var target = deepest.other.physics.moved[axis.oCord]//other.physics.friction[axis.oCord]
 						var difference = (object.physics.speed[axis.oCord] - target)
 						object.physics.breakAir = true
-						object.physics.speed[axis.oCord] -= difference * (1-other.physics.friction[axis.oCord])
+						object.physics.speed[axis.oCord] -= difference * (1-deepest.other.physics.friction[axis.oCord])
 
 						// request pull next to other moved
 						var otherHasMoved = deepest.other.physics.moved[axis.cord]
