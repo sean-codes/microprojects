@@ -215,7 +215,7 @@ var game = {
 					gravity: options.gravity || this.settings.gravity,
 					speed: options.speed || { x: 0, y: 0 },
 					bounce: { x: 1, y: 0.25 },
-					friction: { x: 0.5, y: 1 },
+					friction: { x: 0.5, y: 0 },
 					moved: { x: 0, y: 0 },
 					pinned: options.pinned,
 					skipGravity: false,

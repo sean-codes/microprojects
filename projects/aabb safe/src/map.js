@@ -13,8 +13,8 @@ var map = {
 		'                  E ',
 		'B  B              E ',
 		'B  B              E ',
-		'BC           B    BB',
-		'B       -    BB  BBB',
+		'BC       H   B    BB',
+		'B            BB  BBB',
 		'BBBBBBBBBBBBBBBBBBBB',
 	],
 	link: {
