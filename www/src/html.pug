@@ -5,5 +5,7 @@ projects
 			project
 				project-view
 					iframe(src=project.path+'/index.html', scrolling='no')
+					if(project.description)
+						project-description=project.description
 				project-title
 					a(href=project.path+'/index.html')=project.title

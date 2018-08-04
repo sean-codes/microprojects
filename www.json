@@ -43,7 +43,8 @@
 		},
 		{
 			"title": "aabb safe",
-			"path": "projects/aabb safe"
+			"path": "projects/aabb safe",
+			"description": "platformer physics system."
 		},
 		{
 			"title": "gridventory",
