@@ -47,6 +47,11 @@ gulp.task('watch', function() {
          }
       })
 
+		gulp.watch([projectFolder + '/config.json'], function() {
+			microBuild(projectFolder) // incase we want to use config in the project in future
+			updateWWW()
+		})
+
 
       var wat = watch([projectFolder]).on('unlink', function(filename) {
          if(!unlinked[projectFolder]){ build() }
@@ -70,6 +75,12 @@ function build() {
    GulpInception(projectFolders, microBuild)
    microBuild('template')
    microBuild('www')
+}
+
+function updateWWW() {
+	var projectFolders = GulpFolders('projects')
+   updateWWWJSON(projectFolders)
+	microBuild('www')
 }
 
 function updateIndex() {
