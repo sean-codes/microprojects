@@ -215,7 +215,7 @@ var game = {
 					gravity: options.gravity || this.settings.gravity,
 					speed: options.speed || { x: 0, y: 0 },
 					bounce: { x: 1, y: 0.25 },
-					friction: { x: 0.8, y: 1 },
+					friction: { x: 0.5, y: 1 },
 					moved: { x: 0, y: 0 },
 					pinned: options.pinned,
 					skipGravity: false,
@@ -392,10 +392,11 @@ var game = {
 						}
 
 						// apply friction
+						var combinedFriction = deepest.other.physics.friction[axis.oCord] * object.physics.friction[axis.oCord]
 						var target = deepest.other.physics.moved[axis.oCord]//other.physics.friction[axis.oCord]
 						var difference = (object.physics.speed[axis.oCord] - target)
 						object.physics.breakAir = true
-						object.physics.speed[axis.oCord] -= difference * (1-deepest.other.physics.friction[axis.oCord])
+						object.physics.speed[axis.oCord] -= difference * (combinedFriction)
 
 						// request pull next to other moved
 						var otherHasMoved = deepest.other.physics.moved[axis.cord]
