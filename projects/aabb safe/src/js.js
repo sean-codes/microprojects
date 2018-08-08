@@ -242,6 +242,10 @@ var game = {
 				object.physics.fallThrough = false
 				object.physics.skipGravity = false
 				object.physics.breakAir = false
+
+				// stabalizing
+				object.x = Math.round(object.x*1000)/1000
+				object.y = Math.round(object.y*1000)/1000
 			},
 			block: function(object) {
 				for(var axis of this.axisList) {
