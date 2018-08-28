@@ -17,7 +17,7 @@ html, body{
 $barColor: #ddd;
 $lgColor: #47d;
 $smColor: darken($lgColor, 25);
-$helix-width:700px;
+$helix-width:750px;
 $helix-height: 100px;
 $bulbSize: 30px;
 $animationSpeed: 1s;
@@ -35,85 +35,89 @@ helix, helix * {
    border:none;
    padding:0;
    margin:0;
-
 }
 
 helix {
    display:flex;
    justify-content:space-between;
 
-   margin:auto;
    width:$helix-width;
-   min-width:$helix-width;
    height:$helix-height;
+	margin:auto;
 
-   transition:0.25s;
+   transition: transform 0.25s;
    transform:scale(1);
    &:hover {
       transform:scale(1);
    }
-   bar {
-      max-width:10px;
-      min-width:10px;
-      height:$helix-height;
-      margin:auto;
-      background:$barColor;
-      border-radius:4px;
-      position:relative;
+	barContainer {
+		height:$helix-height;
+		display:flex;
 		opacity:0;
+		animation:in 0.5s forwards;
+		overflow:visible;
 
-      animation:
-			in $animationSpeed $animationTimer forwards,
-			squish $animationSpeed $animationTimer infinite alternate;
+	   bar {
+	      max-width:10px;
+	      min-width:10px;
+	      height:$helix-height;
+	      margin:auto;
+	      background:$barColor;
+	      border-radius:4px;
+	      position:relative;
+			overflow:visible;
+	      animation:
+				squish $animationSpeed $animationTimer infinite alternate;
 
-      &:after, &:before {
-         content: '';
-         width:$bulbSize;
-         height:$bulbSize;
-         border:3px solid $barColor;
-         position:absolute;
-         border-radius: 50%;
-      }
+	      &:after, &:before {
+	         content: '';
+	         width:$bulbSize;
+	         height:$bulbSize;
+	         border:3px solid $barColor;
+	         position:absolute;
+	         border-radius: 50%;
+	      }
 
-      &:after {
-         top:0;
-         left:50%;
-         transform:translateX(-50%) translateY(-50%);
-         animation:
-            zindex $animationSpeed*2 $animationTimer infinite,
-            bulb-top $animationSpeed $animationTimer infinite alternate,
-            bulb-top-size $animationSpeed*2 $animationTimer infinite;
-      }
+	      &:after {
+	         top:0;
+	         left:50%;
+	         transform:translateX(-50%) translateY(-50%);
+	         animation:
+	            zindex $animationSpeed*2 $animationTimer infinite,
+	            bulb-top $animationSpeed $animationTimer infinite alternate,
+	            bulb-top-size $animationSpeed*2 $animationTimer infinite;
+	      }
 
-      &:before {
-         bottom:0;
-         left:50%;
-         transform:translateX(-50%) translateY(50%);
-         z-index:-1;
-         animation:
-            zindex $animationSpeed*2 $animationTimer infinite,
-            bulb-bottom $animationSpeed $animationTimer infinite alternate,
-            bulb-bottom-size $animationSpeed*2 $animationTimer infinite;
-      }
+	      &:before {
+	         bottom:0;
+	         left:50%;
+	         transform:translateX(-50%) translateY(50%);
+	         animation:
+	            zindex $animationSpeed*2 $animationTimer infinite,
+	            bulb-bottom $animationSpeed $animationTimer infinite alternate,
+	            bulb-bottom-size $animationSpeed*2 $animationTimer infinite;
+	      }
 
-      @for $i from 1 through 30 {
-         $delay: $i / 5 + 0.1s;
+	   }
+		@for $i from 1 through 30 {
+			$delay: $i / 5 + 0.1s;
 
-         &:nth-of-type(#{$i}) {
-				--startX: 0px;
-				--startY: 100px;
-            animation-delay: $i * 0.1s, -$delay;
+			&:nth-of-type(#{$i}) {
+				animation-delay: $i * 0.05s;
+				bar {
+					animation-delay: -$delay;
 
-            &:after {
-               animation-delay: -$delay;
-            }
+					&:after {
+						animation-delay: -$delay;
+					}
 
-            &:before {
-               animation-delay: -$animationSpeed - $delay;
-            }
-         }
-      }
-   }
+					&:before {
+						animation-delay: -$animationSpeed - $delay;
+					}
+				}
+			}
+		}
+	}
 
 }
 
@@ -123,10 +127,10 @@ helix {
 }
 
 @keyframes zindex {
-   0% { z-index: -1 }
-   50% { z-index: -1 }
-   50.01% { z-index: 1 }
-   100% { z-index: 1 }
+   0% { z-index: -2 }
+   50% { z-index: -2 }
+   50.01% { z-index: 2 }
+   100% { z-index: 2 }
 }
 
 // should use transform here mister
@@ -155,12 +159,6 @@ helix {
 }
 
 @keyframes in {
-	from {
-		opacity:0;
-		transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY));
-	}
-
-	to {
-		transform: rotateZ(0deg); opacity:1;
-	}
+	0% { opacity:0; transform:rotateZ(90deg); }
+	100% { opacity:1; transform:none; }
 }
