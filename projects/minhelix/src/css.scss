@@ -1,0 +1,149 @@
+// this started as something
+// then turned into something else
+// kind of upside down :<
+
+html {
+   background:#000;
+}
+
+html, body{
+   padding:0px;
+   margin:0px;
+   font-family: 'Karla', sans-serif;
+   height:100%;
+}
+
+// 404: naming convention not found :<
+$barColor: #ddd;
+$lgColor: #47d;
+$smColor: darken($lgColor, 25);
+$helix-width:700px;
+$helix-height: 100px;
+$bulbSize: 30px;
+$animationSpeed: 1s;
+$animationTimer: ease-out;
+
+body {
+   display:flex;
+   overflow:hidden;
+}
+
+helix, helix * {
+   box-sizing:border-box;
+   display:block;
+   border:none;
+   padding:0;
+   margin:0;
+
+}
+
+helix {
+   display:flex;
+   justify-content:space-between;
+
+   margin:auto;
+   width:$helix-width;
+   min-width:$helix-width;
+   height:$helix-height;
+
+   transition:0.25s;
+   transform:scale(1);
+   &:hover {
+      transform:scale(1);
+   }
+   bar {
+      max-width:10px;
+      min-width:10px;
+      height:$helix-height;
+      margin:auto;
+      background:$barColor;
+      border-radius:4px;
+      position:relative;
+
+      animation: squish $animationSpeed $animationTimer infinite alternate;
+
+      &:after, &:before {
+         content: '';
+         width:$bulbSize;
+         height:$bulbSize;
+         border:3px solid $barColor;
+         position:absolute;
+         border-radius: 50%;
+      }
+
+      &:after {
+         top:0;
+         left:50%;
+         transform:translateX(-50%) translateY(-50%);
+         animation:
+            zindex $animationSpeed*2 $animationTimer infinite,
+            bulb-top $animationSpeed $animationTimer infinite alternate,
+            bulb-top-size $animationSpeed*2 $animationTimer infinite;
+      }
+
+      &:before {
+         bottom:0;
+         left:50%;
+         transform:translateX(-50%) translateY(50%);
+         z-index:-1;
+         animation:
+            zindex $animationSpeed*2 $animationTimer infinite,
+            bulb-bottom $animationSpeed $animationTimer infinite alternate,
+            bulb-bottom-size $animationSpeed*2 $animationTimer infinite;
+      }
+
+      @for $i from 1 through 30 {
+         $delay: $i / 5 + 0.1s;
+
+         &:nth-of-type(#{$i}) {
+            animation-delay: -$delay;
+
+            &:after {
+               animation-delay: -$delay;
+            }
+
+            &:before {
+               animation-delay: -$animationSpeed - $delay;
+            }
+         }
+      }
+   }
+
+}
+
+@keyframes squish {
+   from { height:0 }
+   to { height:$helix-height }
+}
+
+@keyframes zindex {
+   0% { z-index: -1 }
+   50% { z-index: -1 }
+   50.01% { z-index: 1 }
+   100% { z-index: 1 }
+}
+
+// should use transform here mister
+@keyframes bulb-top {
+   from { top: 0 }
+   to { top: -$bulbSize/2 }
+}
+
+@keyframes bulb-bottom {
+   from { bottom: -$bulbSize/2 }
+   to { bottom: 0 }
+}
+
+// :<
+@keyframes bulb-bottom-size {
+   0% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
+   49.9% { background:$smColor; width:$bulbSize/1.5; height:$bulbSize/1.5; }
+   50% { background:$lgColor; width:$bulbSize; height:$bulbSize;  }
+   100% { background:$lgColor; width:$bulbSize; height:$bulbSize;  }
+}
+
+@keyframes bulb-top-size {
+   0% { background:$smColor; width:$bulbSize/1.5; height:$bulbSize/1.5; }
+   50% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
+   100% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
+}

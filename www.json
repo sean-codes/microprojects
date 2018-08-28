@@ -51,6 +51,10 @@
 			"path": "projects/gridventory"
 		},
 		{
+			"title": "minhelix",
+			"path": "projects/minhelix"
+		},
+		{
 			"title": "nexus",
 			"path": "projects/nexus"
 		},
