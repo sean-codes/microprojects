@@ -28,6 +28,7 @@ body {
    overflow:hidden;
 }
 
+// reset
 helix, helix * {
    box-sizing:border-box;
    display:block;
@@ -59,8 +60,11 @@ helix {
       background:$barColor;
       border-radius:4px;
       position:relative;
+		opacity:0;
 
-      animation: squish $animationSpeed $animationTimer infinite alternate;
+      animation:
+			in $animationSpeed $animationTimer forwards,
+			squish $animationSpeed $animationTimer infinite alternate;
 
       &:after, &:before {
          content: '';
@@ -96,7 +100,9 @@ helix {
          $delay: $i / 5 + 0.1s;
 
          &:nth-of-type(#{$i}) {
-            animation-delay: -$delay;
+				--startX: 0px;
+				--startY: 100px;
+            animation-delay: $i * 0.1s, -$delay;
 
             &:after {
                animation-delay: -$delay;
@@ -146,4 +152,15 @@ helix {
    0% { background:$smColor; width:$bulbSize/1.5; height:$bulbSize/1.5; }
    50% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
    100% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
+}
+
+@keyframes in {
+	from {
+		opacity:0;
+		transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY));
+	}
+
+	to {
+		transform: rotateZ(0deg); opacity:1;
+	}
 }

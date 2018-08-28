@@ -47,8 +47,9 @@ helix {
     background: #ddd;
     border-radius: 4px;
     position: relative;
-    -webkit-animation: squish 1s ease-out infinite alternate;
-    animation: squish 1s ease-out infinite alternate; }
+    opacity: 0;
+    -webkit-animation: in 1s ease-out forwards, squish 1s ease-out infinite alternate;
+    animation: in 1s ease-out forwards, squish 1s ease-out infinite alternate; }
     helix bar:after, helix bar:before {
       content: '';
       width: 30px;
@@ -72,8 +73,10 @@ helix {
       -webkit-animation: zindex 2s ease-out infinite, bulb-bottom 1s ease-out infinite alternate, bulb-bottom-size 2s ease-out infinite;
       animation: zindex 2s ease-out infinite, bulb-bottom 1s ease-out infinite alternate, bulb-bottom-size 2s ease-out infinite; }
     helix bar:nth-of-type(1) {
-      -webkit-animation-delay: -0.3s;
-      animation-delay: -0.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.1s, -0.3s;
+      animation-delay: 0.1s, -0.3s; }
       helix bar:nth-of-type(1):after {
         -webkit-animation-delay: -0.3s;
         animation-delay: -0.3s; }
@@ -81,8 +84,10 @@ helix {
         -webkit-animation-delay: -1.3s;
         animation-delay: -1.3s; }
     helix bar:nth-of-type(2) {
-      -webkit-animation-delay: -0.5s;
-      animation-delay: -0.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.2s, -0.5s;
+      animation-delay: 0.2s, -0.5s; }
       helix bar:nth-of-type(2):after {
         -webkit-animation-delay: -0.5s;
         animation-delay: -0.5s; }
@@ -90,8 +95,10 @@ helix {
         -webkit-animation-delay: -1.5s;
         animation-delay: -1.5s; }
     helix bar:nth-of-type(3) {
-      -webkit-animation-delay: -0.7s;
-      animation-delay: -0.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.3s, -0.7s;
+      animation-delay: 0.3s, -0.7s; }
       helix bar:nth-of-type(3):after {
         -webkit-animation-delay: -0.7s;
         animation-delay: -0.7s; }
@@ -99,8 +106,10 @@ helix {
         -webkit-animation-delay: -1.7s;
         animation-delay: -1.7s; }
     helix bar:nth-of-type(4) {
-      -webkit-animation-delay: -0.9s;
-      animation-delay: -0.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.4s, -0.9s;
+      animation-delay: 0.4s, -0.9s; }
       helix bar:nth-of-type(4):after {
         -webkit-animation-delay: -0.9s;
         animation-delay: -0.9s; }
@@ -108,8 +117,10 @@ helix {
         -webkit-animation-delay: -1.9s;
         animation-delay: -1.9s; }
     helix bar:nth-of-type(5) {
-      -webkit-animation-delay: -1.1s;
-      animation-delay: -1.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.5s, -1.1s;
+      animation-delay: 0.5s, -1.1s; }
       helix bar:nth-of-type(5):after {
         -webkit-animation-delay: -1.1s;
         animation-delay: -1.1s; }
@@ -117,8 +128,10 @@ helix {
         -webkit-animation-delay: -2.1s;
         animation-delay: -2.1s; }
     helix bar:nth-of-type(6) {
-      -webkit-animation-delay: -1.3s;
-      animation-delay: -1.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.6s, -1.3s;
+      animation-delay: 0.6s, -1.3s; }
       helix bar:nth-of-type(6):after {
         -webkit-animation-delay: -1.3s;
         animation-delay: -1.3s; }
@@ -126,8 +139,10 @@ helix {
         -webkit-animation-delay: -2.3s;
         animation-delay: -2.3s; }
     helix bar:nth-of-type(7) {
-      -webkit-animation-delay: -1.5s;
-      animation-delay: -1.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.7s, -1.5s;
+      animation-delay: 0.7s, -1.5s; }
       helix bar:nth-of-type(7):after {
         -webkit-animation-delay: -1.5s;
         animation-delay: -1.5s; }
@@ -135,8 +150,10 @@ helix {
         -webkit-animation-delay: -2.5s;
         animation-delay: -2.5s; }
     helix bar:nth-of-type(8) {
-      -webkit-animation-delay: -1.7s;
-      animation-delay: -1.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.8s, -1.7s;
+      animation-delay: 0.8s, -1.7s; }
       helix bar:nth-of-type(8):after {
         -webkit-animation-delay: -1.7s;
         animation-delay: -1.7s; }
@@ -144,8 +161,10 @@ helix {
         -webkit-animation-delay: -2.7s;
         animation-delay: -2.7s; }
     helix bar:nth-of-type(9) {
-      -webkit-animation-delay: -1.9s;
-      animation-delay: -1.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 0.9s, -1.9s;
+      animation-delay: 0.9s, -1.9s; }
       helix bar:nth-of-type(9):after {
         -webkit-animation-delay: -1.9s;
         animation-delay: -1.9s; }
@@ -153,8 +172,10 @@ helix {
         -webkit-animation-delay: -2.9s;
         animation-delay: -2.9s; }
     helix bar:nth-of-type(10) {
-      -webkit-animation-delay: -2.1s;
-      animation-delay: -2.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1s, -2.1s;
+      animation-delay: 1s, -2.1s; }
       helix bar:nth-of-type(10):after {
         -webkit-animation-delay: -2.1s;
         animation-delay: -2.1s; }
@@ -162,8 +183,10 @@ helix {
         -webkit-animation-delay: -3.1s;
         animation-delay: -3.1s; }
     helix bar:nth-of-type(11) {
-      -webkit-animation-delay: -2.3s;
-      animation-delay: -2.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.1s, -2.3s;
+      animation-delay: 1.1s, -2.3s; }
       helix bar:nth-of-type(11):after {
         -webkit-animation-delay: -2.3s;
         animation-delay: -2.3s; }
@@ -171,8 +194,10 @@ helix {
         -webkit-animation-delay: -3.3s;
         animation-delay: -3.3s; }
     helix bar:nth-of-type(12) {
-      -webkit-animation-delay: -2.5s;
-      animation-delay: -2.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.2s, -2.5s;
+      animation-delay: 1.2s, -2.5s; }
       helix bar:nth-of-type(12):after {
         -webkit-animation-delay: -2.5s;
         animation-delay: -2.5s; }
@@ -180,8 +205,10 @@ helix {
         -webkit-animation-delay: -3.5s;
         animation-delay: -3.5s; }
     helix bar:nth-of-type(13) {
-      -webkit-animation-delay: -2.7s;
-      animation-delay: -2.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.3s, -2.7s;
+      animation-delay: 1.3s, -2.7s; }
       helix bar:nth-of-type(13):after {
         -webkit-animation-delay: -2.7s;
         animation-delay: -2.7s; }
@@ -189,8 +216,10 @@ helix {
         -webkit-animation-delay: -3.7s;
         animation-delay: -3.7s; }
     helix bar:nth-of-type(14) {
-      -webkit-animation-delay: -2.9s;
-      animation-delay: -2.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.4s, -2.9s;
+      animation-delay: 1.4s, -2.9s; }
       helix bar:nth-of-type(14):after {
         -webkit-animation-delay: -2.9s;
         animation-delay: -2.9s; }
@@ -198,8 +227,10 @@ helix {
         -webkit-animation-delay: -3.9s;
         animation-delay: -3.9s; }
     helix bar:nth-of-type(15) {
-      -webkit-animation-delay: -3.1s;
-      animation-delay: -3.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.5s, -3.1s;
+      animation-delay: 1.5s, -3.1s; }
       helix bar:nth-of-type(15):after {
         -webkit-animation-delay: -3.1s;
         animation-delay: -3.1s; }
@@ -207,8 +238,10 @@ helix {
         -webkit-animation-delay: -4.1s;
         animation-delay: -4.1s; }
     helix bar:nth-of-type(16) {
-      -webkit-animation-delay: -3.3s;
-      animation-delay: -3.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.6s, -3.3s;
+      animation-delay: 1.6s, -3.3s; }
       helix bar:nth-of-type(16):after {
         -webkit-animation-delay: -3.3s;
         animation-delay: -3.3s; }
@@ -216,8 +249,10 @@ helix {
         -webkit-animation-delay: -4.3s;
         animation-delay: -4.3s; }
     helix bar:nth-of-type(17) {
-      -webkit-animation-delay: -3.5s;
-      animation-delay: -3.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.7s, -3.5s;
+      animation-delay: 1.7s, -3.5s; }
       helix bar:nth-of-type(17):after {
         -webkit-animation-delay: -3.5s;
         animation-delay: -3.5s; }
@@ -225,8 +260,10 @@ helix {
         -webkit-animation-delay: -4.5s;
         animation-delay: -4.5s; }
     helix bar:nth-of-type(18) {
-      -webkit-animation-delay: -3.7s;
-      animation-delay: -3.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.8s, -3.7s;
+      animation-delay: 1.8s, -3.7s; }
       helix bar:nth-of-type(18):after {
         -webkit-animation-delay: -3.7s;
         animation-delay: -3.7s; }
@@ -234,8 +271,10 @@ helix {
         -webkit-animation-delay: -4.7s;
         animation-delay: -4.7s; }
     helix bar:nth-of-type(19) {
-      -webkit-animation-delay: -3.9s;
-      animation-delay: -3.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 1.9s, -3.9s;
+      animation-delay: 1.9s, -3.9s; }
       helix bar:nth-of-type(19):after {
         -webkit-animation-delay: -3.9s;
         animation-delay: -3.9s; }
@@ -243,8 +282,10 @@ helix {
         -webkit-animation-delay: -4.9s;
         animation-delay: -4.9s; }
     helix bar:nth-of-type(20) {
-      -webkit-animation-delay: -4.1s;
-      animation-delay: -4.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2s, -4.1s;
+      animation-delay: 2s, -4.1s; }
       helix bar:nth-of-type(20):after {
         -webkit-animation-delay: -4.1s;
         animation-delay: -4.1s; }
@@ -252,8 +293,10 @@ helix {
         -webkit-animation-delay: -5.1s;
         animation-delay: -5.1s; }
     helix bar:nth-of-type(21) {
-      -webkit-animation-delay: -4.3s;
-      animation-delay: -4.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.1s, -4.3s;
+      animation-delay: 2.1s, -4.3s; }
       helix bar:nth-of-type(21):after {
         -webkit-animation-delay: -4.3s;
         animation-delay: -4.3s; }
@@ -261,8 +304,10 @@ helix {
         -webkit-animation-delay: -5.3s;
         animation-delay: -5.3s; }
     helix bar:nth-of-type(22) {
-      -webkit-animation-delay: -4.5s;
-      animation-delay: -4.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.2s, -4.5s;
+      animation-delay: 2.2s, -4.5s; }
       helix bar:nth-of-type(22):after {
         -webkit-animation-delay: -4.5s;
         animation-delay: -4.5s; }
@@ -270,8 +315,10 @@ helix {
         -webkit-animation-delay: -5.5s;
         animation-delay: -5.5s; }
     helix bar:nth-of-type(23) {
-      -webkit-animation-delay: -4.7s;
-      animation-delay: -4.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.3s, -4.7s;
+      animation-delay: 2.3s, -4.7s; }
       helix bar:nth-of-type(23):after {
         -webkit-animation-delay: -4.7s;
         animation-delay: -4.7s; }
@@ -279,8 +326,10 @@ helix {
         -webkit-animation-delay: -5.7s;
         animation-delay: -5.7s; }
     helix bar:nth-of-type(24) {
-      -webkit-animation-delay: -4.9s;
-      animation-delay: -4.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.4s, -4.9s;
+      animation-delay: 2.4s, -4.9s; }
       helix bar:nth-of-type(24):after {
         -webkit-animation-delay: -4.9s;
         animation-delay: -4.9s; }
@@ -288,8 +337,10 @@ helix {
         -webkit-animation-delay: -5.9s;
         animation-delay: -5.9s; }
     helix bar:nth-of-type(25) {
-      -webkit-animation-delay: -5.1s;
-      animation-delay: -5.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.5s, -5.1s;
+      animation-delay: 2.5s, -5.1s; }
       helix bar:nth-of-type(25):after {
         -webkit-animation-delay: -5.1s;
         animation-delay: -5.1s; }
@@ -297,8 +348,10 @@ helix {
         -webkit-animation-delay: -6.1s;
         animation-delay: -6.1s; }
     helix bar:nth-of-type(26) {
-      -webkit-animation-delay: -5.3s;
-      animation-delay: -5.3s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.6s, -5.3s;
+      animation-delay: 2.6s, -5.3s; }
       helix bar:nth-of-type(26):after {
         -webkit-animation-delay: -5.3s;
         animation-delay: -5.3s; }
@@ -306,8 +359,10 @@ helix {
         -webkit-animation-delay: -6.3s;
         animation-delay: -6.3s; }
     helix bar:nth-of-type(27) {
-      -webkit-animation-delay: -5.5s;
-      animation-delay: -5.5s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.7s, -5.5s;
+      animation-delay: 2.7s, -5.5s; }
       helix bar:nth-of-type(27):after {
         -webkit-animation-delay: -5.5s;
         animation-delay: -5.5s; }
@@ -315,8 +370,10 @@ helix {
         -webkit-animation-delay: -6.5s;
         animation-delay: -6.5s; }
     helix bar:nth-of-type(28) {
-      -webkit-animation-delay: -5.7s;
-      animation-delay: -5.7s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.8s, -5.7s;
+      animation-delay: 2.8s, -5.7s; }
       helix bar:nth-of-type(28):after {
         -webkit-animation-delay: -5.7s;
         animation-delay: -5.7s; }
@@ -324,8 +381,10 @@ helix {
         -webkit-animation-delay: -6.7s;
         animation-delay: -6.7s; }
     helix bar:nth-of-type(29) {
-      -webkit-animation-delay: -5.9s;
-      animation-delay: -5.9s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 2.9s, -5.9s;
+      animation-delay: 2.9s, -5.9s; }
       helix bar:nth-of-type(29):after {
         -webkit-animation-delay: -5.9s;
         animation-delay: -5.9s; }
@@ -333,8 +392,10 @@ helix {
         -webkit-animation-delay: -6.9s;
         animation-delay: -6.9s; }
     helix bar:nth-of-type(30) {
-      -webkit-animation-delay: -6.1s;
-      animation-delay: -6.1s; }
+      --startX: 0px;
+      --startY: 100px;
+      -webkit-animation-delay: 3s, -6.1s;
+      animation-delay: 3s, -6.1s; }
       helix bar:nth-of-type(30):after {
         -webkit-animation-delay: -6.1s;
         animation-delay: -6.1s; }
@@ -461,3 +522,23 @@ helix {
     background: #47d;
     width: 30px;
     height: 30px; } }
+
+@-webkit-keyframes in {
+  from {
+    opacity: 0;
+    -webkit-transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY));
+    transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY)); }
+  to {
+    -webkit-transform: rotateZ(0deg);
+    transform: rotateZ(0deg);
+    opacity: 1; } }
+
+@keyframes in {
+  from {
+    opacity: 0;
+    -webkit-transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY));
+    transform: rotateZ(-180deg) translateX(var(--startX)) translateY(var(--startY)); }
+  to {
+    -webkit-transform: rotateZ(0deg);
+    transform: rotateZ(0deg);
+    opacity: 1; } }
