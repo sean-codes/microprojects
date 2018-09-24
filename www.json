@@ -61,6 +61,10 @@
 		{
 			"title": "particle letters",
 			"path": "projects/particle letters"
+		},
+		{
+			"title": "voxel render",
+			"path": "projects/voxel render"
 		}
 	]
 }
