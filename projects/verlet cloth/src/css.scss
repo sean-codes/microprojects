@@ -1,0 +1,20 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   background:#191a1d;
+   font-family: 'Karla', sans-serif;
+   color:#FFF;
+   height:100%;
+}
+
+canvas {
+   background: #444;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 400px;
+   height: 300px;
+   transform:
+      translateX(-50%)
+      translateY(-50%)
+}

@@ -63,6 +63,10 @@
 			"path": "projects/particle letters"
 		},
 		{
+			"title": "verlet cloth",
+			"path": "projects/verlet cloth"
+		},
+		{
 			"title": "voxel render",
 			"path": "projects/voxel render"
 		}
