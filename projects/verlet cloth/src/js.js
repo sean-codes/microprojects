@@ -4,6 +4,10 @@ console.clear()
 var canvas = document.querySelector('canvas')
 canvas.width = canvas.clientWidth
 canvas.height = canvas.clientHeight
+var mouse = {
+  down: false,
+  pos: undefined
+}
 
 var ctx = canvas.getContext('2d')
 var draw = new Draw(ctx)
@@ -68,8 +72,8 @@ var scene = new Scene({
       draw.clear()
 
       // running separate due to kind of messing up the naming
-      for (var point of points) point.iterate()
       for (var line of lines) line.iterate()
+      for (var point of points) point.iterate()
    },
 
    speed: 1000 / 60 // 60 per second
@@ -77,6 +81,45 @@ var scene = new Scene({
 
 scene.start()
 
+// mouse
+canvas.addEventListener('mousemove', function(e) {
+  onMouseMove(e)
+})
+
+canvas.addEventListener('mousedown', function(e) {
+  mouse.down = new Vector(e.offsetX, e.offsetY)
+  canvas.classList.toggle('grab', false)
+  canvas.classList.toggle('grabbing', true)
+
+  for (var point of points) {
+    if (point.hover) point.held = true
+  }
+})
+
+canvas.addEventListener('mouseup', function(e) {
+  mouse.down = false
+  onMouseMove(e)
+})
+
+function onMouseMove(e) {
+  mouse.pos = new Vector(e.offsetX, e.offsetY)
+  if (mouse.down) {
+    return
+  }
+
+  canvas.classList.toggle('grab', false)
+  canvas.classList.toggle('grabbing', false)
+
+
+  for (var point of points) {
+    point.hover = false
+    point.held = false
+    if (mouse.pos.distance(point.pos) < 10) {
+      point.hover = true
+      canvas.classList.toggle('grab', true)
+    }
+  }
+}
 
 function VerletLine(p1, p2) {
    this.p1 = p1
@@ -106,6 +149,8 @@ function VerletPoint(x, y) {
    this.pos = new Vector(x, y)
    //this.old = new Vector(x-(Math.random()*20-10), y-(Math.random()*20-10))
    this.old = this.pos.clone()
+   this.hover = false
+   this.held = false
 
    this.iterate = function() {
       this.move()
@@ -114,6 +159,14 @@ function VerletPoint(x, y) {
 
    this.move = function() {
       if (this.pin) return
+      if (this.held) {
+        var distance = this.pos.distance(mouse.pos)
+        var direction = this.pos.clone().min(mouse.pos).unit()
+
+        this.pos.min(direction.scale(distance))
+        this.old = this.pos.clone()
+        return
+      }
 
       var velocity = this.pos.clone().min(this.old).add(global.gravity)
       velocity.scale(global.friction)
@@ -135,7 +188,7 @@ function VerletPoint(x, y) {
 
    this.draw = function() {
       draw.set({ fillStyle: '#FFF' })
-      draw.rectangle(this.pos.x, this.pos.y, 3, 3)
+      if(this.hover) draw.rectangle(this.pos.x, this.pos.y, 3, 3)
    }
 }
 

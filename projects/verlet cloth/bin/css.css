@@ -1,6 +1,7 @@
-html, body {
-  padding: 0px;
-  margin: 0px;
+body,
+html {
+  padding: 0;
+  margin: 0;
   background: #191a1d;
   font-family: 'Karla', sans-serif;
   color: #FFF;
@@ -15,3 +16,9 @@ canvas {
   height: 300px;
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%); }
+  canvas.grab {
+    cursor: -webkit-grab;
+    cursor: grab; }
+  canvas.grabbing {
+    cursor: -webkit-grabbing;
+    cursor: grabbing; }
