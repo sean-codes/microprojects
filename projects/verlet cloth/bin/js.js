@@ -51,13 +51,13 @@ var scene = new Scene({
    start: function() {
       points = []
       // handy numbers for creating the points / lines
-      var spaceBetweenPoints = 20
+      var spaceBetweenPoints = 10
 
-      var numberOfHorizontalPoints = 15
-      var numberOfVerticalPoints = 10
+      var numberOfHorizontalPoints = 30
+      var numberOfVerticalPoints = 15
 
       var xOff = (canvas.width/2) - (spaceBetweenPoints * numberOfHorizontalPoints / 2)
-      var yOff = (canvas.height/2) - (spaceBetweenPoints * numberOfVerticalPoints / 2)
+      var yOff = 20 // (canvas.height/2) - (spaceBetweenPoints * numberOfVerticalPoints / 2)
 
       for (var x = 0; x < numberOfHorizontalPoints; x++) {
          for (var y = 0; y < numberOfVerticalPoints; y++) {
@@ -74,7 +74,7 @@ var scene = new Scene({
             }
 
             // pin top points
-            if (y == 0 && x % 2 == 0) points[points.length - 1].pin = true
+            if (y == 0) points[points.length - 1].pin = true
          }
       }
 
@@ -158,6 +158,7 @@ function VerletLine(p1, p2) {
    }
 
    this.draw = function() {
+     draw.set({ strokeStyle: '#FFF' })
      draw.line(this.p1.pos, this.p2.pos)
    }
 
