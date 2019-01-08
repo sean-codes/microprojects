@@ -8,13 +8,13 @@ html {
   height: 100%; }
 
 canvas {
-  border: 1px solid #FFF;
   background: #191a1d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: absolute;
   top: 50%;
   left: 50%;
   width: 600px;
-  height: 300px;
+  height: 360px;
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%); }
   canvas.grab {

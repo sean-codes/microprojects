@@ -54,7 +54,7 @@ var scene = new Scene({
       var spaceBetweenPoints = 10
 
       var numberOfHorizontalPoints = 30
-      var numberOfVerticalPoints = 15
+      var numberOfVerticalPoints = 20
 
       var xOff = (canvas.width/2) - (spaceBetweenPoints * numberOfHorizontalPoints / 2)
       var yOff = 20 // (canvas.height/2) - (spaceBetweenPoints * numberOfVerticalPoints / 2)
