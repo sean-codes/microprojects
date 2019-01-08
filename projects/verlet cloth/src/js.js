@@ -72,8 +72,11 @@ var scene = new Scene({
       draw.clear()
 
       // running separate due to kind of messing up the naming
-      for (var line of lines) line.iterate()
-      for (var point of points) point.iterate()
+      for (var line of lines) line.move()
+      for (var point of points) point.move()
+
+      for (var line of lines) line.draw()
+      for (var point of points) point.draw()
    },
 
    speed: 1000 / 60 // 60 per second
@@ -127,10 +130,13 @@ function VerletLine(p1, p2) {
 
    this.length = this.p1.pos.distance(this.p2.pos)
 
-   this.iterate = function() {
+   this.move = function() {
       this.constrain()
 
-      draw.line(this.p1.pos, this.p2.pos)
+   }
+
+   this.draw = function() {
+     draw.line(this.p1.pos, this.p2.pos)
    }
 
    this.constrain = function() {
