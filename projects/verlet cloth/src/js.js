@@ -38,15 +38,30 @@ var scene = new Scene({
             var xPos = x * spaceBetweenPoints + xOff
             var yPos = y * spaceBetweenPoints + yOff
             points.push(new VerletPoint(xPos, yPos))
+            // link them horizontally
+            if (y > 0) {
+               lines.push(new VerletLine(points[points.length - 1], points[points.length - 2]))
+            }
+
+            if (x > 0) {
+               lines.push(new VerletLine(points[points.length-1], points[points.length - 1 - numberOfVerticalPoints]))
+            }
+
+            // pin top points
+            if (y == 0 && x % 2 == 0) points[points.length - 1].pin = true
          }
       }
 
       points[0].pin = true
+      points[points.length - numberOfVerticalPoints].pin = true
 
 
-      lines.push(new VerletLine(points[0], points[1]))
-      lines.push(new VerletLine(points[1], points[3]))
-      lines.push(new VerletLine(points[3], points[4]))
+      // lines.push(new VerletLine(points[0], points[1]))
+      // lines.push(new VerletLine(points[1], points[3]))
+      // lines.push(new VerletLine(points[3], points[4]))
+      // var xId = 0
+      // var yId = 0
+
    },
 
    iterate: function() {
@@ -78,7 +93,7 @@ function VerletLine(p1, p2) {
    this.constrain = function() {
       // pull / push to match length
       var distance = this.p1.pos.distance(this.p2.pos)
-      var pull = this.length - distance / 2
+      var pull = (this.length - distance) / 2
 
       var direction = this.p1.pos.clone().min(this.p2.pos).unit()
 
@@ -89,7 +104,8 @@ function VerletLine(p1, p2) {
 
 function VerletPoint(x, y) {
    this.pos = new Vector(x, y)
-   this.old = new Vector(x-(Math.random()*20-10), y-(Math.random()*20-10))
+   //this.old = new Vector(x-(Math.random()*20-10), y-(Math.random()*20-10))
+   this.old = this.pos.clone()
 
    this.iterate = function() {
       this.move()
