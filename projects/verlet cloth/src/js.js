@@ -15,8 +15,8 @@ var draw = new Draw(ctx)
 // variables
 var global = {
    gravity: { x: 0, y: 0.5 },
-   friction: 0.98,
-   bounce: 0.85,
+   friction: 0.95,
+   bounce: 0.5,
    width: canvas.width,
    height: canvas.height
 }
@@ -176,6 +176,7 @@ function VerletPoint(x, y) {
       }
 
       var velocity = this.pos.clone().min(this.old).add(global.gravity)
+      velocity
       velocity.scale(global.friction)
 
       this.old = this.pos.clone()
