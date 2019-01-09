@@ -103,7 +103,11 @@ function unPin() {
 }
 
 function zeroGravity() {
-   global.gravity = { x: 0, y: 0 }
+   global.gravity = global.gravity.y
+      ? { x: 0, y: 0 }
+      : { x: 0, y: 0.25 }
+
+   console.log(global.gravity);
 }
 
 function repair() {
