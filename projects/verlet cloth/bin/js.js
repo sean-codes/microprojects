@@ -27,8 +27,8 @@ var canvas = document.querySelector('canvas')
 canvas.width = canvas.clientWidth
 canvas.height = canvas.clientHeight
 var mouse = {
-  down: false,
-  pos: undefined
+   down: false,
+   pos: undefined
 }
 
 var ctx = canvas.getContext('2d')
@@ -36,9 +36,9 @@ var draw = new Draw(ctx)
 
 // variables
 var global = {
-   gravity: { x: 0, y: 0.5 },
-   friction: 0.95,
-   bounce: 0.5,
+   gravity: { x: 0, y: 0.25 },
+   friction: 0.98,
+   bounce: 1,
    width: canvas.width,
    height: canvas.height
 }
@@ -46,48 +46,32 @@ var global = {
 var points = []
 var lines = []
 
+var spaceBetweenPoints = 10
+
+var numberOfHorizontalPoints = 50
+var numberOfVerticalPoints = 20
+
 // scene
 var scene = new Scene({
    start: function() {
       points = []
       // handy numbers for creating the points / lines
-      var spaceBetweenPoints = 10
-
-      var numberOfHorizontalPoints = 30
-      var numberOfVerticalPoints = 20
-
-      var xOff = (canvas.width/2) - (spaceBetweenPoints * numberOfHorizontalPoints / 2)
-      var yOff = 20 // (canvas.height/2) - (spaceBetweenPoints * numberOfVerticalPoints / 2)
+      var xOff = (canvas.width / 2) - (spaceBetweenPoints * numberOfHorizontalPoints / 2)
+      var yOff = 40 // (canvas.height/2) - (spaceBetweenPoints * numberOfVerticalPoints / 2)
 
       for (var x = 0; x < numberOfHorizontalPoints; x++) {
          for (var y = 0; y < numberOfVerticalPoints; y++) {
             var xPos = x * spaceBetweenPoints + xOff
             var yPos = y * spaceBetweenPoints + yOff
-            points.push(new VerletPoint(xPos, yPos))
-            // link them horizontally
-            if (y > 0) {
-               lines.push(new VerletLine(points[points.length - 1], points[points.length - 2]))
-            }
-
-            if (x > 0) {
-               lines.push(new VerletLine(points[points.length-1], points[points.length - 1 - numberOfVerticalPoints]))
-            }
+            var point = new VerletPoint(xPos, yPos)
+            points.push(point)
 
             // pin top points
-            if (y == 0) points[points.length - 1].pin = true
+            if (y == 0) point.pin = true
          }
       }
 
-      points[0].pin = true
-      points[points.length - numberOfVerticalPoints].pin = true
-
-
-      // lines.push(new VerletLine(points[0], points[1]))
-      // lines.push(new VerletLine(points[1], points[3]))
-      // lines.push(new VerletLine(points[3], points[4]))
-      // var xId = 0
-      // var yId = 0
-
+      setUpLines(0, 0)
    },
 
    iterate: function() {
@@ -106,60 +90,92 @@ var scene = new Scene({
 
 scene.start()
 
+function setUpLines(xHalf) {
+   for (var x of [(numberOfHorizontalPoints/2 - 1) - xHalf, (numberOfHorizontalPoints/2) + xHalf]) {
+      for (var y = 0; y < numberOfVerticalPoints; y++) {
+         var pointID = x * numberOfVerticalPoints + y
+         console.log(x / numberOfHorizontalPoints)
+         // continue
+         if (y > 0) {
+            var line = new VerletLine(points[pointID], points[pointID - 1])
+            line.color = `rgba(255, 50, ${Math.floor(x/numberOfHorizontalPoints*255)}, 0.75)`
+            lines.push(line)
+         }
+
+         if (x > 0) {
+            var line = new VerletLine(points[pointID], points[pointID - numberOfVerticalPoints])
+            line.color = `rgba(255, 50, ${Math.floor(x/numberOfHorizontalPoints*255)}, 0.75)`
+            lines.push(line)
+         }
+      }
+   }
+
+   xHalf += 1
+   if(xHalf < numberOfHorizontalPoints/2) {
+      setTimeout(function() {
+         setUpLines(xHalf)
+      }, 1000/60)
+   }
+}
 // mouse
-canvas.addEventListener('mousemove', function(e) {
-  onMouseMove(e)
+document.body.addEventListener('mousemove', function(e) {
+   onMouseMove(e)
 })
 
-canvas.addEventListener('mousedown', function(e) {
-  mouse.down = new Vector(e.offsetX, e.offsetY)
-  canvas.classList.toggle('grab', false)
-  canvas.classList.toggle('grabbing', true)
+document.body.addEventListener('mousedown', function(e) {
+   var rectCanvas = canvas.getBoundingClientRect()
+   mouse.down = new Vector(e.clientX - rectCanvas.left, e.clientY - rectCanvas.top)
+   canvas.classList.toggle('grab', false)
+   canvas.classList.toggle('grabbing', true)
 
-  for (var point of points) {
-    if (point.hover) point.held = true
-  }
+   for (var point of points) {
+      if (point.hover) point.held = true
+   }
 })
 
-canvas.addEventListener('mouseup', function(e) {
-  mouse.down = false
-  onMouseMove(e)
+document.body.addEventListener('mouseup', function(e) {
+   mouse.down = false
+   onMouseMove(e)
 })
 
 function onMouseMove(e) {
-  mouse.pos = new Vector(e.offsetX, e.offsetY)
-  if (mouse.down) {
-    return
-  }
+   var rectCanvas = canvas.getBoundingClientRect()
+   var mx = Math.max(0, Math.min(canvas.width, e.clientX - rectCanvas.left))
+   var my = Math.max(0, Math.min(canvas.height, e.clientY - rectCanvas.top))
+   mouse.pos = new Vector(mx, my)
 
-  canvas.classList.toggle('grab', false)
-  canvas.classList.toggle('grabbing', false)
+   if (mouse.down) {
+      return
+   }
+
+   canvas.classList.toggle('grab', false)
+   canvas.classList.toggle('grabbing', false)
 
 
-  for (var point of points) {
-    point.hover = false
-    point.held = false
-    if (mouse.pos.distance(point.pos) < 10) {
-      point.hover = true
-      canvas.classList.toggle('grab', true)
-    }
-  }
+   for (var point of points) {
+      point.hover = false
+      point.held = false
+      if (mouse.pos.distance(point.pos) < 20) {
+         point.hover = true
+         canvas.classList.toggle('grab', true)
+      }
+   }
 }
 
 function VerletLine(p1, p2) {
    this.p1 = p1
    this.p2 = p2
+   this.color = '#FFF'
 
-   this.length = this.p1.pos.distance(this.p2.pos)
+   this.length = spaceBetweenPoints//this.p1.pos.distance(this.p2.pos)
 
    this.move = function() {
       this.constrain()
-
    }
 
    this.draw = function() {
-     draw.set({ strokeStyle: '#FFF' })
-     draw.line(this.p1.pos, this.p2.pos)
+      draw.set({ strokeStyle: this.color })
+      draw.line(this.p1.pos, this.p2.pos)
    }
 
    this.constrain = function() {
@@ -169,36 +185,31 @@ function VerletLine(p1, p2) {
 
       var direction = this.p1.pos.clone().min(this.p2.pos).unit()
 
-      !this.p1.pin && this.p1.pos.add(direction.clone().scale(pull))
-      !this.p2.pin && this.p2.pos.min(direction.clone().scale(pull))
+      if (!this.p1.pin) this.p1.pos.add(direction.clone().scale(pull))
+      if (!this.p2.pin) this.p2.pos.min(direction.clone().scale(pull))
    }
 }
 
 function VerletPoint(x, y) {
    this.pos = new Vector(x, y)
-   //this.old = new Vector(x-(Math.random()*20-10), y-(Math.random()*20-10))
-   this.old = this.pos.clone()
+   this.old = new Vector(x-(Math.random()), y-(Math.random()*10-5))
+   //this.old = this.pos.clone()
    this.hover = false
    this.held = false
-
-   this.iterate = function() {
-      this.move()
-      this.draw()
-   }
 
    this.move = function() {
       if (this.pin) return
       if (this.held) {
-        var distance = this.pos.distance(mouse.pos)
-        var direction = this.pos.clone().min(mouse.pos).unit()
+         var distance = this.pos.distance(mouse.pos)
+         var direction = this.pos.clone().min(mouse.pos).unit()
 
-        this.pos.min(direction.scale(distance))
-        this.old = this.pos.clone()
-        return
+         this.pos.min(direction.scale(distance))
+         this.old = this.pos.clone()
+         return
       }
 
       var velocity = this.pos.clone().min(this.old).add(global.gravity)
-      velocity
+      velocity.tame(100)
       velocity.scale(global.friction)
 
       this.old = this.pos.clone()
@@ -217,8 +228,8 @@ function VerletPoint(x, y) {
    }
 
    this.draw = function() {
-      draw.set({ fillStyle: '#FFF' })
-      if(this.hover) draw.rectangle(this.pos.x, this.pos.y, 3, 3)
+      draw.set({ fillStyle: 'rgba(255, 255, 255, 0.25)' })
+      draw.rectangle(this.pos.x, this.pos.y, 1, 1)
    }
 }
 
@@ -227,13 +238,13 @@ function Draw(ctx) {
    this.ctx = ctx
 
    this.set = function(settings) {
-      for(var setting in settings) {
+      for (var setting in settings) {
          this.ctx[setting] = settings[setting]
       }
    }
 
    this.rectangle = function(x, y, width, height) {
-      this.ctx.fillRect(x-width/2, y-height/2, width, height)
+      this.ctx.fillRect(x - width / 2, y - height / 2, width, height)
    }
 
    this.line = function(p1, p2) {
@@ -265,11 +276,17 @@ function Vector(x, y) {
    }
 
    this.length = function() {
-      return Math.sqrt((this.x*this.x) + (this.y*this.y))
+      return Math.sqrt((this.x * this.x) + (this.y * this.y))
    }
 
    this.unit = function() {
-      return this.clone().scale(1 / this.length())
+      return this.scale(1 / this.length())
+   }
+
+   this.tame = function(max) {
+      if (this.length() > max) {
+         this.unit().scale(max)
+      }
    }
 
    // would have been cool to combo scale -1
@@ -289,6 +306,10 @@ function Vector(x, y) {
 
    this.clone = function() {
       return new Vector(this.x, this.y)
+   }
+
+   this.toString = function() {
+      return '(' + this.x + ', ' + this.y + ')'
    }
 }
 
