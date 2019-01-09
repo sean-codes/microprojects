@@ -72,7 +72,6 @@ function setUpLines(xHalf) {
    for (var x of [(numberOfHorizontalPoints/2 - 1) - xHalf, (numberOfHorizontalPoints/2) + xHalf]) {
       for (var y = 0; y < numberOfVerticalPoints; y++) {
          var pointID = x * numberOfVerticalPoints + y
-         console.log(x / numberOfHorizontalPoints)
          // continue
          if (y > 0) {
             var line = new VerletLine(points[pointID], points[pointID - 1])
@@ -92,9 +91,32 @@ function setUpLines(xHalf) {
    if(xHalf < numberOfHorizontalPoints/2) {
       setTimeout(function() {
          setUpLines(xHalf)
-      }, 1000/60)
+      }, 1000/30)
    }
 }
+
+function unPin() {
+   for (var x = 0; x < numberOfHorizontalPoints; x++) {
+      pointID = x * numberOfVerticalPoints
+      points[pointID].pin = !points[pointID].pin
+   }
+}
+
+function zeroGravity() {
+   global.gravity = { x: 0, y: 0 }
+}
+
+function repair() {
+   global.gravity = { x: 0, y: 0.25 }
+
+   for (var x = 0; x < numberOfHorizontalPoints; x++) {
+      pointID = x * numberOfVerticalPoints
+      points[pointID].pos = points[pointID].start.clone()
+      points[pointID].old = points[pointID].start.clone()
+      points[pointID].pin = true
+   }
+}
+
 // mouse
 document.body.addEventListener('mousemove', function(e) {
    onMouseMove(e)
@@ -112,6 +134,29 @@ document.body.addEventListener('mousedown', function(e) {
 })
 
 document.body.addEventListener('mouseup', function(e) {
+   mouse.down = false
+   onMouseMove(e)
+})
+
+// touch
+document.body.addEventListener('touchmove', function(e) {
+   var e = e.touches[0]
+   onMouseMove(e)
+})
+
+document.body.addEventListener('touchstart', function(e) {
+   var e = e.touches[0]
+   var rectCanvas = canvas.getBoundingClientRect()
+   mouse.down = new Vector(e.clientX - rectCanvas.left, e.clientY - rectCanvas.top)
+
+   for (var point of points) {
+      if (mouse.down.distance(point.pos) < 20) {
+          point.held = true
+       }
+   }
+})
+
+document.body.addEventListener('touchend', function(e) {
    mouse.down = false
    onMouseMove(e)
 })
@@ -134,7 +179,7 @@ function onMouseMove(e) {
       point.hover = false
       point.held = false
       if (mouse.pos.distance(point.pos) < 20) {
-         point.hover = true
+         point.hover = true // for debugging
          canvas.classList.toggle('grab', true)
       }
    }
@@ -144,6 +189,7 @@ function VerletLine(p1, p2) {
    this.p1 = p1
    this.p2 = p2
    this.color = '#FFF'
+   this.snip = false
 
    this.length = spaceBetweenPoints//this.p1.pos.distance(this.p2.pos)
 
@@ -157,6 +203,7 @@ function VerletLine(p1, p2) {
    }
 
    this.constrain = function() {
+      if (this.snip) return
       // pull / push to match length
       var distance = this.p1.pos.distance(this.p2.pos)
       var pull = (this.length - distance) / 2
@@ -170,7 +217,8 @@ function VerletLine(p1, p2) {
 
 function VerletPoint(x, y) {
    this.pos = new Vector(x, y)
-   this.old = new Vector(x-(Math.random()), y-(Math.random()*10-5))
+   this.start = new Vector(x, y)
+   this.old = new Vector(x-(Math.random()), y-(Math.random()*10-9))
    //this.old = this.pos.clone()
    this.hover = false
    this.held = false
@@ -179,6 +227,8 @@ function VerletPoint(x, y) {
       if (this.pin) return
       if (this.held) {
          var distance = this.pos.distance(mouse.pos)
+         if (!distance) return // was out of control
+
          var direction = this.pos.clone().min(mouse.pos).unit()
 
          this.pos.min(direction.scale(distance))

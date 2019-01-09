@@ -6,16 +6,28 @@ html {
   font-family: 'Karla', sans-serif;
   color: #FFF;
   height: 100%;
+  user-select: none;
+}
+
+.stoneage-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform:translateX(-50%) translateY(-50%);
+  text-align: center;
+}
+
+h1 {
+   margin: 0;
+   font-weight: 300;
+   font-size: 28px;
+   user-select: none;
 }
 
 canvas {
   background: #191a1d;
-  position: absolute;
-  top: 50%;
-  left: 50%;
   width: 600px;
-  height: 400px;
-  transform:translateX(-50%) translateY(-50%);
+  height: 330px;
 
   &.grab {
     cursor: -webkit-grab;
@@ -26,4 +38,35 @@ canvas {
     cursor: -webkit-grabbing;
     cursor: grabbing;
   }
+}
+
+button {
+   background: none;
+   color: #FFF;
+   line-height: 22px;
+   height: 30px;
+   padding: 0 20px;
+   margin: 0 5px;
+   border-radius: 5px;
+   border: 2px solid #BF39A8;
+   cursor: pointer;
+
+   &:nth-of-type(1) {
+      border: 2px solid #E64D43;
+   }
+
+   &:nth-of-type(2) {
+      border: 2px solid #94264F;
+   }
+
+   &:hover {
+      background: #BF39A8;
+      &:nth-of-type(1) {
+         background: #E64D43;
+      }
+
+      &:nth-of-type(2) {
+         background: #94264F;
+      }
+   }
 }
