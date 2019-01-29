@@ -47,6 +47,10 @@
 			"description": "platformer physics system!"
 		},
 		{
+			"title": "field of view",
+			"path": "projects/field of view"
+		},
+		{
 			"title": "gridventory",
 			"path": "projects/gridventory"
 		},

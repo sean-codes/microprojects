@@ -1,0 +1,29 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   background:#191a1d;
+   font-family: 'Karla', sans-serif;
+   color:#FFF;
+   height:100%;
+}
+
+canvas {
+   position: fixed;
+   top: 0; left: 0;
+   width: 100%;
+   height: 100%;
+   $gridSize: 20px;
+   $gridColor:rgba(255, 255, 255, 0.05);
+
+   background-size: $gridSize $gridSize;
+   background-image:
+      linear-gradient(45deg, $gridColor 25%, transparent 25%),
+      linear-gradient(-45deg, $gridColor 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, $gridColor 75%),
+      linear-gradient(-45deg, transparent 75%, $gridColor 75%);
+   background-position:
+      0px 0px,
+      0px $gridSize/2,
+      ($gridSize/2) (-$gridSize/2),
+      -$gridSize/2 0px;
+}
