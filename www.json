@@ -59,6 +59,10 @@
 			"path": "projects/minhelix"
 		},
 		{
+			"title": "naive culling",
+			"path": "projects/naive culling"
+		},
+		{
 			"title": "nexus",
 			"path": "projects/nexus"
 		},

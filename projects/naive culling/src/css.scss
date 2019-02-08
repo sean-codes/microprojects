@@ -1,0 +1,42 @@
+html, body{
+   padding:0px;
+   margin:0px;
+   background:#191a1d;
+   color:#FFF;
+   height:100%;
+}
+
+body *:not(i) {
+   font-family: monospace !important;
+}
+
+canvas {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translateX(-50%) translateY(-50%);
+   width: 100%;
+   height: 100%;
+   background: #000;
+}
+
+.settings-container {
+   position: fixed;
+   background: rgba(0, 0, 0, .25);
+}
+
+.settings-container > * {
+   display: flex;
+   margin: 10px;
+}
+
+.settings-container > * > * {
+   margin: 0 10px;
+}
+
+.info {
+   position: fixed;
+   bottom: 1em;
+   right: 1em;
+   line-height: 2em;
+}
