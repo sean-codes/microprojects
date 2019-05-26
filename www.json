@@ -71,6 +71,10 @@
 			"path": "projects/particle letters"
 		},
 		{
+			"title": "space navigation",
+			"path": "projects/space navigation"
+		},
+		{
 			"title": "verlet cloth",
 			"path": "projects/verlet cloth"
 		},
