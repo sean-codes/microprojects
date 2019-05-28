@@ -31,4 +31,13 @@ function Objects() {
       var listObject = this.list.find(o => o.type == objectType)
       if (listObject) return listObject.object
    }
+
+   this.all = (objectType) => {
+      var objects = this.list.reduce((sum, num) => {
+         num.type == objectType && sum.push(num.object)
+         return sum
+      }, [])
+
+      return objects
+   }
 }
