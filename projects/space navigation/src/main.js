@@ -18,7 +18,18 @@ var engine = new Engine({
 
       engine.objects.create({
          type: 'meteor',
-         pos: new Vector(width * 0.5, height * 0.5)
+         pos: new Vector(width * 0.25, height * 0.5)
+      })
+
+      engine.objects.create({
+         type: 'meteor',
+         pos: new Vector(width * 0.5, height * 0.5),
+         radius: 75
+      })
+
+      engine.objects.create({
+         type: 'meteor',
+         pos: new Vector(width * 0.75, height * 0.5)
       })
 
       engine.objects.create({
@@ -28,7 +39,7 @@ var engine = new Engine({
 
       engine.objects.create({
          type: 'point',
-         pos: new Vector(width * 0.25, height * 0.5)
+         pos: new Vector(width * 0.2, height * 0.5)
       })
 
    },

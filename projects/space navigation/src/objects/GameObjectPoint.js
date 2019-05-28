@@ -1,6 +1,5 @@
 function ObjectPoint(options) {
    this.pos = options.pos
-   this.speed = new Vector(5, 8)
    this.timer = 120
 
    this.step = () => {
@@ -21,6 +20,22 @@ function ObjectPoint(options) {
       }
       if (this.pos.y < 0 || this.pos.y > engine.draw.height) {
          this.speed.y *= -1
+      }
+
+      var ship = engine.objects.find('ship')
+      if (ship.pos.distance(this.pos) < 35) {
+         this.pos = new Vector(
+            engine.draw.width * Math.random(),
+            engine.draw.height * Math.random()
+         )
+      }
+
+      var meteors = engine.objects.all('meteor')
+      for (var meteor of meteors) {
+         var distanceThisToMeteor = meteor.pos.distance(this.pos)
+         if (distanceThisToMeteor < meteor.radius) {
+            this.pos.add(meteor.pos.direction(this.pos).scale(distanceThisToMeteor))
+         }
       }
    }
 }
