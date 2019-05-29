@@ -12,6 +12,7 @@ var engine = new Engine({
    draw: new Draw({ canvas: canvas, fullscreen: true }),
    objects: new Objects(),
    math: new HandyMath(),
+   physics: new Physics(),
 
    init: (vars) => {
       var { width, height } = engine.draw
@@ -45,6 +46,7 @@ var engine = new Engine({
    },
 
    step: (vars) => {
+      engine.physics.resolve()
       engine.draw.clear()
       engine.objects.step()
       engine.mouse.step()

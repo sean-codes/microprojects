@@ -6,6 +6,7 @@ function Engine(o) {
    this.mouse = o.mouse
    this.keyboard = o.keyboard
    this.draw = o.draw
+   this.physics = o.physics
    this.objects = o.objects
    this.init = o.init || function() {}
    this.step = o.step || function() {}
