@@ -86,9 +86,11 @@ function Draw(o) {
    this.settings = (o) => {
       for (var oName in o) this.ctx[oName] = o[oName]
    }
+
    this.clear = () => {
       this.ctx.clearRect(0, 0, this.width, this.height)
    }
+
    this.circle = (o) => {
       o.set && this.settings(o.set)
       this.ctx.beginPath()
@@ -97,11 +99,13 @@ function Draw(o) {
       o.fill && this.ctx.fill();
       (o.stroke || !o.fill) && this.ctx.stroke()
    }
+
    this.rect = (o) => {
       o.set && this.settings(o.set)
       o.fill && this.ctx.fillRect(o.pos.x, o.pos.y, o.width || o.size, o.height || o.size);
       (o.stroke || !o.fill) && this.ctx.strokeRect(o.pos.x, o.pos.y, o.width || o.size, o.height || o.size)
    }
+
    this.shape = (o) => {
       o.set && this.settings(o.set)
       var vertices = o.points
@@ -117,6 +121,7 @@ function Draw(o) {
       o.fill && this.ctx.fill()
       o.stroke || !o.fill && this.ctx.stroke()
    }
+
    this.line = (o) => {
       o.set && this.settings(o.set)
       this.ctx.beginPath()
@@ -286,18 +291,17 @@ function Mouse(o) {
 }
 
 function Physics() {
+   this.unique = 0
    this.objects = []
 
    this.add = (info) => {
       var physicsObject = {
-         id: info.object.id,
-         type: info.object.type,
-         object: info.object,
+         id: this.unique++,
+         type: info.type,
          radius: info.radius,
-         pos: info.object.pos.clone(),
-         speed: info.object.speed ? cs.clone(info.object.speed) : { x: 0, y: 0 },
-         collideWith: cs.clone(info.collideWith || []),
-         bounceWith: cs.clone(info.bounceWith || []),
+         pos: info.pos.clone(),
+         speed: info.speed ? info.speed.clone() : new Vector(0, 0),
+         bounceWith: JSON.parse(JSON.stringify(info.bounceWith || '[]')),
          manifold: {}
       }
 
@@ -325,27 +329,24 @@ function Physics() {
             var bounceWith = object_0.bounceWith
             var touchDistance = object_0.radius + object_1.radius
 
-            if (collideWith.includes(object_1.type)) {
-               // push them away
-               var distance = cs.math.distance(object_0.pos, object_1.pos)
-               if (distance < touchDistance) {
-                  object_0.manifold.colliding = true
-                  object_1.manifold.colliding = true
+            // push them away
+            var distance = object_0.pos.distance(object_1.pos)
+            if (distance < touchDistance) {
+               object_0.manifold.colliding = true
+               object_1.manifold.colliding = true
 
-                  var direction = cs.math.direction(object_0.pos, object_1.pos)
+               var direction = object_0.pos.direction(object_1.pos)
 
-                  object_0.pos.x -= cs.math.cos(direction) * (touchDistance - distance)
-                  object_0.pos.y -= cs.math.sin(direction) * (touchDistance - distance)
+               object_0.pos.add(direction.clone().scale(touchDistance - distance))
 
-                  if (bounceWith.includes(object_1.type)) {
-                     speedX = object_0.speed.x
-                     speedY = object_0.speed.y
+               if (bounceWith.includes(object_1.type)) {
+                  speedX = object_0.speed.x
+                  speedY = object_0.speed.y
 
-                     object_0.speed.x = object_1.speed.x
-                     object_0.speed.y = object_1.speed.y
-                     object_1.speed.x = speedX
-                     object_1.speed.y = speedY
-                  }
+                  object_0.speed.x = object_1.speed.x
+                  object_0.speed.y = object_1.speed.y
+                  object_1.speed.x = speedX
+                  object_1.speed.y = speedY
                }
             }
          }
@@ -353,17 +354,17 @@ function Physics() {
    }
 
    this.objectMove = (object) => {
-      object.pos.x += object.speed.x * cs.loop.delta
-      object.pos.y += object.speed.y * cs.loop.delta
+      object.pos.x += object.speed.x
+      object.pos.y += object.speed.y
 
       // reflect if outside
-      if (object.pos.x < 0 || object.pos.x > cs.room.width) {
-         object.pos.x -= (object.pos.x < 0 ? object.pos.x : object.pos.x - cs.room.width)
+      if (object.pos.x < 0 || object.pos.x > engine.draw.width) {
+         object.pos.x -= (object.pos.x < 0 ? object.pos.x : object.pos.x - engine.draw.width)
          object.speed.x = -object.speed.x
       }
 
-      if (object.pos.y < 0 || object.pos.y > cs.room.height) {
-         object.pos.y -= (object.pos.y < 0 ? object.pos.y : object.pos.y - cs.room.height)
+      if (object.pos.y < 0 || object.pos.y > engine.draw.height) {
+         object.pos.y -= (object.pos.y < 0 ? object.pos.y : object.pos.y - engine.draw.height)
          object.speed.y = -object.speed.y
       }
    }
@@ -402,16 +403,20 @@ function Vector(x, y) {
 }
 
 function ObjectMeteor(options) {
-   this.pos = options.pos
-   this.radius = options.radius || 50
-
    this.vertices = []
    var pointCount = 10 + Math.ceil(Math.random() * 15)
    var pointsAngle = Math.PI*2 / pointCount
    var start = Math.PI*2 * Math.random()
 
+   this.physics = engine.physics.add({
+      type: 'metoer',
+      pos: options.pos,
+      radius: options.radius || 50,
+      speed: new Vector(1, 1)
+   })
+
    for (var i = 0; i < pointCount; i++) {
-      var radius = this.radius + (Math.random() * 6 - 3)
+      var radius = this.physics.radius + (Math.random() * 6 - 3)
       this.vertices.push({
          x: Math.cos(start + pointsAngle * i) * radius,
          y: Math.sin(start + pointsAngle * i) * radius
@@ -424,9 +429,10 @@ function ObjectMeteor(options) {
          lineWidth: 5
       })
 
+      console.log(this.physics.pos)
       engine.draw.shape({
          points: this.vertices,
-         relative: this.pos
+         relative: this.physics.pos
       })
    }
 }
@@ -465,9 +471,11 @@ function ObjectPoint(options) {
 
       var meteors = engine.objects.all('meteor')
       for (var meteor of meteors) {
-         var distanceThisToMeteor = meteor.pos.distance(this.pos)
-         if (distanceThisToMeteor < meteor.radius) {
-            this.pos.add(meteor.pos.direction(this.pos).scale(distanceThisToMeteor))
+         var meteorPos = meteor.physics.pos
+         var meteorRadius = meteor.physics.radius
+         var distanceThisToMeteor = meteorPos.distance(this.pos)
+         if (distanceThisToMeteor < meteorRadius) {
+            this.pos.add(meteorPos.direction(this.pos).scale(distanceThisToMeteor))
          }
       }
    }
@@ -484,6 +492,11 @@ function ObjectShip(options) {
    this.turnMax = Math.PI*2 * 0.025
 
    this.radius = 25
+   // this.physics = engine.physics.add({
+   //    pos: options.pos,
+   //    radius: 25,
+   // })
+
    this.points = [
       new Vector(0, -this.radius),
       new Vector(-(this.radius*0.75), this.radius * 0.75),
@@ -548,11 +561,14 @@ function ObjectShip(options) {
       }
 
       for (var meteor of meteors) {
-         var avoidDistance = avoidBy + meteor.radius
-         var posClosest = meteor.pos.closestPointOnLine([ pos, this.pos ])
+         var meteorPos = meteor.physics.pos
+         var meteorRadius = meteor.physics.radius
 
-         var distanceClosestToMeteor = posClosest.distance(meteor.pos)
-         var distanceShipToMeteor = this.pos.distance(meteor.pos)
+         var avoidDistance = avoidBy + meteorRadius
+         var posClosest = meteorPos.closestPointOnLine([ pos, this.pos ])
+
+         var distanceClosestToMeteor = posClosest.distance(meteorPos)
+         var distanceShipToMeteor = this.pos.distance(meteorPos)
 
          if (distanceClosestToMeteor < avoidDistance && distanceShipToMeteor < avoid.distanceShipToMeteor) {
             avoid.object = meteor
@@ -572,13 +588,13 @@ function ObjectShip(options) {
 
          engine.draw.circle({ pos: posClosest, radius: 5, set: { lineWidth: 1, strokeStyle: '#f22' }})
          // we need to navigate around
-         var directionMeteorToClosest = meteor.pos.direction(posClosest)
-         var posAvoid = posClosest.clone().add(directionMeteorToClosest.clone().scale(meteor.radius - distanceClosestToMeteor + avoidBy))
+         var directionMeteorToClosest = meteorPos.direction(posClosest)
+         var posAvoid = posClosest.clone().add(directionMeteorToClosest.clone().scale(meteorRadius - distanceClosestToMeteor + avoidBy))
          // console.log(posAvoid)
          engine.draw.circle({ pos: posAvoid, radius: 5, set: { lineWidth: 1, strokeStyle: '#465' }})
          // not really sure how to calculate. lets leave
 
-         if (distanceClosestToMeteor > meteor.radius) {
+         if (distanceClosestToMeteor > meteorRadius) {
             return posAvoid
          }
 
@@ -592,7 +608,7 @@ function ObjectShip(options) {
          var turn = engine.math.angleToAngle(angleShipToAvoid, angleShipToClosest)
 
          var distancClosestToAvoid = posClosest.distance(posAvoid)
-         var offset = 1 - distanceClosestToMeteor / meteor.radius
+         var offset = 1 - distanceClosestToMeteor / meteorRadius
 
          var ninty = Math.PI*2 * (turn < 0 ? 0.25 : -0.25)
          var nintyOffset = ninty * offset
@@ -603,7 +619,7 @@ function ObjectShip(options) {
          )
 
          // console.log(directionMeteorToClosest.length())
-         var targetPos = meteor.pos.clone().add(offsetDirection.scale(meteor.radius + avoidBy))
+         var targetPos = meteorPos.clone().add(offsetDirection.scale(meteorRadius + avoidBy))
          // console.log(targetPos.x, targetPos.y)
          engine.draw.circle({ pos: targetPos, radius: 5, set: { lineWidth: 1, strokeStyle: '#FFF' }})
          return targetPos

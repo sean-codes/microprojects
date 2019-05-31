@@ -32,9 +32,11 @@ function ObjectPoint(options) {
 
       var meteors = engine.objects.all('meteor')
       for (var meteor of meteors) {
-         var distanceThisToMeteor = meteor.pos.distance(this.pos)
-         if (distanceThisToMeteor < meteor.radius) {
-            this.pos.add(meteor.pos.direction(this.pos).scale(distanceThisToMeteor))
+         var meteorPos = meteor.physics.pos
+         var meteorRadius = meteor.physics.radius
+         var distanceThisToMeteor = meteorPos.distance(this.pos)
+         if (distanceThisToMeteor < meteorRadius) {
+            this.pos.add(meteorPos.direction(this.pos).scale(distanceThisToMeteor))
          }
       }
    }

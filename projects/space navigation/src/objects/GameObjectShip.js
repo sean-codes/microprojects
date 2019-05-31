@@ -9,6 +9,11 @@ function ObjectShip(options) {
    this.turnMax = Math.PI*2 * 0.025
 
    this.radius = 25
+   // this.physics = engine.physics.add({
+   //    pos: options.pos,
+   //    radius: 25,
+   // })
+
    this.points = [
       new Vector(0, -this.radius),
       new Vector(-(this.radius*0.75), this.radius * 0.75),
@@ -73,11 +78,14 @@ function ObjectShip(options) {
       }
 
       for (var meteor of meteors) {
-         var avoidDistance = avoidBy + meteor.radius
-         var posClosest = meteor.pos.closestPointOnLine([ pos, this.pos ])
+         var meteorPos = meteor.physics.pos
+         var meteorRadius = meteor.physics.radius
 
-         var distanceClosestToMeteor = posClosest.distance(meteor.pos)
-         var distanceShipToMeteor = this.pos.distance(meteor.pos)
+         var avoidDistance = avoidBy + meteorRadius
+         var posClosest = meteorPos.closestPointOnLine([ pos, this.pos ])
+
+         var distanceClosestToMeteor = posClosest.distance(meteorPos)
+         var distanceShipToMeteor = this.pos.distance(meteorPos)
 
          if (distanceClosestToMeteor < avoidDistance && distanceShipToMeteor < avoid.distanceShipToMeteor) {
             avoid.object = meteor
@@ -97,13 +105,13 @@ function ObjectShip(options) {
 
          engine.draw.circle({ pos: posClosest, radius: 5, set: { lineWidth: 1, strokeStyle: '#f22' }})
          // we need to navigate around
-         var directionMeteorToClosest = meteor.pos.direction(posClosest)
-         var posAvoid = posClosest.clone().add(directionMeteorToClosest.clone().scale(meteor.radius - distanceClosestToMeteor + avoidBy))
+         var directionMeteorToClosest = meteorPos.direction(posClosest)
+         var posAvoid = posClosest.clone().add(directionMeteorToClosest.clone().scale(meteorRadius - distanceClosestToMeteor + avoidBy))
          // console.log(posAvoid)
          engine.draw.circle({ pos: posAvoid, radius: 5, set: { lineWidth: 1, strokeStyle: '#465' }})
          // not really sure how to calculate. lets leave
 
-         if (distanceClosestToMeteor > meteor.radius) {
+         if (distanceClosestToMeteor > meteorRadius) {
             return posAvoid
          }
 
@@ -117,7 +125,7 @@ function ObjectShip(options) {
          var turn = engine.math.angleToAngle(angleShipToAvoid, angleShipToClosest)
 
          var distancClosestToAvoid = posClosest.distance(posAvoid)
-         var offset = 1 - distanceClosestToMeteor / meteor.radius
+         var offset = 1 - distanceClosestToMeteor / meteorRadius
 
          var ninty = Math.PI*2 * (turn < 0 ? 0.25 : -0.25)
          var nintyOffset = ninty * offset
@@ -128,7 +136,7 @@ function ObjectShip(options) {
          )
 
          // console.log(directionMeteorToClosest.length())
-         var targetPos = meteor.pos.clone().add(offsetDirection.scale(meteor.radius + avoidBy))
+         var targetPos = meteorPos.clone().add(offsetDirection.scale(meteorRadius + avoidBy))
          // console.log(targetPos.x, targetPos.y)
          engine.draw.circle({ pos: targetPos, radius: 5, set: { lineWidth: 1, strokeStyle: '#FFF' }})
          return targetPos

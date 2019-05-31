@@ -7,9 +7,11 @@ function Draw(o) {
    this.settings = (o) => {
       for (var oName in o) this.ctx[oName] = o[oName]
    }
+
    this.clear = () => {
       this.ctx.clearRect(0, 0, this.width, this.height)
    }
+
    this.circle = (o) => {
       o.set && this.settings(o.set)
       this.ctx.beginPath()
@@ -18,11 +20,13 @@ function Draw(o) {
       o.fill && this.ctx.fill();
       (o.stroke || !o.fill) && this.ctx.stroke()
    }
+
    this.rect = (o) => {
       o.set && this.settings(o.set)
       o.fill && this.ctx.fillRect(o.pos.x, o.pos.y, o.width || o.size, o.height || o.size);
       (o.stroke || !o.fill) && this.ctx.strokeRect(o.pos.x, o.pos.y, o.width || o.size, o.height || o.size)
    }
+
    this.shape = (o) => {
       o.set && this.settings(o.set)
       var vertices = o.points
@@ -38,6 +42,7 @@ function Draw(o) {
       o.fill && this.ctx.fill()
       o.stroke || !o.fill && this.ctx.stroke()
    }
+
    this.line = (o) => {
       o.set && this.settings(o.set)
       this.ctx.beginPath()
