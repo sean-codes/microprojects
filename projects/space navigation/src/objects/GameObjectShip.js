@@ -1,5 +1,4 @@
 function ObjectShip(options) {
-   this.pos = options.pos
    this.speed = 0
    this.speedMax = 5
    this.angle = Math.PI*2 * 0.75
@@ -9,10 +8,13 @@ function ObjectShip(options) {
    this.turnMax = Math.PI*2 * 0.025
 
    this.radius = 25
-   // this.physics = engine.physics.add({
-   //    pos: options.pos,
-   //    radius: 25,
-   // })
+
+   this.physics = engine.physics.add({
+      pos: options.pos,
+      radius: 25,
+      type: 'ship',
+      collideWith: [ 'meteor' ]
+   })
 
    this.points = [
       new Vector(0, -this.radius),
@@ -43,11 +45,11 @@ function ObjectShip(options) {
          Math.sin(this.angle) * this.speed
       )
 
-      this.pos.add(amount)
+      this.physics.pos.add(amount)
    }
 
    this.turnTowards = (pos) => {
-      var angleToPos = this.pos.clone().min(pos).angle()
+      var angleToPos = this.physics.pos.clone().min(pos).angle()
       var turn = engine.math.angleToAngle(this.angle, angleToPos)
 
       // console.log(turn)
@@ -64,31 +66,35 @@ function ObjectShip(options) {
       this.speed = Math.min(this.speed + 0.2, this.speedMax)
    }
 
-   this.posTarget = (pos) => {
-      var posShip = this.pos
+   this.findTarget = (pos) => {
+      var posShip = this.physics.pos
       var avoidBy = this.radius + (20 * (this.speed/this.speedMax*2))
 
       var meteors = engine.objects.all('meteor')
 
       var avoid = {
-         object: undefined,
+         meteorId: undefined,
          distanceShipToMeteor: 9999999,
          posClosest: undefined,
          avoidDistance: 0
       }
 
-      for (var meteor of meteors) {
+      for (var meteorId in meteors) {
+         var meteor = meteors[meteorId]
          var meteorPos = meteor.physics.pos
          var meteorRadius = meteor.physics.radius
 
          var avoidDistance = avoidBy + meteorRadius
-         var posClosest = meteorPos.closestPointOnLine([ pos, this.pos ])
+         var posClosest = meteorPos.closestPointOnLine([ pos, this.physics.pos ])
 
          var distanceClosestToMeteor = posClosest.distance(meteorPos)
-         var distanceShipToMeteor = this.pos.distance(meteorPos)
+         var distanceShipToMeteor = this.physics.pos.distance(meteorPos)
 
          if (distanceClosestToMeteor < avoidDistance && distanceShipToMeteor < avoid.distanceShipToMeteor) {
-            avoid.object = meteor
+            meteor.inPath = true
+            var dot = this.physics.pos.dot(posClosest.clone().min(this.physics.pos))
+            console.log('dot', )
+            avoid.meteorId = meteorId
             avoid.distanceShipToMeteor = distanceShipToMeteor
             avoid.distanceClosestToMeteor = distanceClosestToMeteor
             avoid.posClosest = posClosest
@@ -96,8 +102,8 @@ function ObjectShip(options) {
          }
       }
 
-      if (avoid.object) {
-         var meteor = avoid.object
+      if (avoid.meteorId != undefined) {
+         var meteor = meteors[avoid.meteorId]
          var distanceClosestToMeteor = avoid.distanceClosestToMeteor
          var distanceShipToMeteor = avoid.distanceShipToMeteor
          var posClosest = avoid.posClosest
@@ -116,7 +122,7 @@ function ObjectShip(options) {
          }
 
          // get first point
-         var angleShipTo = posClosest.direction(this.pos)
+         var angleShipTo = posClosest.direction(this.physics.pos)
 
          var directionShipToAvoid = posShip.direction(posAvoid)
          var directionShipToClosest = posShip.direction(posClosest)
@@ -138,7 +144,7 @@ function ObjectShip(options) {
          // console.log(directionMeteorToClosest.length())
          var targetPos = meteorPos.clone().add(offsetDirection.scale(meteorRadius + avoidBy))
          // console.log(targetPos.x, targetPos.y)
-         engine.draw.circle({ pos: targetPos, radius: 5, set: { lineWidth: 1, strokeStyle: '#FFF' }})
+         engine.draw.circle({ pos: targetPos, radius: 10, set: { lineWidth: 3, strokeStyle: '#FFF' }})
          return targetPos
       }
 
@@ -150,12 +156,12 @@ function ObjectShip(options) {
       var point = engine.objects.find('point')
       var meteor = engine.objects.find('meteor')
 
-      var posTarget = this.posTarget(point.pos)//point.pos
+      var posTarget = this.findTarget(point.pos)//point.pos
       var turn = this.turnTowards(posTarget)
       var pointingRight = Math.abs(turn) < Math.PI*2 * 0.1
       // console.log(point.pos)
 
-      if (pointingRight && point.pos.distance(this.pos) > this.speed / this.speedMax * 150 + 20) {
+      if (pointingRight && point.pos.distance(this.physics.pos) > this.speed / this.speedMax * 150 + 20) {
          this.jet()
       }
 
@@ -164,7 +170,7 @@ function ObjectShip(options) {
 
       engine.draw.settings({ strokeStyle: 'white', lineWidth: 5 })
       engine.draw.shape({
-         relative: this.pos,
+         relative: this.physics.pos,
          points: this.points
       })
    }

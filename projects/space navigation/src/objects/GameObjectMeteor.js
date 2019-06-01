@@ -5,10 +5,11 @@ function ObjectMeteor(options) {
    var start = Math.PI*2 * Math.random()
 
    this.physics = engine.physics.add({
-      type: 'metoer',
+      type: 'meteor',
       pos: options.pos,
       radius: options.radius || 50,
-      speed: new Vector(1, 1)
+      speed: new Vector(Math.random()*3-1.5, Math.random()*3-1.5),
+      bounceWith: [ 'meteor' ]
    })
 
    for (var i = 0; i < pointCount; i++) {
@@ -25,10 +26,20 @@ function ObjectMeteor(options) {
          lineWidth: 5
       })
 
-      console.log(this.physics.pos)
       engine.draw.shape({
          points: this.vertices,
          relative: this.physics.pos
       })
+
+      if (this.inPath) {
+         engine.draw.circle({
+            pos: this.physics.pos,
+            radius: this.physics.radius,
+            fill: true,
+            set: { fillStyle: '#a8a' }
+         })
+      }
+
+      this.inPath = false
    }
 }

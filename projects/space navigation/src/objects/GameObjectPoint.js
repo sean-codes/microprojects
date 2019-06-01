@@ -15,18 +15,15 @@ function ObjectPoint(options) {
          this.pos = engine.mouse.pos.clone()
       }
 
-      if (this.pos.x < 0 || this.pos.x > engine.draw.width) {
-         this.speed.x *= -1
-      }
-      if (this.pos.y < 0 || this.pos.y > engine.draw.height) {
-         this.speed.y *= -1
-      }
-
       var ship = engine.objects.find('ship')
-      if (ship.pos.distance(this.pos) < 35) {
+      if (
+         ship.physics.pos.distance(this.pos) < 35 ||
+         this.pos.x < 0 || this.pos.x > engine.draw.width ||
+         this.pos.y < 0 || this.pos.y > engine.draw.height
+      ) {
          this.pos = new Vector(
-            engine.draw.width * Math.random(),
-            engine.draw.height * Math.random()
+            engine.draw.width*0.1 + engine.draw.width*0.8 * Math.random(),
+            engine.draw.height*0.1 + engine.draw.height*0.8 * Math.random()
          )
       }
 

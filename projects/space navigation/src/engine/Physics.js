@@ -35,19 +35,23 @@ function Physics() {
 
             var collideWith = object_0.collideWith
             var bounceWith = object_0.bounceWith
-            var touchDistance = object_0.radius + object_1.radius
 
-            // push them away
+            var combinedRadius = object_0.radius + object_1.radius
             var distance = object_0.pos.distance(object_1.pos)
-            if (distance < touchDistance) {
+
+            if (distance < combinedRadius) {
                object_0.manifold.colliding = true
                object_1.manifold.colliding = true
 
+               var overlap = (combinedRadius - distance) / 2
                var direction = object_0.pos.direction(object_1.pos)
 
-               object_0.pos.add(direction.clone().scale(touchDistance - distance))
+               object_0.pos.min(direction.clone().scale(overlap))
+               object_1.pos.add(direction.clone().scale(overlap))
 
                if (bounceWith.includes(object_1.type)) {
+                  var combinedSpeed = object_0.speed.length() + object_1.speed.length()
+                  console.log('combined speed', combinedSpeed);
                   speedX = object_0.speed.x
                   speedY = object_0.speed.y
 
