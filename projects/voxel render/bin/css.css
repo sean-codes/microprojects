@@ -45,10 +45,10 @@ html, body {
     .modelContainer .model .voxel {
       width: 1em;
       height: 1em;
-      --voxelX: 0;
-      --voxelY: 0;
-      --voxelZ: 0;
-      --voxelColor: red;
+      --voxelX:0;
+      --voxelY:0;
+      --voxelZ:0;
+      --voxelColor:red;
       -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
       -webkit-transform: translate3d(var(--voxelX), calc(var(--voxelY) - var(--voxelID)), calc(var(--modelDepth)/2 - var(--voxelZ)));

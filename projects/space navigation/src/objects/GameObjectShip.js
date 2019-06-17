@@ -6,12 +6,12 @@ function ObjectShip(options) {
    this.turnAccel = 0.01
    this.turnSpeed = 0
    this.turnMax = Math.PI*2 * 0.025
-
-   this.radius = 25
+   this.color = '#FFF'
+   this.radius = 20
 
    this.physics = engine.physics.add({
       pos: options.pos,
-      radius: 25,
+      radius: this.radius,
       type: 'ship',
       collideWith: [ 'meteor' ]
    })
@@ -68,9 +68,15 @@ function ObjectShip(options) {
 
    this.findTarget = (pos) => {
       var posShip = this.physics.pos
-      var avoidBy = this.radius + (20 * (this.speed/this.speedMax*2))
 
+      // lets leave
+      var distanceToPos = posShip.distance(pos)
+      if (distanceToPos < this.physics.radius*3) return pos
+
+      var avoidBy = this.radius + (20 * (this.speed/this.speedMax*2))
+      var directionToPos = this.physics.pos.direction(pos)
       var meteors = engine.objects.all('meteor')
+      var ships = engine.objects.all('ship')
 
       var avoid = {
          meteorId: undefined,
@@ -89,21 +95,23 @@ function ObjectShip(options) {
 
          var distanceClosestToMeteor = posClosest.distance(meteorPos)
          var distanceShipToMeteor = this.physics.pos.distance(meteorPos)
+         var directionShipToMeteor = this.physics.pos.direction(meteor.physics.pos)
+         var shipDotMeteor = directionShipToMeteor.dot(directionToPos)
 
-         if (distanceClosestToMeteor < avoidDistance && distanceShipToMeteor < avoid.distanceShipToMeteor) {
+         if (shipDotMeteor > 0 && distanceClosestToMeteor < avoidDistance && distanceShipToMeteor < avoid.distanceShipToMeteor) {
             meteor.inPath = true
-            var dot = this.physics.pos.dot(posClosest.clone().min(this.physics.pos))
-            console.log('dot', )
             avoid.meteorId = meteorId
             avoid.distanceShipToMeteor = distanceShipToMeteor
             avoid.distanceClosestToMeteor = distanceClosestToMeteor
-            avoid.posClosest = posClosest
+            avoid.posClosest = posClosest.clone()
             avoid.avoidDistance = avoidDistance
          }
       }
 
       if (avoid.meteorId != undefined) {
          var meteor = meteors[avoid.meteorId]
+         meteor.choice = true
+         var meteorPos = meteor.physics.pos
          var distanceClosestToMeteor = avoid.distanceClosestToMeteor
          var distanceShipToMeteor = avoid.distanceShipToMeteor
          var posClosest = avoid.posClosest
@@ -153,25 +161,44 @@ function ObjectShip(options) {
    }
 
    this.step = () => {
-      var point = engine.objects.find('point')
-      var meteor = engine.objects.find('meteor')
+      var targetPoint = undefined
+      var targetDistance = undefined
 
-      var posTarget = this.findTarget(point.pos)//point.pos
+      var points = engine.objects.all('point')
+
+      for (var point of points) {
+         var distance = point.physics.pos.distance(this.physics.pos)
+         if (!targetDistance || distance < targetDistance) {
+            targetPoint = point
+            targetDistance = distance
+         }
+      }
+
+
+      var posTarget = this.findTarget(targetPoint.physics.pos)//point.pos
       var turn = this.turnTowards(posTarget)
       var pointingRight = Math.abs(turn) < Math.PI*2 * 0.1
-      // console.log(point.pos)
 
-      if (pointingRight && point.pos.distance(this.physics.pos) > this.speed / this.speedMax * 150 + 20) {
+      this.color = 'white'
+      if (pointingRight && point.physics.pos.distance(this.physics.pos) > this.speed / this.speedMax * 150) {
          this.jet()
+      } else {
+         this.color = 'red'
       }
 
       this.spin()
       this.move()
 
-      engine.draw.settings({ strokeStyle: 'white', lineWidth: 5 })
+      engine.draw.settings({ strokeStyle: this.color, lineWidth: 5 })
       engine.draw.shape({
          relative: this.physics.pos,
          points: this.points
+      })
+
+      engine.draw.settings({ fillStyle: '#FFF' })
+      engine.draw.text({
+         pos: this.physics.pos.clone().min({ x: 0, y: 48 }),
+         text: Math.round(this.speed * 100) / 100
       })
    }
 }

@@ -52,6 +52,14 @@ function Draw(o) {
       this.ctx.stroke()
    }
 
+   this.text = (o) => {
+      this.ctx.textAlign = 'center'
+      this.ctx.textBaseline = 'middle'
+      this.ctx.font = "bold 24px monospace"
+      o.set && this.settings(o.set)
+      this.ctx.fillText(o.text, o.pos.x, o.pos.y)
+   }
+
    if (o.fullscreen) {
       this.resize = () => {
          this.canvas.height = window.innerHeight

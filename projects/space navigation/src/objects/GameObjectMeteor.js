@@ -8,8 +8,9 @@ function ObjectMeteor(options) {
       type: 'meteor',
       pos: options.pos,
       radius: options.radius || 50,
-      speed: new Vector(Math.random()*3-1.5, Math.random()*3-1.5),
-      bounceWith: [ 'meteor' ]
+      speed: new Vector(Math.random()*1-0.5, Math.random()*1-0.5),
+      bounceWith: [ 'meteor' ],
+      solid: true
    })
 
    for (var i = 0; i < pointCount; i++) {
@@ -31,15 +32,16 @@ function ObjectMeteor(options) {
          relative: this.physics.pos
       })
 
-      if (this.inPath) {
-         engine.draw.circle({
-            pos: this.physics.pos,
-            radius: this.physics.radius,
-            fill: true,
-            set: { fillStyle: '#a8a' }
-         })
-      }
-
-      this.inPath = false
+      // if (this.inPath) {
+      //    engine.draw.circle({
+      //       pos: this.physics.pos,
+      //       radius: this.physics.radius,
+      //       fill: true,
+      //       set: { fillStyle: this.choice ? '#a11' : '#a8a' }
+      //    })
+      // }
+      //
+      // this.inPath = false
+      // this.choice = false
    }
 }

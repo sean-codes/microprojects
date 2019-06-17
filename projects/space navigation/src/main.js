@@ -17,32 +17,43 @@ var engine = new Engine({
    init: (vars) => {
       var { width, height } = engine.draw
 
-      engine.objects.create({
-         type: 'meteor',
-         pos: new Vector(width * 0.25, height * 0.5)
-      })
+      // engine.objects.create({
+      //    type: 'meteor',
+      //    pos: new Vector(width * 0.25, height * 0.5)
+      // })
+      //
+      // engine.objects.create({
+      //    type: 'meteor',
+      //    pos: new Vector(width * 0.5, height * 0.5),
+      //    radius: 75
+      // })
+      //
+      // engine.objects.create({
+      //    type: 'meteor',
+      //    pos: new Vector(width * 0.75, height * 0.5)
+      // })
 
-      engine.objects.create({
-         type: 'meteor',
-         pos: new Vector(width * 0.5, height * 0.5),
-         radius: 75
-      })
+      for (var i = 0; i < 5; i++) {
+         engine.objects.create({
+            type: 'meteor',
+            pos: new Vector(width * Math.random(), height * Math.random()),
+            radius: 50 + Math.random() * 50
+         })
+      }
 
-      engine.objects.create({
-         type: 'meteor',
-         pos: new Vector(width * 0.75, height * 0.5)
-      })
+      for (var i = 0; i < 2; i++) {
+         engine.objects.create({
+            type: 'ship',
+            pos: new Vector(width * Math.random(), height * Math.random())
+         })
+      }
 
-      engine.objects.create({
-         type: 'ship',
-         pos: new Vector(width * 0.75, height * 0.75)
-      })
-
-      engine.objects.create({
-         type: 'point',
-         pos: new Vector(width * 0.2, height * 0.5)
-      })
-
+      for (var i = 0; i < 3; i++) {
+         engine.objects.create({
+            type: 'point',
+            pos: new Vector(width * Math.random(), height * Math.random())
+         })
+      }
    },
 
    step: (vars) => {

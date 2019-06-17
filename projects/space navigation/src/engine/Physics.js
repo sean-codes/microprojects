@@ -8,6 +8,7 @@ function Physics() {
          type: info.type,
          radius: info.radius,
          pos: info.pos.clone(),
+         solid: info.solid,
          speed: info.speed ? info.speed.clone() : new Vector(0, 0),
          bounceWith: JSON.parse(JSON.stringify(info.bounceWith || '[]')),
          manifold: {}
@@ -42,16 +43,19 @@ function Physics() {
             if (distance < combinedRadius) {
                object_0.manifold.colliding = true
                object_1.manifold.colliding = true
+               object_0.manifold.objectTypes[object_1.type] = true
+               object_1.manifold.objectTypes[object_0.type] = true
 
-               var overlap = (combinedRadius - distance) / 2
+               var overlap = (combinedRadius - distance)
                var direction = object_0.pos.direction(object_1.pos)
 
-               object_0.pos.min(direction.clone().scale(overlap))
-               object_1.pos.add(direction.clone().scale(overlap))
+               object_1.solid
+                  ? object_0.pos.min(direction.clone().scale(overlap))
+                  : object_1.pos.add(direction.clone().scale(overlap))
 
                if (bounceWith.includes(object_1.type)) {
                   var combinedSpeed = object_0.speed.length() + object_1.speed.length()
-                  console.log('combined speed', combinedSpeed);
+
                   speedX = object_0.speed.x
                   speedY = object_0.speed.y
 
@@ -83,7 +87,8 @@ function Physics() {
 
    this.objectResetManifold = (object) => {
       object.manifold = {
-         colliding: false
+         colliding: false,
+         objectTypes: {}
       }
    }
 }
