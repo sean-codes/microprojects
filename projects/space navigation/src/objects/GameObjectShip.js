@@ -71,7 +71,7 @@ function ObjectShip(options) {
 
       // lets leave
       var distanceToPos = posShip.distance(pos)
-      if (distanceToPos < this.physics.radius*3) return pos
+      if (distanceToPos < 100) return pos
 
       var avoidBy = this.radius + (20 * (this.speed/this.speedMax*2))
       var directionToPos = this.physics.pos.direction(pos)

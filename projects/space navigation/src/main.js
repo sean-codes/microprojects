@@ -48,6 +48,7 @@ var engine = new Engine({
          })
       }
 
+
       for (var i = 0; i < 3; i++) {
          engine.objects.create({
             type: 'point',
