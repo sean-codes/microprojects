@@ -37,7 +37,7 @@ var engine = new Engine({
          engine.objects.create({
             type: 'meteor',
             pos: new Vector(width * Math.random(), height * Math.random()),
-            radius: 50 + Math.random() * 50
+            radius: 35 + Math.random() * 25
          })
       }
 

@@ -56,11 +56,14 @@ function Physics() {
                if (bounceWith.includes(object_1.type)) {
                   var combinedSpeed = object_0.speed.length() + object_1.speed.length()
                   var tangent = new Vector(-direction.y, direction.x)
-                  var obj0VelDotTangnet = object_0.speed.unit().dot(tangent)
-                  var obj0VelDotDirection = object_0.speed.unit().dot(direction)
 
-                  object_0.speed = tangent.clone().scale(obj0VelDotTangnet).unit().scale(combinedSpeed/2)
-                  object_1.speed = direction.clone().scale(obj0VelDotDirection).unit().scale(combinedSpeed/2)
+                  var o0Eo0 = tangent.clone().scale(object_0.speed.dot(tangent))
+                  var o0Eo1 = direction.clone().scale(object_0.speed.dot(direction))
+                  var o1Eo0 = direction.clone().scale(object_1.speed.dot(direction))
+                  var o1Eo1 = tangent.clone().scale(object_1.speed.dot(tangent))
+
+                  object_0.speed = o0Eo0.add(o1Eo0)
+                  object_1.speed = o0Eo1.add(o1Eo1)
                }
             }
          }
