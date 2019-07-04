@@ -13,13 +13,13 @@ function Vector(x, y) {
    this.length = () => Math.sqrt(this.x*this.x + this.y*this.y)
    this.closestPointOnLine = (line) => {
       var lineLength = line[0].distance(line[1])
-      var lineDirection = line[0].clone().min(line[1]).unit()
-      var lineToPoint = line[0].clone().min(this)
+      var lineDirection = line[0].direction(line[1])
+      var lineToPoint = this.clone().min(line[0])
 
       var dot = lineToPoint.dot(lineDirection) / lineLength
       dot = Math.min(Math.max(0, dot), 1)
 
-      var closestPoint = line[0].clone().min(lineDirection.clone().scale(dot * lineLength))
+      var closestPoint = line[0].clone().add(lineDirection.clone().scale(dot * lineLength))
       return closestPoint
    }
 }
