@@ -4,7 +4,9 @@
   "description": "Microproject and Prototypes",
   "main": "index.js",
   "scripts": {
-    "test": "browserify test.js | tape-run | tap-spec"
+    "gulp:new": "gulp new",
+    "gulp:watch": "gulp watch",
+    "gulp:build": "gulp"
   },
   "repository": {
     "type": "git",
