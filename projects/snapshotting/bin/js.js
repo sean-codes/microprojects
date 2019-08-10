@@ -81,8 +81,13 @@ class Client {
 
 class Server {
    constructor() {
-      this.interval = setInterval(this.step.bind(this), 1000/10)
-      
+      this.intervalSpeed = 1000/60
+      this.interval = setInterval(this.loop.bind(this), this.intervalSpeed)
+      this.loopInfo = { frames: 0, delta: 1000/60, last: Date.now() }
+
+      this.snapshotInterval = 1000/10
+      this.snapshotLast = Date.now()
+
       this.connections = []
 
       this.gameObjects = []
@@ -141,13 +146,21 @@ class Server {
       })
    }
 
-   step() {
+   loop() {
+      this.loop.frames += 1
+      this.loop.delta = (Date.now() - this.loop.last) / this.intervalSpeed
+      this.loop.last = Date.now()
+
       // player steps
       for (var object of this.gameObjects) {
          object.step()
       }
 
-      this.snapshot()
+      if (Date.now() - this.snapshotLast >= this.snapshotInterval) {
+         this.snapshotLast = Date.now()
+         this.snapshot()
+      }
+
    }
 }
 
