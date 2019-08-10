@@ -1,7 +1,7 @@
 h1 Microprojects
 projects
 	each project in projectsList
-		if(!project.archive)
+		if(!project['hide-on-index'])
 			project
 				project-view
 					iframe(src=project.path+'/index.html', scrolling='no')

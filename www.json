@@ -1,86 +1,92 @@
 {
-	"projectsList": [
-		{
-			"title": "3D Cylinder",
-			"path": "projects/3D Cylinder"
-		},
-		{
-			"title": "41 Mega Pixel",
-			"path": "projects/41 Mega Pixel"
-		},
-		{
-			"title": "Cursor Watch",
-			"path": "projects/Cursor Watch"
-		},
-		{
-			"title": "Login Form (Only CSS)",
-			"path": "projects/Login Form (Only CSS)"
-		},
-		{
-			"title": "MacOS Doc",
-			"path": "projects/MacOS Doc"
-		},
-		{
-			"title": "Messenger with Emojis",
-			"path": "projects/Messenger with Emojis"
-		},
-		{
-			"title": "Mirror like Links",
-			"path": "projects/Mirror like Links"
-		},
-		{
-			"title": "Recursive Hover Nav (Only CSS)",
-			"path": "projects/Recursive Hover Nav (Only CSS)"
-		},
-		{
-			"title": "Walker",
-			"path": "projects/Walker"
-		},
-		{
-			"title": "aabb physics",
-			"path": "projects/aabb physics",
-			"archive": "true"
-		},
-		{
-			"title": "aabb safe",
-			"path": "projects/aabb safe",
-			"description": "platformer physics system!"
-		},
-		{
-			"title": "field of view",
-			"path": "projects/field of view"
-		},
-		{
-			"title": "gridventory",
-			"path": "projects/gridventory"
-		},
-		{
-			"title": "minhelix",
-			"path": "projects/minhelix"
-		},
-		{
-			"title": "naive culling",
-			"path": "projects/naive culling"
-		},
-		{
-			"title": "nexus",
-			"path": "projects/nexus"
-		},
-		{
-			"title": "particle letters",
-			"path": "projects/particle letters"
-		},
-		{
-			"title": "space navigation",
-			"path": "projects/space navigation"
-		},
-		{
-			"title": "verlet cloth",
-			"path": "projects/verlet cloth"
-		},
-		{
-			"title": "voxel render",
-			"path": "projects/voxel render"
-		}
-	]
+   "projectsList": [
+      {
+         "title": "3D Cylinder",
+         "path": "projects/3D Cylinder"
+      },
+      {
+         "title": "41 Mega Pixel",
+         "path": "projects/41 Mega Pixel"
+      },
+      {
+         "title": "Cursor Watch",
+         "path": "projects/Cursor Watch"
+      },
+      {
+         "title": "Login Form (Only CSS)",
+         "path": "projects/Login Form (Only CSS)"
+      },
+      {
+         "title": "MacOS Doc",
+         "path": "projects/MacOS Doc"
+      },
+      {
+         "title": "Messenger with Emojis",
+         "path": "projects/Messenger with Emojis"
+      },
+      {
+         "title": "Mirror like Links",
+         "path": "projects/Mirror like Links"
+      },
+      {
+         "title": "Recursive Hover Nav (Only CSS)",
+         "path": "projects/Recursive Hover Nav (Only CSS)"
+      },
+      {
+         "title": "Walker",
+         "path": "projects/Walker"
+      },
+      {
+         "title": "aabb physics",
+         "path": "projects/aabb physics",
+         "hide-on-index": "true"
+      },
+      {
+         "title": "aabb safe",
+         "path": "projects/aabb safe",
+         "description": "platformer physics system!"
+      },
+      {
+         "title": "field of view",
+         "path": "projects/field of view"
+      },
+      {
+         "title": "gridventory",
+         "path": "projects/gridventory"
+      },
+      {
+         "title": "minhelix",
+         "path": "projects/minhelix"
+      },
+      {
+         "title": "naive culling",
+         "path": "projects/naive culling"
+      },
+      {
+         "title": "nexus",
+         "path": "projects/nexus"
+      },
+      {
+         "title": "particle letters",
+         "path": "projects/particle letters"
+      },
+      {
+         "title": "snapshotting",
+         "path": "projects/snapshotting",
+         "description": "network snapshotting project",
+         "hide-on-index": true
+      },
+      {
+         "title": "space navigation",
+         "path": "projects/space navigation"
+      },
+      {
+         "title": "verlet cloth",
+         "path": "projects/verlet cloth"
+      },
+      {
+         "title": "voxel render",
+         "path": "projects/voxel render"
+      }
+   ]
 }
