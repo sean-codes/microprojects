@@ -7,6 +7,6 @@ for(var i = 0; i <= links.length; i++)
 function addClass(id){
    setTimeout(function(){
       if(id > 0) links[id-1].classList.remove('hover')
-      links[id].classList.add('hover')
+      if(links[id]) links[id].classList.add('hover')
    }, id*750)
 }
