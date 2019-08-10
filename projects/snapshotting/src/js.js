@@ -132,7 +132,8 @@ class Server {
 
    broadcast(data) {
       for (var connection of this.connections) {
-         connection.client.receive(data)
+         var fakeLatency = 0//Math.random() * 100
+         setTimeout(() => connection.client.receive(data), fakeLatency)
       }
    }
 
