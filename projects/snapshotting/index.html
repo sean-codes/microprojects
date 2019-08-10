@@ -8,7 +8,12 @@
     <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <div class="container">
+      <canvas id="htmlCanvas"></canvas>
+      <div>server fps: <span id="htmlServerFps">0</span></div>
+      <div>server snapshot interval: <span id="htmlServerSnapshotRate">0</span></div>
+      <div>client fps: <span id="htmlClientFps">0</span></div>
+    </div>
     <script src="./bin/js.js"> </script>
     <script src="../../autoreload.js"></script>
   </body>
