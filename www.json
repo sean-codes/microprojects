@@ -71,6 +71,12 @@
          "path": "projects/particle letters"
       },
       {
+         "title": "pulse circles",
+         "path": "projects/pulse circles",
+         "description": "a microproject!",
+         "hide-on-index": true
+      },
+      {
          "title": "snapshotting",
          "path": "projects/snapshotting",
          "description": "network snapshotting project",
