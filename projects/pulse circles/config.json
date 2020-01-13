@@ -1,4 +1,4 @@
 {
-	"description": "a microproject!",
-   "hide-on-index": true
+  "description": "a microproject!",
+  "hide-on-index": false
 }

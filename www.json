@@ -74,7 +74,7 @@
          "title": "pulse circles",
          "path": "projects/pulse circles",
          "description": "a microproject!",
-         "hide-on-index": true
+         "hide-on-index": false
       },
       {
          "title": "snapshotting",
