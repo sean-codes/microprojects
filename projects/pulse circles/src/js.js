@@ -29,7 +29,8 @@ window.onload = () => {
 
             var deltaFromPulse = Math.abs(angleDelta(angleFromCenter, pulseAngle))
             var minSize = 0.1
-            var size = Math.max(minSize, deltaFromPulse < 1 ? 1 - deltaFromPulse : minSize)
+            var closeEnough = canvas.width / 275
+            var size = Math.max(minSize, deltaFromPulse < closeEnough ? 1 - deltaFromPulse / closeEnough : minSize)
             hue = 270
             ctx.strokeStyle = `hsla(${hue}, ${size*100}%, 50%, 1)`
 
