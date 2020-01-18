@@ -149,7 +149,10 @@ function microBuild(pathSite, done) {
             }))
             .pipe(pug({
                pretty: true
-            }).on('error', gutil.log))
+            }).on('error', (args) => {
+               gutil.log(args)
+               done && done()
+            }))
             .pipe(gulp.dest(pathSite)).on('finish', function() {
                updateIndex()
 

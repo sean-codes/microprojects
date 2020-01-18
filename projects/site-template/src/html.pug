@@ -1,1 +1,39 @@
-.div testering21 
+.container(style="padding-top: 5rem")
+   .row.pt-2
+      .col-md-4.pb-4.px-4
+         img(src="./profile.jpg" style="width: 100%; height: auto")
+         h2.card-title Sean Codes 
+         p.card-text A washed up software developer. Writing code with my cat criminal.
+         .link
+            a(href="https://github.com/sean-codes" target="_blank") #[span.fab.fa-github-alt] github.com/sean-codes
+         .link
+            a(href="https://github.com/sean-codes" target="_blank") #[span.fab.fa-codepen] codepen.io/sean_codes
+         .link
+            a(href="https://github.com/sean-codes" target="_blank") #[span.fa.fa-envelope] sean_codes@outlook.com
+      .col-md-8
+         .input-group.flex-nowrap.input-group-lg.pb-3.px-2
+            .input-group-prepend
+               .input-group-text #[span.fa.fa-search]
+            input.form-control(placeholder="Search projects..." style="width: 100%")
+         .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
+            -for (var i = 0; i < 6; i++)
+               .col.p-2
+                  .shadow.p-2
+                     .project-view.mb-2
+                        iframe(src="../../projects/41 Mega Pixel/index.html")
+                     h5.mb-1 41 Mega pixel
+                     p.mb-1 An example project card
+                     .badges
+                        .badge.badge-secondary js 
+                        .badge.badge-secondary scss
+                        .badge.badge-secondary pug
+                     .text-right.mt-2
+                        .btn.btn-primary.btn-sm #[span.fa.fa-expand.mr-1] open
+                        
+         nav.mt-5
+            ul.pagination.justify-content-center
+               li.page-item #[a.page-link(href="#") previous]
+               li.page-item.active #[a.page-link(href="#") 1]
+               li.page-item #[a.page-link(href="#") 2]
+               li.page-item #[a.page-link(href="#") 3]
+               li.page-item #[a.page-link(href="#") next]

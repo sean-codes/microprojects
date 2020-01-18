@@ -1,8 +1,16 @@
-html, body{
-   padding:0px;
-   margin:0px;
-   background:#333;
-   font-family: 'Karla', sans-serif;
-   color:#FFF;
-   height:100%;
+.project-view {
+   position: relative;
+   height: 200px;
+   overflow: hidden;
+}
+
+iframe {
+   width: 200%;
+   height: 200%;
+   transform-origin: top left;
+   transform: scale(0.5);
+   box-sizing: border-box;
+   overflow: hidden;
+   border: none;
+   background: #222;
 }

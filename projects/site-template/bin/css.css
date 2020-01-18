@@ -1,7 +1,17 @@
-html, body {
-  padding: 0px;
-  margin: 0px;
-  background: #333;
-  font-family: 'Karla', sans-serif;
-  color: #FFF;
-  height: 100%; }
+.project-view {
+  position: relative;
+  height: 200px;
+  overflow: hidden; }
+
+iframe {
+  width: 200%;
+  height: 200%;
+  -webkit-transform-origin: top left;
+  transform-origin: top left;
+  -webkit-transform: scale(0.5);
+  transform: scale(0.5);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: none;
+  background: #222; }
