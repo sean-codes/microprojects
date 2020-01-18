@@ -2,6 +2,7 @@
    position: relative;
    height: 200px;
    overflow: hidden;
+   background: #DDD;
 }
 
 iframe {
@@ -12,5 +13,51 @@ iframe {
    box-sizing: border-box;
    overflow: hidden;
    border: none;
-   background: #222;
+}
+
+.badge {
+   overflow: hidden;
+   &:empty {
+      display: inline-block !important;
+   }
+}
+
+.loading {
+   p, h5, .btn, .project-view, .badge {
+      background: #DDD !important;
+      min-width: 2rem;
+      position: relative;
+      overflow: hidden;
+
+
+      &:after {
+         content: '‎'; // there is a blank character in here
+      }
+
+      &:before {
+         content: '';
+         top: 0;
+         left: 0;
+         position: absolute;
+         width: 2.5rem;
+         height: 100%;
+         background: #FFF;//linear-gradient(90deg,  #DDD, #FFF, #DDD);
+         opacity: 0.15;
+         animation: loading 2s ease-in-out infinite alternate;
+      }
+   }
+
+   .btn {
+      border: 1px solid transparent;
+   }
+}
+
+@keyframes loading {
+   0% {
+      left: -4rem;
+   }
+
+   100% {
+      left: 100%;
+   }
 }

@@ -1,4 +1,4 @@
-.container(style="padding-top: 5rem")
+#site.container(style="padding-top: 5rem; opacity: 0; transition: opacity 0.25s")
    .row.pt-2
       .col-md-4.pb-4.px-4
          img(src="./profile.jpg" style="width: 100%; height: auto")
@@ -17,23 +17,23 @@
             input.form-control(placeholder="Search projects..." style="width: 100%")
          .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
             -for (var i = 0; i < 6; i++)
-               .col.p-2
+               .col.p-2.project-card.loading
                   .shadow.p-2
                      .project-view.mb-2
-                        iframe(src="../../projects/41 Mega Pixel/index.html")
-                     h5.mb-1 41 Mega pixel
-                     p.mb-1 An example project card
-                     .badges
-                        .badge.badge-secondary js 
-                        .badge.badge-secondary scss
-                        .badge.badge-secondary pug
+                        iframe
+                     h5.mb-1 
+                     p.mb-1
+                     .badges.mt-1
+                        .badge.badge-secondary
+                        .badge.badge-secondary
+                        .badge.badge-secondary
                      .text-right.mt-2
                         .btn.btn-primary.btn-sm #[span.fa.fa-expand.mr-1] open
                         
          nav.mt-5
             ul.pagination.justify-content-center
-               li.page-item #[a.page-link(href="#") previous]
+               li#prev.page-item #[a.page-link(href="#") previous]
                li.page-item.active #[a.page-link(href="#") 1]
                li.page-item #[a.page-link(href="#") 2]
                li.page-item #[a.page-link(href="#") 3]
-               li.page-item #[a.page-link(href="#") next]
+               li#next.page-item #[a.page-link(href="#") next]

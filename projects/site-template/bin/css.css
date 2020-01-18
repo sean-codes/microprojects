@@ -1,7 +1,9 @@
+@charset "UTF-8";
 .project-view {
   position: relative;
   height: 200px;
-  overflow: hidden; }
+  overflow: hidden;
+  background: #DDD; }
 
 iframe {
   width: 200%;
@@ -13,5 +15,43 @@ iframe {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  border: none;
-  background: #222; }
+  border: none; }
+
+.badge {
+  overflow: hidden; }
+  .badge:empty {
+    display: inline-block !important; }
+
+.loading p, .loading h5, .loading .btn, .loading .project-view, .loading .badge {
+  background: #DDD !important;
+  min-width: 2rem;
+  position: relative;
+  overflow: hidden; }
+  .loading p:after, .loading h5:after, .loading .btn:after, .loading .project-view:after, .loading .badge:after {
+    content: '‎'; }
+  .loading p:before, .loading h5:before, .loading .btn:before, .loading .project-view:before, .loading .badge:before {
+    content: '';
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 2.5rem;
+    height: 100%;
+    background: #FFF;
+    opacity: 0.15;
+    -webkit-animation: loading 2s ease-in-out infinite alternate;
+    animation: loading 2s ease-in-out infinite alternate; }
+
+.loading .btn {
+  border: 1px solid transparent; }
+
+@-webkit-keyframes loading {
+  0% {
+    left: -4rem; }
+  100% {
+    left: 100%; } }
+
+@keyframes loading {
+  0% {
+    left: -4rem; }
+  100% {
+    left: 100%; } }
