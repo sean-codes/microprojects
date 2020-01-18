@@ -77,6 +77,12 @@
          "hide-on-index": false
       },
       {
+         "title": "site-template",
+         "path": "projects/site-template",
+         "description": "a microproject!",
+         "hide-on-index": true
+      },
+      {
          "title": "snapshotting",
          "path": "projects/snapshotting",
          "description": "network snapshotting project",

@@ -39,32 +39,35 @@ gulp.task('watch', function() {
    build()
    var projectFolders = GulpFolders('projects')
    var unlinked = {}
+
    GulpInception(projectFolders, function(projectFolder) {
-      gulp.watch([projectFolder + '/test/*.js', projectFolder + '/src/**/*', projectFolder + '/index.pug'], function() {
-         microBuild(projectFolder)
+      gulp.watch([projectFolder + '/test/*.js', projectFolder + '/src/**/*', projectFolder + '/index.pug'], function watch_project_change (done) {
+         microBuild(projectFolder, done)
          if (fs.existsSync(projectFolder + '/test/test.js')) {
             test(projectFolder + '/test/test.js')
          }
       })
 
-      gulp.watch([projectFolder + '/config.json'], function() {
-         microBuild(projectFolder) // incase we want to use config in the project in future
+      gulp.watch([projectFolder + '/config.json'], function watch_project_config(done) {
+         microBuild(projectFolder, done) // incase we want to use config in the project in future
          updateWWW()
       })
 
 
-      var wat = watch([projectFolder]).on('unlink', function(filename) {
+      var wat = watch([projectFolder]).on('unlink', function watch_project_deleted(filename) {
          if (!unlinked[projectFolder]) {
             build()
          }
          unlinked[projectFolder] = true;
       })
    })
-   gulp.watch(['template/**/src/*', 'template/**/src/*'], function() {
-      microBuild('template')
+
+   gulp.watch(['template/**/src/*', 'template/**/src/*'], function watch_template(done) {
+      microBuild('template', done)
    })
-   gulp.watch(['www/**/src/*', 'www/**/src/*'], function() {
-      microBuild('www')
+
+   gulp.watch(['www/**/src/*', 'www/**/src/*'], function watch_www(done) {
+      microBuild('www', done)
    })
 })
 
@@ -90,13 +93,13 @@ function updateWWW() {
 }
 
 function updateIndex() {
-   gulp.src('www/index.html').pipe(gulp.dest(''))
+   gulp.src('www/index.html').pipe(gulp.dest('./'))
 }
 
 function updateWWWJSON(projectFolders) {
    var wwwJSON = {}
 
-   wwwJSON.projectsList = projectFolders.map((projectFolder) => {
+   wwwJSON.projectsList = projectFolders.map(function(projectFolder) {
       var projectConfig = {}
 
       try {
@@ -117,7 +120,7 @@ function updateWWWJSON(projectFolders) {
    fs.writeFileSync(path.join(__dirname, 'www.json'), JSON.stringify(wwwJSON, null, '   '))
 }
 
-function microBuild(pathSite) {
+function microBuild(pathSite, done) {
    console.log('Building: ' + pathSite)
    var pathDev = path.join(pathSite, 'src')
    var pathDist = path.join(pathSite, 'bin')
@@ -139,21 +142,25 @@ function microBuild(pathSite) {
 
    // HTML
    gulp.src(path.join(pathDev, '*.pug'))
-      .pipe(gulp.dest(pathDist))
-   gulp.src(path.join(pathSite, 'index.pug'))
-      .pipe(data(function(file) {
-         return JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')));
-      }))
-      .pipe(pug({
-         pretty: true
-      }).on('error', gutil.log))
-      .pipe(gulp.dest(pathSite)).on('finish', function() {
-         updateIndex()
-      })
+      .pipe(gulp.dest(pathDist).on('finish', function() {
+            gulp.src(path.join(pathSite, 'index.pug'))
+            .pipe(data(function(file) {
+               return JSON.parse(fs.readFileSync(path.join(__dirname, 'www.json')));
+            }))
+            .pipe(pug({
+               pretty: true
+            }).on('error', gutil.log))
+            .pipe(gulp.dest(pathSite)).on('finish', function() {
+               updateIndex()
 
-   fs.writeFileSync(path.join(__dirname, 'reload.json'), JSON.stringify({
-      changed: Date.now()
-   }))
+               fs.writeFileSync(path.join(__dirname, 'reload.json'), JSON.stringify({
+                  changed: Date.now()
+               }))
+
+               done && done()
+            })
+         })
+      )
 }
 
 // Might work. Wish we just knew how gulp worked
