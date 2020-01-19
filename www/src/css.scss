@@ -1,91 +1,66 @@
-body,
-html {
-   margin: 0;
-   padding: 0;
-   background: #222;
-}
-
-body * {
-   margin: 0;
-   padding: 0;
-   color: #FFF;
-   font-family: monospace;
-   box-sizing: border-box;
-   display: block;
-   background: transparent;
-   width: 100%;
-   line-height: 2em;
-   font-size: 13px;
-}
-
-h1 {
-   font-size: 2em;
-   text-align: center;
-}
-
-projects {
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: center;
-}
-
-project {
-   max-width: 362px;
-   background: #444;
-   border-radius: 3px;
-   box-sizing: border-box;
-   margin: 10px;
-   padding: 10px 10px 0;
-   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-}
-
-project project-view {
+.project-card-view {
    position: relative;
-   width: 100%;
    height: 200px;
    overflow: hidden;
-}
+   background: #DDD;
 
-project project-view project-description {
-   position: absolute;
-   width: 100%;
-   height: 100%;
-   opacity: 0;
-   background: rgba(0, 0, 0, 0.75);
-   overflow: auto;
-   top: 0;
-   left: 0;
-   padding: 1em;
-   transition: 0.25s;
-
-   &:hover {
-      opacity: 1;
+   iframe {
+      width: 200%;
+      height: 200%;
+      transform-origin: top left;
+      transform: scale(0.5);
+      box-sizing: border-box;
+      overflow: hidden;
+      border: none;
    }
 }
 
-project project-title {
-   font-weight: 600;
-   text-align: center;
+.loading {
+   p, h5, .btn, .project-card-view {
+      background: #DDD !important;
+      min-width: 2rem;
+      position: relative;
+      overflow: hidden;
+
+
+      &:after {
+         content: '‎'; // there is a blank character in here
+      }
+
+      &:before {
+         content: '';
+         top: 0;
+         left: 0;
+         position: absolute;
+         width: 2.5rem;
+         height: 100%;
+         background: #FFF;//linear-gradient(90deg,  #DDD, #FFF, #DDD);
+         opacity: 0.15;
+         animation: loading 2s ease-in-out infinite alternate;
+      }
+   }
+
+   .btn {
+      border: 1px solid transparent;
+   }
+}
+
+.text-lighten {
+   opacity: 0.75;
+}
+
+.text-one-line {
    white-space: nowrap;
-   height: 3em;
    text-overflow: ellipsis;
    overflow: hidden;
 }
 
-project project-title a {
-   font-size: 14px;
-   line-height: 2.6em;
-   color: #FFF;
-   font-family: monospace;
-}
+@keyframes loading {
+   0% {
+      left: -4rem;
+   }
 
-iframe {
-   width: 200%;
-   height: 200%;
-   transform-origin: top left;
-   transform: scale(0.5);
-   box-sizing: border-box;
-   overflow: hidden;
-   border: none;
-   background: #222;
+   100% {
+      left: 100%;
+   }
 }

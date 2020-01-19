@@ -99,14 +99,16 @@ function updateIndex() {
 
 function updateWWWJSON(projectFolders) {
    var wwwJSON = {
-      title: mpconfig.title || 'Microprojects Site',
-      description: mpconfig.description || 'A site built using microprojects!',
-      links: mpconfig.links || {
+      title: 'Microprojects Site',
+      description: 'A site built using microprojects!',
+      links: {
          icon: 'github',
          url: 'https://github.com/sean-codes/microprojects',
          text: 'github.com/sean-codes/microprojects'
       }
    }
+
+   wwwJSON = { ...wwwJSON, ...mpconfig }
    wwwJSON.projectsList = projectFolders.map(function(projectFolder) {
       var projectConfig = {}
 

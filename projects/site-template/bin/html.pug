@@ -1,14 +1,17 @@
 #site.container(style="padding-top: 5rem; opacity: 0; transition: opacity 0.25s")
    .row.pt-2
-      .col-md-4.pb-4.px-4
+      .col-lg-3.col-md-4.pb-4.px-4
          // profile
-         img(src="./profile.jpg" style="width: 100%; height: auto")
-         h2.card-title #{title}
-         p.card-text #{description}
-         - for (link of links) 
-            .link
-               a(href=link.url target="_blank") #[span.mr-1(class=link.icon)] #{link.text}
-      .col-md-8
+         .row
+            .col-md-12.col-sm-4.col-3
+               img.mb-2(src=urlProfileImage style="width: 100%; height: auto")
+            .col-md-12.col-sm-8.col-9
+               h2.card-title #{title}
+               p.card-text #{description}
+               - for (link of links) 
+                  .link.text-one-line
+                     a(href=link.url target="_blank") #[span.mr-1(class=link.icon)] #{link.text}
+      .col-lg-9.col-md-8
          #projectList
             // search input
             .input-group.flex-nowrap.input-group-lg.pb-3.px-2
@@ -25,13 +28,14 @@
             .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
                -for (var i = 0; i < 6; i++)
                   .col.p-2.project-card.loading
-                     .shadow.p-2
+                     .shadow
                         .project-card-view.mb-2
                            iframe
-                        h5.mb-1.text-one-line 
-                        p.mb-1.text-one-line.text-lighten
-                        .text-right.mt-2
-                           .btn.btn-primary.btn-sm(data-id=i) #[span.fa.fa-expand.mr-1] open
+                        .p-2
+                           h5.mb-1.text-one-line 
+                           p.mb-1.text-one-line.text-lighten
+                           .text-right.mt-2
+                              .btn.btn-primary.btn-sm(data-id=i) #[span.fa.fa-expand.mr-1] open
             // pagination
             nav.mt-5#pagination
                ul.pagination.justify-content-center
