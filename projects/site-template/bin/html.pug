@@ -14,7 +14,7 @@
          .input-group.flex-nowrap.input-group-lg.pb-3.px-2
             .input-group-prepend
                .input-group-text #[span.fa.fa-search]
-            input.form-control(placeholder="Search projects..." style="width: 100%")
+            input#search.form-control(placeholder="Search projects..." style="width: 100%")
          .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
             -for (var i = 0; i < 6; i++)
                .col.p-2.project-card.loading
@@ -33,7 +33,4 @@
          nav.mt-5
             ul.pagination.justify-content-center
                li#prev.page-item #[a.page-link(href="#") previous]
-               li.page-item.active #[a.page-link(href="#") 1]
-               li.page-item #[a.page-link(href="#") 2]
-               li.page-item #[a.page-link(href="#") 3]
                li#next.page-item #[a.page-link(href="#") next]
