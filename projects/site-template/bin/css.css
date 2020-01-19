@@ -44,6 +44,11 @@ iframe {
 .loading .btn {
   border: 1px solid transparent; }
 
+.one-line {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden; }
+
 @-webkit-keyframes loading {
   0% {
     left: -4rem; }

@@ -52,6 +52,12 @@ iframe {
    }
 }
 
+.one-line {
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   overflow: hidden;
+}
+
 @keyframes loading {
    0% {
       left: -4rem;

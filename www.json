@@ -2,39 +2,48 @@
    "projectsList": [
       {
          "title": "3D Cylinder",
-         "path": "projects/3D Cylinder"
+         "path": "projects/3D Cylinder",
+         "description": "css 3d practice"
       },
       {
          "title": "41 Mega Pixel",
-         "path": "projects/41 Mega Pixel"
+         "path": "projects/41 Mega Pixel",
+         "description": "Nokia Lumia 900"
       },
       {
          "title": "Cursor Watch",
-         "path": "projects/Cursor Watch"
+         "path": "projects/Cursor Watch",
+         "description": "x/y position of textarea cursor"
       },
       {
-         "title": "Login Form (Only CSS)",
-         "path": "projects/Login Form (Only CSS)"
+         "title": "Helix",
+         "path": "projects/Helix",
+         "description": "CSS3D Helix Animation"
+      },
+      {
+         "title": "Login Form",
+         "path": "projects/Login Form",
+         "description": "register/login transition"
       },
       {
          "title": "MacOS Doc",
-         "path": "projects/MacOS Doc"
+         "path": "projects/MacOS Doc",
+         "description": "MacOS dock with CSS"
       },
       {
-         "title": "Messenger with Emojis",
-         "path": "projects/Messenger with Emojis"
+         "title": "Messenger",
+         "path": "projects/Messenger",
+         "description": "with emojis :]"
       },
       {
          "title": "Mirror like Links",
-         "path": "projects/Mirror like Links"
+         "path": "projects/Mirror like Links",
+         "description": "Interesting CSS menu animation"
       },
       {
-         "title": "Recursive Hover Nav (Only CSS)",
-         "path": "projects/Recursive Hover Nav (Only CSS)"
-      },
-      {
-         "title": "Walker",
-         "path": "projects/Walker"
+         "title": "Recursive Hover Nav",
+         "path": "projects/Recursive Hover Nav",
+         "description": "CSS hover navigation"
       },
       {
          "title": "aabb physics",
@@ -44,42 +53,42 @@
       {
          "title": "aabb safe",
          "path": "projects/aabb safe",
-         "description": "platformer physics system!"
+         "description": "platformer physics!"
       },
       {
          "title": "field of view",
-         "path": "projects/field of view"
+         "path": "projects/field of view",
+         "description": "interactive FOV reference"
       },
       {
          "title": "gridventory",
-         "path": "projects/gridventory"
-      },
-      {
-         "title": "minhelix",
-         "path": "projects/minhelix"
+         "path": "projects/gridventory",
+         "description": "Multisized Drag and drop"
       },
       {
          "title": "naive culling",
-         "path": "projects/naive culling"
+         "path": "projects/naive culling",
+         "description": "Plain JS 3D rendering"
       },
       {
          "title": "nexus",
-         "path": "projects/nexus"
+         "path": "projects/nexus",
+         "description": "naive noise"
       },
       {
          "title": "particle letters",
-         "path": "projects/particle letters"
+         "path": "projects/particle letters",
+         "description": "Mapping text to particles"
       },
       {
          "title": "pulse circles",
          "path": "projects/pulse circles",
-         "description": "a microproject!",
-         "hide-on-index": false
+         "description": "Circlular expandion"
       },
       {
          "title": "site-template",
          "path": "projects/site-template",
-         "description": "a microproject!",
+         "description": "This sites template",
          "hide-on-index": true
       },
       {
@@ -90,15 +99,18 @@
       },
       {
          "title": "space navigation",
-         "path": "projects/space navigation"
+         "path": "projects/space navigation",
+         "description": "Manual AI pathfinding"
       },
       {
          "title": "verlet cloth",
-         "path": "projects/verlet cloth"
+         "path": "projects/verlet cloth",
+         "description": "Verlet practice"
       },
       {
          "title": "voxel render",
-         "path": "projects/voxel render"
+         "path": "projects/voxel render",
+         "description": "CSS 3D voxel renderer"
       }
    ]
 }

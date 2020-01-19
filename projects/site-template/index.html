@@ -9,7 +9,8 @@
   <body>
     <div class="container" id="site" style="padding-top: 5rem; opacity: 0; transition: opacity 0.25s">
       <div class="row pt-2">
-        <div class="col-md-4 pb-4 px-4"><img src="./profile.jpg" style="width: 100%; height: auto">
+        <div class="col-md-4 pb-4 px-4">
+          <!-- profile--><img src="./profile.jpg" style="width: 100%; height: auto">
           <h2 class="card-title">Sean Codes </h2>
           <p class="card-text">A washed up software developer. Writing code with my cat criminal.</p>
           <div class="link"><a href="https://github.com/sean-codes" target="_blank"><span class="fab fa-github-alt"></span> github.com/sean-codes</a></div>
@@ -17,25 +18,31 @@
           <div class="link"><a href="https://github.com/sean-codes" target="_blank"><span class="fa fa-envelope"></span> sean_codes@outlook.com</a></div>
         </div>
         <div class="col-md-8">
+          <!-- search input-->
           <div class="input-group flex-nowrap input-group-lg pb-3 px-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><span class="fa fa-search"></span></div>
+            <input class="form-control" id="search-input" placeholder="Search projects..." style="width: 100%">
+            <div class="input-group-append">
+              <div class="btn btn-outline-primary" id="search-button">Search</div>
             </div>
-            <input class="form-control" id="search" placeholder="Search projects..." style="width: 100%">
           </div>
+          <!-- alerts-->
+          <div class="alerts px-2">
+            <div class="alert alert-primary text-center d-none" id="alert-noresults">
+              <h2>
+                <div class="far fa-sad-cry outline"></div>
+              </h2>
+              <p>No projects found using that search! </p>
+            </div>
+          </div>
+          <!-- project list-->
           <div class="row row-cols-md-2 row-cols-lg-3 row-cols-1 no-gutters">
             <div class="col p-2 project-card loading">
               <div class="shadow p-2">
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
@@ -46,13 +53,8 @@
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
@@ -63,13 +65,8 @@
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
@@ -80,13 +77,8 @@
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
@@ -97,13 +89,8 @@
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
@@ -114,20 +101,16 @@
                 <div class="project-view mb-2">
                   <iframe></iframe>
                 </div>
-                <h5 class="mb-1"> </h5>
-                <p class="mb-1"></p>
-                <div class="badges mt-1">
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                  <div class="badge badge-secondary"></div>
-                </div>
+                <h5 class="mb-1 one-line"> </h5>
+                <p class="mb-1 one-line"></p>
                 <div class="text-right mt-2">
                   <div class="btn btn-primary btn-sm"><span class="fa fa-expand mr-1"></span> open</div>
                 </div>
               </div>
             </div>
           </div>
-          <nav class="mt-5">
+          <!-- pagination-->
+          <nav class="mt-5" id="pagination">
             <ul class="pagination justify-content-center">
               <li class="page-item" id="prev"><a class="page-link" href="#">previous</a></li>
               <li class="page-item" id="next"><a class="page-link" href="#">next</a></li>
@@ -136,6 +119,123 @@
         </div>
       </div>
     </div>
+    <script type="application/json" id="projects-json">{
+   "projectsList": [
+      {
+         "title": "3D Cylinder",
+         "path": "projects/3D Cylinder",
+         "description": "css 3d practice"
+      },
+      {
+         "title": "41 Mega Pixel",
+         "path": "projects/41 Mega Pixel",
+         "description": "Nokia Lumia 900"
+      },
+      {
+         "title": "Cursor Watch",
+         "path": "projects/Cursor Watch",
+         "description": "x/y position of textarea cursor"
+      },
+      {
+         "title": "Helix",
+         "path": "projects/Helix",
+         "description": "CSS3D Helix Animation"
+      },
+      {
+         "title": "Login Form",
+         "path": "projects/Login Form",
+         "description": "register/login transition"
+      },
+      {
+         "title": "MacOS Doc",
+         "path": "projects/MacOS Doc",
+         "description": "MacOS dock with CSS"
+      },
+      {
+         "title": "Messenger",
+         "path": "projects/Messenger",
+         "description": "with emojis :]"
+      },
+      {
+         "title": "Mirror like Links",
+         "path": "projects/Mirror like Links",
+         "description": "Interesting CSS menu animation"
+      },
+      {
+         "title": "Recursive Hover Nav",
+         "path": "projects/Recursive Hover Nav",
+         "description": "CSS hover navigation"
+      },
+      {
+         "title": "aabb physics",
+         "path": "projects/aabb physics",
+         "hide-on-index": "true"
+      },
+      {
+         "title": "aabb safe",
+         "path": "projects/aabb safe",
+         "description": "platformer physics!"
+      },
+      {
+         "title": "field of view",
+         "path": "projects/field of view",
+         "description": "interactive FOV reference"
+      },
+      {
+         "title": "gridventory",
+         "path": "projects/gridventory",
+         "description": "Multisized Drag and drop"
+      },
+      {
+         "title": "naive culling",
+         "path": "projects/naive culling",
+         "description": "Plain JS 3D rendering"
+      },
+      {
+         "title": "nexus",
+         "path": "projects/nexus",
+         "description": "naive noise"
+      },
+      {
+         "title": "particle letters",
+         "path": "projects/particle letters",
+         "description": "Mapping text to particles"
+      },
+      {
+         "title": "pulse circles",
+         "path": "projects/pulse circles",
+         "description": "Circlular expandion"
+      },
+      {
+         "title": "site-template",
+         "path": "projects/site-template",
+         "description": "This sites template",
+         "hide-on-index": true
+      },
+      {
+         "title": "snapshotting",
+         "path": "projects/snapshotting",
+         "description": "network snapshotting project",
+         "hide-on-index": true
+      },
+      {
+         "title": "space navigation",
+         "path": "projects/space navigation",
+         "description": "Manual AI pathfinding"
+      },
+      {
+         "title": "verlet cloth",
+         "path": "projects/verlet cloth",
+         "description": "Verlet practice"
+      },
+      {
+         "title": "voxel render",
+         "path": "projects/voxel render",
+         "description": "CSS 3D voxel renderer"
+      }
+   ]
+}
+    </script>
     <script src="../../node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>

@@ -1,6 +1,7 @@
 #site.container(style="padding-top: 5rem; opacity: 0; transition: opacity 0.25s")
    .row.pt-2
       .col-md-4.pb-4.px-4
+         // profile
          img(src="./profile.jpg" style="width: 100%; height: auto")
          h2.card-title Sean Codes 
          p.card-text A washed up software developer. Writing code with my cat criminal.
@@ -11,26 +12,35 @@
          .link
             a(href="https://github.com/sean-codes" target="_blank") #[span.fa.fa-envelope] sean_codes@outlook.com
       .col-md-8
+         // search input
          .input-group.flex-nowrap.input-group-lg.pb-3.px-2
-            .input-group-prepend
-               .input-group-text #[span.fa.fa-search]
-            input#search.form-control(placeholder="Search projects..." style="width: 100%")
+            input#search-input.form-control(placeholder="Search projects..." style="width: 100%")
+            .input-group-append
+               .btn.btn-outline-primary#search-button Search
+         // alerts
+         .alerts.px-2
+            #alert-noresults.alert.alert-primary.text-center.d-none
+               h2 #[.far.fa-sad-cry.outline]
+               p No projects found using that search! 
+         // project list
          .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
             -for (var i = 0; i < 6; i++)
                .col.p-2.project-card.loading
                   .shadow.p-2
                      .project-view.mb-2
                         iframe
-                     h5.mb-1 
-                     p.mb-1
-                     .badges.mt-1
-                        .badge.badge-secondary
-                        .badge.badge-secondary
-                        .badge.badge-secondary
+                     h5.mb-1.one-line 
+                     p.mb-1.one-line
+                     //- .badges.mt-1
+                     //-    .badge.badge-secondary
+                     //-    .badge.badge-secondary
+                     //-    .badge.badge-secondary
                      .text-right.mt-2
                         .btn.btn-primary.btn-sm #[span.fa.fa-expand.mr-1] open
-                        
-         nav.mt-5
+         // pagination
+         nav.mt-5#pagination
             ul.pagination.justify-content-center
                li#prev.page-item #[a.page-link(href="#") previous]
                li#next.page-item #[a.page-link(href="#") next]
+script(type="application/json")#projects-json
+   include ../../../www.json
