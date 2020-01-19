@@ -1,0 +1,21 @@
+{
+   "title": "Sean Codes",
+   "description": "A washed up software developer. Writing code with my cat criminal.",
+   "links": [
+      {
+         "icon": "fab fa-github-alt",
+         "url": "https://github.com/sean-codes",
+         "text": "github.com/sean-codes"
+      },
+      {
+         "icon": "fab fa-codepen",
+         "url": "https://codepen.io",
+         "text": "codepen.io/sean_codes"
+      },
+      {
+         "icon": "fa fa-envelope",
+         "url": "mailto:sean_codes@outlook.com",
+         "text": "sean_codes@outlook.com"
+      }
+   ]
+}

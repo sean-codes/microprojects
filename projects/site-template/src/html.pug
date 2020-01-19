@@ -3,14 +3,11 @@
       .col-md-4.pb-4.px-4
          // profile
          img(src="./profile.jpg" style="width: 100%; height: auto")
-         h2.card-title Sean Codes 
-         p.card-text A washed up software developer. Writing code with my cat criminal.
-         .link
-            a(href="https://github.com/sean-codes" target="_blank") #[span.fab.fa-github-alt] github.com/sean-codes
-         .link
-            a(href="https://github.com/sean-codes" target="_blank") #[span.fab.fa-codepen] codepen.io/sean_codes
-         .link
-            a(href="https://github.com/sean-codes" target="_blank") #[span.fa.fa-envelope] sean_codes@outlook.com
+         h2.card-title #{title}
+         p.card-text #{description}
+         - for (link of links) 
+            .link
+               a(href=link.url target="_blank") #[span.mr-1(class=link.icon)] #{link.text}
       .col-md-8
          #projectList
             // search input

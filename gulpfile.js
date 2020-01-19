@@ -15,6 +15,7 @@ var tape = require('gulp-tape')
 var tapSpec = require('tap-spec')
 var run = require('tape-run')
 var shell = require('gulp-shell')
+var mpconfig = require('./mpconfig.json')
 
 gulp.task('test', function() {
    test('projects/**/test/*.js')
@@ -97,8 +98,15 @@ function updateIndex() {
 }
 
 function updateWWWJSON(projectFolders) {
-   var wwwJSON = {}
-
+   var wwwJSON = {
+      title: mpconfig.title || 'Microprojects Site',
+      description: mpconfig.description || 'A site built using microprojects!',
+      links: mpconfig.links || {
+         icon: 'github',
+         url: 'https://github.com/sean-codes/microprojects',
+         text: 'github.com/sean-codes/microprojects'
+      }
+   }
    wwwJSON.projectsList = projectFolders.map(function(projectFolder) {
       var projectConfig = {}
 

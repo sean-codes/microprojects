@@ -23,7 +23,9 @@ $(() => {
    const $projectViewButtonSource = $('#projectViewButtonSource')
 
    // projects
-   const projects = JSON.parse($projectsJson.html()).projectsList
+   const projects = JSON.parse($projectsJson.html()).projectsList.sort((a, b) => {
+      return (b.sort || 0) - (a.sort || 0)
+   })
 
    let filteredProjects = projects.filter(p => {
       return !p['hide-on-index']
@@ -64,7 +66,7 @@ $(() => {
    }
 
    function searchInput(e) {
-      $searchButtonClear.toggleClass('d-none', $searchInput.val() === 0)
+      $searchButtonClear.toggleClass('d-none', $searchInput.val().length === 0)
       if (e.keyCode === 13) search()
    }
 
