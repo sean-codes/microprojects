@@ -12,35 +12,45 @@
          .link
             a(href="https://github.com/sean-codes" target="_blank") #[span.fa.fa-envelope] sean_codes@outlook.com
       .col-md-8
-         // search input
-         .input-group.flex-nowrap.input-group-lg.pb-3.px-2
-            input#search-input.form-control(placeholder="Search projects..." style="width: 100%")
-            .input-group-append
-               .btn.btn-outline-primary#search-button Search
-         // alerts
-         .alerts.px-2
-            #alert-noresults.alert.alert-primary.text-center.d-none
+         #projectList
+            // search input
+            .input-group.flex-nowrap.input-group-lg.pb-3.px-2
+               input#searchInput.form-control(placeholder="Search projects..." style="width: 100%")
+               .input-group-append
+                  #searchButtonClear.btn.btn-outline-secondary.d-none #[.fa.fa-times] 
+                  #searchButton.btn.btn-outline-primary Search 
+            // alerts
+            .alerts.px-2
+            #alertNoresults.alert.alert-primary.text-center.d-none
                h2 #[.far.fa-sad-cry.outline]
                p No projects found using that search! 
-         // project list
-         .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
-            -for (var i = 0; i < 6; i++)
-               .col.p-2.project-card.loading
-                  .shadow.p-2
-                     .project-view.mb-2
-                        iframe
-                     h5.mb-1.one-line 
-                     p.mb-1.one-line
-                     //- .badges.mt-1
-                     //-    .badge.badge-secondary
-                     //-    .badge.badge-secondary
-                     //-    .badge.badge-secondary
-                     .text-right.mt-2
-                        .btn.btn-primary.btn-sm #[span.fa.fa-expand.mr-1] open
-         // pagination
-         nav.mt-5#pagination
-            ul.pagination.justify-content-center
-               li#prev.page-item #[a.page-link(href="#") previous]
-               li#next.page-item #[a.page-link(href="#") next]
-script(type="application/json")#projects-json
+            // projects
+            .row.row-cols-md-2.row-cols-lg-3.row-cols-1.no-gutters
+               -for (var i = 0; i < 6; i++)
+                  .col.p-2.project-card.loading
+                     .shadow.p-2
+                        .project-card-view.mb-2
+                           iframe
+                        h5.mb-1.text-one-line 
+                        p.mb-1.text-one-line.text-lighten
+                        .text-right.mt-2
+                           .btn.btn-primary.btn-sm(data-id=i) #[span.fa.fa-expand.mr-1] open
+            // pagination
+            nav.mt-5#pagination
+               ul.pagination.justify-content-center
+                  li#prev.page-item #[a.page-link(href="#") previous]
+                  li#next.page-item #[a.page-link(href="#") next]
+         
+         #projectView.d-none
+            .px-2.pb-2
+               #projectViewButtonBack.btn.btn-primary.btn-lg.mb-1.mr-1 #[span.mr-1.fa.fa-chevron-left] Back
+               a#projectViewButtonFullPageView.btn.btn-primary.btn-lg.mb-1.mr-1(rel="noreferrer" target="_blank") #[span.mr-1.fa.fa-expand] Full page view
+               a#projectViewButtonSource.btn.btn-primary.btn-lg.mb-1(rel="noreferrer" target="_blank") #[span.mr-1.fa.fa-code] Source
+            .px-2
+               .shadow.p-3
+                  h2 Gridventory
+                  h5.text-lighten A project Subtitle!
+                  .embed-responsive.embed-responsive-1by1
+                     iframe.embed-responsive-item
+script(type="application/json")#projectsJson
    include ../../../www.json

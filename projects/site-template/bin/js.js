@@ -1,20 +1,28 @@
 $(() => {
    $('#site').css({ opacity: 1 })
 
+   const hash = window.location.hash.replace('#', '')
+
    // globals
-   const $projectsJson = $('#projects-json')
+   const $projectsJson = $('#projectsJson')
+   const $projectList = $('#projectList')
+   const $projectView = $('#projectView')
    const $pagination = $('#pagination')
    const $buttonPrev = $('#prev')
    const $buttonNext = $('#next')
-   const $searchInput = $('#search-input')
-   const $searchButton = $('#search-button')
-   const $alertNoResults = $('#alert-noresults')
+   const $searchInput = $('#searchInput')
+   const $searchButton = $('#searchButton')
+   const $searchButtonClear = $('#searchButtonClear')
+   const $alertNoResults = $('#alertNoresults')
+   const $projectOpenButtons = $('#projectList .project-card .btn')
+   const $projectViewIframe = $('#projectView iframe')
+   const $projectViewTitle = $('#projectView h2')
+   const $projectViewDescription = $('#projectView h5')
+   const $projectViewButtonBack = $('#projectViewButtonBack')
+   const $projectViewButtonFullPageView = $('#projectViewButtonFullPageView')
+   const $projectViewButtonSource = $('#projectViewButtonSource')
 
-   $buttonPrev.on('click', prevPage)
-   $buttonNext.on('click', nextPage)
-   $searchButton.on('click', search)
-   $searchInput.on('keyup', e => e.keyCode === 13 && search())
-
+   // projects
    const projects = JSON.parse($projectsJson.html()).projectsList
 
    let filteredProjects = projects.filter(p => {
@@ -22,7 +30,19 @@ $(() => {
    })
    let page = 0
 
-   displayProjects(page, filteredProjects)
+   // listeners
+   $buttonPrev.on('click', prevPage)
+   $buttonNext.on('click', nextPage)
+   $searchButton.on('click', search)
+   $searchInput.on('keyup', searchInput)
+   $searchButtonClear.on('click', clearSearch)
+   $projectOpenButtons.on('click', openProject)
+   $projectViewButtonBack.on('click', backToList)
+
+   if (hash) {
+      const project = filteredProjects.find(p => p.hash === hash)
+      displayProject(project)
+   } else displayProjects(page, filteredProjects)
 
    // some handies
    function nextPage() {
@@ -37,6 +57,17 @@ $(() => {
       displayProjects(page, filteredProjects)
    }
 
+   function clearSearch() {
+      $searchInput.val('')
+      $searchButtonClear.addClass('d-none')
+      search()
+   }
+
+   function searchInput(e) {
+      $searchButtonClear.toggleClass('d-none', $searchInput.val() === 0)
+      if (e.keyCode === 13) search()
+   }
+
    function search() {
       $alertNoResults.addClass('d-none')
       $pagination.addClass('d-none')
@@ -45,7 +76,9 @@ $(() => {
       const value = $searchInput.val()
       page = 0
       filteredProjects = projects.filter(p => {
-         return p.title.includes(value)
+         return !value.length
+            || p.title.toLowerCase().includes(value.toLowerCase())
+            || (p.description && p.description.toLowerCase().includes(value.toLowerCase()))
       })
 
       if (value === '') {
@@ -69,31 +102,25 @@ $(() => {
       // get each of the project containers
       const $containers = $('.project-card')
       $containers.each(containerID => {
-         project = projects[page*6 + containerID]
-         $container1 = $($containers[containerID])
-         displayProject(project, $container1)
+         const project = projects[page*6 + containerID]
+         const $container1 = $($containers[containerID])
+         displayProjectCard(project, $container1)
       })
 
       renderPagination(page, projects)
    }
 
-   function displayProject(project, $container) {
+   function displayProjectCard(project, $container) {
       $container.removeClass('d-none')
-      $containerIframe = $container.find('iframe')
-      $containerTitle = $container.find('h5')
-      $containerDescription = $container.find('p')
-      // $containerBadges = $container.find('.badge')
-
+      const $containerIframe = $container.find('iframe')
+      const $containerTitle = $container.find('h5')
+      const $containerDescription = $container.find('p')
 
       // reset project
       $containerTitle.html('')
       $containerDescription.html('')
-      // $containerBadges.each(badgeId => {
-      //    $($containerBadges[badgeId]).html('')
-      // })
-
       $container.addClass('loading')
- 
+
       if (!project) {
          $container.addClass('d-none')
          $containerIframe.attr('src', '')
@@ -103,16 +130,9 @@ $(() => {
       $containerIframe.attr('src', '/microprojects/' + project.path)
 
       $containerIframe.on('load', (e) => {
-         $containerTitle = $container.find('h5')
-         $containerDescription = $container.find('p')
-         $containerBadges = $container.find('.badge')
          $container.removeClass('loading')
          $containerTitle.html(project.title)
          $containerDescription.html(project.description || 'a microproject!')
-         // $containerBadges.each(badgeId => {
-         //    $($containerBadges[badgeId]).html(project.builtWith[badgeId])
-         // })
-
          $(e.target).off('load')
       })
    }
@@ -130,5 +150,38 @@ $(() => {
       if (page == pagesCount - 1) {
          $buttonNext.addClass('disabled')
       }
+   }
+
+   function clearProjects() {
+      $('iframe').attr('src', '')
+   }
+
+   function openProject(e) {
+      const projectId = page * 6 + Number(e.delegateTarget.dataset.id)
+      const project = filteredProjects[projectId]
+      displayProject(project)
+   }
+
+   function displayProject(project) {
+      clearProjects()
+      $projectList.addClass('d-none')
+      $projectView.removeClass('d-none')
+
+      $projectViewTitle.html(project.title)
+      $projectViewDescription.html(project.description)
+      $projectViewIframe.attr('src', '/microprojects/' + project.path)
+      $projectViewButtonFullPageView.attr('href', '/microprojects/' + project.path)
+      $projectViewButtonSource.attr('href', 'https://github.com/sean-codes/microprojects/tree/master/' + project.path + '/src')
+
+      window.location.hash = project.hash
+   }
+
+   function backToList() {
+      clearProjects()
+      $projectList.removeClass('d-none')
+      $projectView.addClass('d-none')
+
+      displayProjects(page, filteredProjects)
+      window.location.hash = ''
    }
 })

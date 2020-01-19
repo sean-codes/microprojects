@@ -1,29 +1,22 @@
-.project-view {
+.project-card-view {
    position: relative;
    height: 200px;
    overflow: hidden;
    background: #DDD;
-}
 
-iframe {
-   width: 200%;
-   height: 200%;
-   transform-origin: top left;
-   transform: scale(0.5);
-   box-sizing: border-box;
-   overflow: hidden;
-   border: none;
-}
-
-.badge {
-   overflow: hidden;
-   &:empty {
-      display: inline-block !important;
+   iframe {
+      width: 200%;
+      height: 200%;
+      transform-origin: top left;
+      transform: scale(0.5);
+      box-sizing: border-box;
+      overflow: hidden;
+      border: none;
    }
 }
 
 .loading {
-   p, h5, .btn, .project-view, .badge {
+   p, h5, .btn, .project-card-view {
       background: #DDD !important;
       min-width: 2rem;
       position: relative;
@@ -52,7 +45,11 @@ iframe {
    }
 }
 
-.one-line {
+.text-lighten {
+   opacity: 0.75;
+}
+
+.text-one-line {
    white-space: nowrap;
    text-overflow: ellipsis;
    overflow: hidden;
