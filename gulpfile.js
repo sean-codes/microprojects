@@ -63,12 +63,17 @@ gulp.task('watch', function() {
       })
    })
 
-   gulp.watch(['template/**/src/*', 'template/**/src/*'], function watch_template(done) {
+   gulp.watch(['template/**/src/*', 'template/**/index.pug'], function watch_template(done) {
+      console.log('rebuilding template')
       microBuild('template', done)
    })
 
-   gulp.watch(['www/**/src/*', 'www/**/src/*'], function watch_www(done) {
+   gulp.watch(['www/**/src/*', 'www/**/index.pug'], function watch_www(done) {
       microBuild('www', done)
+   })
+
+   gulp.watch(['./mpconfig.json'], function watch_mpconfig(done) {
+      build(done)
    })
 })
 
@@ -78,13 +83,13 @@ function test(path) {
    shell.task([`browserify "${path}" | tape-run | tap-spec`])()
 }
 
-function build() {
+function build(done) {
    var projectFolders = GulpFolders('projects')
    updateWWWJSON(projectFolders)
 
    GulpInception(projectFolders, microBuild)
    microBuild('template')
-   microBuild('www')
+   microBuild('www', done)
 }
 
 function updateWWW() {
