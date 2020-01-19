@@ -3,12 +3,16 @@ html
    head
       title Microprojects
       link(rel="stylesheet" href="./www/bin/css.css")
-      link(rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css")
+      style
+         include ../node_modules/bootstrap/dist/css/bootstrap.min.css
       meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
    body
       include ./bin/html.pug
-      script(src="./node_modules/@fortawesome/fontawesome-free/js/all.min.js")
-      script(src="./node_modules/jquery/dist/jquery.min.js")
-      script(src="./node_modules/bootstrap/dist/js/bootstrap.min.js")
+      script
+         include ../node_modules/@fortawesome/fontawesome-free/js/all.min.js
+      script
+         include ../node_modules/jquery/dist/jquery.min.js
+      script
+         include ../node_modules/bootstrap/dist/js/bootstrap.min.js
       script(src="./autoreload.js")
       script(src="./www/bin/js.js") 
