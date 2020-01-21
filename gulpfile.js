@@ -72,7 +72,7 @@ gulp.task('watch', function() {
       microBuild('www', done)
    })
 
-   gulp.watch(['./mpconfig.json'], function watch_mpconfig(done) {
+   gulp.watch(['./mpconfig.json', './autoreload.js'], function watch_config(done) {
       build(done)
    })
 })
