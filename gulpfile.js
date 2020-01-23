@@ -21,21 +21,6 @@ gulp.task('test', function() {
    test('projects/**/test/*.js')
 });
 
-
-gulp.task('new', function() {
-   var projectName = readLine.question('Project Title: ')
-   var projectPath = path.join(__dirname, 'projects', projectName)
-   if (!fs.existsSync(projectPath)) {
-      console.log('Creating project..')
-      gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function() {
-         gulp.start('watch')
-      }))
-      return
-   }
-
-   console.log('Project Exists!')
-});
-
 gulp.task('watch', function() {
    build()
    var projectFolders = GulpFolders('projects')
@@ -76,6 +61,20 @@ gulp.task('watch', function() {
       build(done)
    })
 })
+
+gulp.task('new', gulp.series(function(done) {
+   var projectName = readLine.question('Project Title: ')
+   var projectPath = path.join(__dirname, 'projects', projectName)
+   if (!fs.existsSync(projectPath)) {
+      console.log('Creating project..')
+      gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function() {
+         done()
+      }))
+      return
+   }
+
+   console.log('Project Exists!')
+}, 'watch'));
 
 gulp.task('default', build)
 
