@@ -105,8 +105,6 @@
       {
          "title": "interval timer",
          "path": "projects/interval timer",
-         "description": "a microproject!",
-         "hide-on-index": true,
          "hash": "interval-timer"
       },
       {

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Microprojects</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, initial-scale=1.0">
+    <link rel="stylesheet" href="./bin/css.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Karla">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  </head>
+  <body>
+    <div class="center">
+      <div class="form">
+        <div class="input-group">
+          <label>Duration</label>
+          <input id="inputDuration" type="number" value="45">
+        </div>
+        <div class="input-group">
+          <label>Rest</label>
+          <input id="inputRest" type="number" value="15">
+        </div>
+      </div>
+      <div class="display">
+        <div class="counter" id="counter"></div>
+      </div>
+      <div class="actions">
+        <button id="buttonStop">
+          <div class="material-icons">stop</div>
+        </button>
+        <button class="hide" id="buttonPause">
+          <div class="material-icons">pause</div>
+        </button>
+        <button id="buttonStart">
+          <div class="material-icons">play_arrow</div>
+        </button>
+        <button id="buttonReset">
+          <div class="material-icons">replay</div>
+        </button>
+      </div>
+    </div>
+    <script src="./bin/js.js"> </script>
+    <script src="../../autoreload.js"></script>
+  </body>
+</html>
