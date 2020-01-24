@@ -1,5 +1,5 @@
 {
-   "urlProfileImage": "/microprojects/www/src/a_picture_of_me.jpg",
+   "urlProfileImage": "./www/src/a_picture_of_me.jpg",
    "title": "Sean Codes",
    "description": "Web apps and 2D games. Writing code with my cat criminal! :]",
    "links": [

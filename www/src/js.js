@@ -42,7 +42,7 @@ $(() => {
    $projectViewButtonBack.on('click', backToList)
 
    if (hash) {
-      const project = filteredProjects.find(p => p.hash === hash)
+      const project = projects.find(p => p.hash === hash)
       displayProject(project)
    } else displayProjects(page, filteredProjects)
 
@@ -129,7 +129,7 @@ $(() => {
          return
       }
 
-      $containerIframe.attr('src', '/microprojects/' + project.path)
+      $containerIframe.attr('src', './' + project.path + '/index.html')
 
       $containerIframe.on('load', (e) => {
          $container.removeClass('loading')
@@ -171,7 +171,7 @@ $(() => {
 
       $projectViewTitle.html(project.title)
       $projectViewDescription.html(project.description)
-      $projectViewIframe.attr('src', '/microprojects/' + project.path)
+      $projectViewIframe.attr('src', './' + project.path + '/index.html')
       $projectViewButtonFullPageView.attr('href', '/microprojects/' + project.path)
       $projectViewButtonSource.attr('href', 'https://github.com/sean-codes/microprojects/tree/master/' + project.path + '/src')
 

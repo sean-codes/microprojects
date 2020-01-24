@@ -128,7 +128,8 @@ function updateWWWJSON(projectFolders) {
          title: path.basename(projectFolder),
          path: projectFolder,
          ...projectConfig,
-         hash: projectFolder.toString()       // Convert to string
+         hash: projectFolder
+              .replace('projects', '')
               .normalize('NFD')               // Change diacritics
               .replace(/[\u0300-\u036f]/g,'') // Remove illegal characters
               .replace(/\s+/g,'-')            // Change whitespace to dashes
