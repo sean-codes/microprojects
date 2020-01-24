@@ -47,6 +47,8 @@ const IntervalTimer = function(duration, rest) {
       this.interval = setInterval(() => this.tick(), 100)
       this.ele.buttonPause.classList.remove('hide')
       this.ele.buttonStart.classList.add('hide')
+
+      this.fullscreen('request')
    }
 
    this.switch = function() {
@@ -89,6 +91,32 @@ const IntervalTimer = function(duration, rest) {
       this.resting = false
       this.pause()
       this.reset()
+   }
+
+   this.fullscreen = function(func) {
+     if (!document.hasFocus) return false
+
+        for (const prefix of [undefined, 'moz', 'webkit']) {
+           let requestFullscreen = prefix + 'RequestFullscreen'
+           let fullscreenElement = prefix + 'FullscreenElement'
+           let fullscreenEnabled = prefix + 'FullscreenEnabled'
+           let exitFullscreen = prefix + 'ExitFullscreen'
+
+           if (!prefix) {
+              requestFullscreen = 'requestFullscreen'
+              fullscreenElement = 'fullscreenElement'
+              fullscreenEnabled = 'fullscreenEnabled'
+              exitFullscreen = 'exitFullscreen'
+           }
+
+           if (document.documentElement[requestFullscreen] !== undefined) {
+              if (func === 'possible') return document.documentElement[requestFullscreen]
+              else if (func === 'element') return document[fullscreenElement]
+              else if (func === 'exit') return document[exitFullscreen]()
+              else if (func === 'request') return document.documentElement[requestFullscreen]()
+              else if (func === 'enabled') return document[fullscreenEnabled]
+           }
+        }
    }
 }
 
