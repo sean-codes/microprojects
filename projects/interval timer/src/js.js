@@ -1,4 +1,4 @@
-
+var noSleep = new NoSleep();
 const IntervalTimer = function(duration, rest) {
    this.ele = {
       buttonStop: document.getElementById('buttonStop'),
@@ -9,6 +9,8 @@ const IntervalTimer = function(duration, rest) {
       inputDuration: document.getElementById('inputDuration'),
       inputRest: document.getElementById('inputRest'),
    }
+
+   this.noSleep = new NoSleep();
 
    this.duration = duration
    this.rest = rest
@@ -49,6 +51,7 @@ const IntervalTimer = function(duration, rest) {
       this.ele.buttonStart.classList.add('hide')
 
       this.fullscreen('request')
+      this.noSleep.enable()
    }
 
    this.switch = function() {

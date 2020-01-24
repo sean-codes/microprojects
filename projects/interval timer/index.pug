@@ -3,9 +3,14 @@ html
    head
       title Microprojects
       meta(name="viewport" content="width=device-width, initial-scale=1, initial-scale=1.0")
+      meta(name="mobile-web-app-capable" content="yes")
+      meta(name="apple-mobile-web-app-capable" content="yes")
+      meta(name="apple-mobile-web-app-status-bar-style" content="black")
       link(rel="stylesheet" href="./bin/css.css")
       link(rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Karla')
       link(rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons')
+      script
+        include ../../node_modules/nosleep.js/dist/NoSleep.min.js
    body
       include ./bin/html.pug
       script(src="./bin/js.js") 
