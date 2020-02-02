@@ -146,6 +146,13 @@
          "hash": "space-navigation"
       },
       {
+         "title": "spiral",
+         "path": "projects/spiral",
+         "description": "a microproject!",
+         "hide-on-index": true,
+         "hash": "spiral"
+      },
+      {
          "title": "verlet cloth",
          "path": "projects/verlet cloth",
          "description": "Verlet practice",
