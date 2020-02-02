@@ -19,6 +19,7 @@ body {
    max-width: 18rem;
    width: 100%;
    display: flex;
+   padding: 1rem;
 }
 
 // reset
@@ -77,18 +78,17 @@ body {
 
 .actions {
    display: flex;
-   justify-content: space-around;
+   justify-content: space-between;
    padding-bottom: 2rem;
 
    button  {
       color: #FFF;
-      // font-size: 1.25rem;
       text-align: center;
       background: #333;
       border-radius: 100%;
       width: 4rem;
       height: 4rem;
-      margin: auto;
+      margin: auto 0;
 
       .material-icons {
          font-size: 1.5rem;

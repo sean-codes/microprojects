@@ -23,7 +23,8 @@ body {
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  padding: 1rem; }
 
 * {
   background: none;
@@ -77,8 +78,9 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: distribute;
-  justify-content: space-around;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   padding-bottom: 2rem; }
   .actions button {
     color: #FFF;
@@ -87,7 +89,7 @@ body {
     border-radius: 100%;
     width: 4rem;
     height: 4rem;
-    margin: auto; }
+    margin: auto 0; }
     .actions button .material-icons {
       font-size: 1.5rem; }
     .actions button#buttonPause, .actions button#buttonStart {
