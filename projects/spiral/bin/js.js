@@ -35,22 +35,20 @@ function render() {
          // this is sort of a number 0-1 that the timeing function can use
          // its the initial start time?
          var angle = findAngle(y - centerY, x - centerX)
-         var angleRatio = angle / pi2 + angleOffset
+         var angleRatio = angle / pi2 - angleOffset
 
          if (angleRatio < 0) angleRatio = 1 + angleRatio
 
-         // now how the heck do we combine with ratio time?
+         // now how the heck do we combine with ratio time
          var ratioTime = (currTime % roundTime) / roundTime
 
-         var glow = ratioTime - angleRatio
+         var glow = angleRatio - ratioTime
          if (glow < 0) glow = 1 + glow
-         // change to 0-1-0
-         var opacity = glow < 0.5 ? glow/0.5 : (1-glow)/0.5
 
          var maxSize = space/2
          var size = space/2
 
-         ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`
+         ctx.fillStyle = `rgba(0, 0, 0, ${glow})`
          // draw
          ctx.beginPath()
          ctx.arc(x, y, size, 0, Math.PI*2)
