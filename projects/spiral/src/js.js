@@ -1,7 +1,6 @@
 window.onresize = init
 window.onload = init
 var roundTime = 10000
-var startTime = Date.now()
 var spiralSquish = Math.PI * 1
 var spiralWidth = Math.PI * 0.5
 var ctx = canvas.getContext('2d')
@@ -35,30 +34,36 @@ function render() {
          // this is sort of a number 0-1 that the timeing function can use
          // its the initial start time?
          var angle = findAngle(y - centerY, x - centerX)
-         var angleRatio = angle / pi2 - angleOffset
+         var angleRatio = angle / pi2 + angleOffset
 
          if (angleRatio < 0) angleRatio = 1 + angleRatio
+         if (angleRatio > 1) angleRatio = angleRatio - 1
 
          // now how the heck do we combine with ratio time
          var ratioTime = (currTime % roundTime) / roundTime
 
          var glow = angleRatio - ratioTime
          if (glow < 0) glow = 1 + glow
+         // adjust glow to 0-1-0
+         glow = glow < 0.5 ? glow/0.5 : (1-glow) / 0.5
 
+         // okay intersting how do we figure out what step the shape is on?
+
+         var offsetTime = angleRatio * roundTime
+         var state = Math.floor(((currTime-offsetTime) % ((roundTime) * 3)) / roundTime)
+         ctx.fillStyle = [
+            `rgba(0, 0, 0, ${glow})`,
+            `rgba(255, 0, 0, ${glow})`,
+            `rgba(255, 100, 0, ${glow})`,
+         ][state]
          var maxSize = space/2
          var size = space/2
 
-         ctx.fillStyle = `rgba(0, 0, 0, ${glow})`
+
          // draw
          ctx.beginPath()
          ctx.arc(x, y, size, 0, Math.PI*2)
          ctx.fill()
-
-         // debug
-         var dx = Math.cos(angle) * distanceFromCenter
-         var dy = Math.sin(angle) * distanceFromCenter
-         ctx.fillStyle = 'red'
-         ctx.fillRect(centerX + dx, centerY + dy, 5, 5)
       }
    }
 }
