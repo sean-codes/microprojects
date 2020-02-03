@@ -1,6 +1,6 @@
 window.onresize = init
 window.onload = init
-var roundTime = 10000
+var roundTime = 2500
 var spiralSquish = Math.PI * 1
 var spiralWidth = Math.PI * 0.5
 var ctx = canvas.getContext('2d')
@@ -10,7 +10,7 @@ var interval = setInterval(render, 1000/60)
 function init() {
    canvas.width = canvas.clientWidth
    canvas.height = canvas.clientHeight
-   // render()
+   render()
 }
 
 function render() {
@@ -50,19 +50,32 @@ function render() {
          // okay intersting how do we figure out what step the shape is on?
 
          var offsetTime = angleRatio * roundTime
-         var state = Math.floor(((currTime-offsetTime) % ((roundTime) * 3)) / roundTime)
-         ctx.fillStyle = [
-            `rgba(0, 0, 0, ${glow})`,
-            `rgba(255, 0, 0, ${glow})`,
-            `rgba(255, 100, 0, ${glow})`,
+         var state = Math.floor(((currTime-offsetTime) % ((roundTime) * 2)) / roundTime)
+         var corners = [3, 4, 5, 6, 20][Math.floor(((currTime-offsetTime) % ((roundTime) * 5)) / roundTime)]
+         ctx.lineWidth = canvas.width/200
+         ctx.fillStyle = ctx.strokeStyle = [
+            `rgba(206, 166, 255, ${glow})`,
+            `rgba(218, 102, 102, ${glow})`,
          ][state]
-         var maxSize = space/2
-         var size = space/2
+         var maxSize = space/2 * 0.8
+         var size = maxSize * glow
 
 
          // draw
          ctx.beginPath()
-         ctx.arc(x, y, size, 0, Math.PI*2)
+         var turn = -pi2*0.25
+         var cx = Math.cos(turn) * size
+         var cy = Math.sin(turn) * size
+         ctx.moveTo(x + cx, y + cy)
+         var cornerAngle = pi2/corners
+         for (var i = 1; i < corners; i++) {
+           var angle = cornerAngle * i
+           var cx = Math.cos(angle + turn) * size
+           var cy = Math.sin(angle + turn) * size
+           ctx.lineTo(x + cx, y + cy)
+         }
+
+         ctx.closePath()
          ctx.fill()
       }
    }
