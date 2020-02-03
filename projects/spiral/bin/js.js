@@ -19,12 +19,12 @@ function render() {
    var centerX = canvas.width/2
    var centerY = canvas.height/2
 
-   var resolution = 20
+   var resolution = canvas.width / 25
    var space = canvas.width / resolution
    var pi2 = Math.PI*2
 
-   for (var x = space/2; x < canvas.width; x+= space) {
-      for (var y = space/2; y < canvas.height; y+= space) {
+   for (var x = space/2; x <= canvas.width; x+= space) {
+      for (var y = space/2; y <= canvas.height; y+= space) {
          /// uhhhh.......?
          var distanceFromCenter = findDistanceFromCenter(x, y, centerX, centerY)
          var angleOffset = distanceFromCenter / (canvas.width / 1) // adjust later
