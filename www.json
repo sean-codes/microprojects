@@ -96,6 +96,13 @@
          "hash": "field-of-view"
       },
       {
+         "title": "fireworks",
+         "path": "projects/fireworks",
+         "description": "a microproject!",
+         "hide-on-index": true,
+         "hash": "fireworks"
+      },
+      {
          "title": "gridventory",
          "path": "projects/gridventory",
          "description": "Multisized Drag and drop",
