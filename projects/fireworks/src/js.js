@@ -39,7 +39,7 @@ class Engine {
       // ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
       // ctx.fillRect(0, 0, canvas.width, canvas.height)
       eraseCtx.clearRect(0,0,canvas.width,canvas.height);
-      eraseCtx.globalAlpha = .9;
+      eraseCtx.globalAlpha = .75;
       eraseCtx.drawImage(canvas,0,0);
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.drawImage(eraseCanvas,0,0);
