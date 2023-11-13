@@ -4,6 +4,7 @@
   "description": "Microproject and Prototypes",
   "main": "index.js",
   "scripts": {
+    "dev": "gulp watch",
     "gulp:new": "gulp new",
     "gulp:watch": "gulp watch",
     "gulp:build": "gulp"
@@ -43,7 +44,6 @@
     "@fortawesome/fontawesome-free": "^5.12.0",
     "bootstrap": "^4.4.1",
     "gulp-autoprefixer": "^4.1.0",
-    "jquery": "^3.5.0",
-    "nosleep.js": "^0.9.0"
+    "jquery": "^3.5.0"
   }
 }

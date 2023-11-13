@@ -36,6 +36,11 @@ body {
   border: none;
 }
 
+button {
+  background: #fff;
+  color: #000;
+}
+
 .form {
   display: -webkit-box;
   display: -ms-flexbox;

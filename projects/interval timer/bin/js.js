@@ -1,4 +1,13 @@
-var noSleep = new NoSleep();
+const WakeLock = {
+   lock: null,
+   start: async function() {
+      this.lock = await navigator.wakeLock.request()
+   },
+   end: async function() {
+      this.lock && this.lock.release()
+   }
+}
+
 const IntervalTimer = function(duration, rest) {
    this.ele = {
       buttonStop: document.getElementById('buttonStop'),
@@ -10,8 +19,8 @@ const IntervalTimer = function(duration, rest) {
       inputRest: document.getElementById('inputRest'),
    }
 
-   this.noSleep = new NoSleep();
-
+   
+   
    this.duration = duration
    this.rest = rest
    this.resting = false
@@ -41,6 +50,8 @@ const IntervalTimer = function(duration, rest) {
 
 
    this.start = function() {
+      WakeLock.start()
+
       if (this.timer.timeLeft) {
          this.timer.duration = this.timer.timeLeft * 1000
          this.timer.started = Date.now()
@@ -51,7 +62,7 @@ const IntervalTimer = function(duration, rest) {
       this.ele.buttonStart.classList.add('hide')
 
       this.fullscreen('request')
-      this.noSleep.enable()
+      // this.noSleep.enable()
    }
 
    this.switch = function() {
@@ -87,13 +98,15 @@ const IntervalTimer = function(duration, rest) {
    this.pause = function() {
       clearInterval(this.interval)
       this.ele.buttonPause.classList.add('hide')
-      this.ele.buttonStart.classList.remove('hide')
+      this.ele.buttonStart.classList.remove('hide') 
    }
 
    this.stop = function() {
       this.resting = false
       this.pause()
       this.reset()
+      this.fullscreen('exit')
+      WakeLock.end()
    }
 
    this.fullscreen = function(func) {
