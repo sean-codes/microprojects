@@ -2,9 +2,10 @@ html, body {
   padding: 0px;
   margin: 0px;
   background: #000;
-  font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
   color: #FFF;
-  height: 100%; }
+  height: 100%;
+}
 
 canvas {
   position: fixed;
@@ -14,4 +15,5 @@ canvas {
   transform: translateX(-50%) translateY(-50%);
   width: 100%;
   height: 100%;
-  background: #000; }
+  background: #000;
+}

@@ -1,6 +1,7 @@
 // this started as something
 // then turned into something else
 // kind of upside down :<
+@use "sass:math";
 
 html {
    background:#000;
@@ -100,7 +101,7 @@ helix {
 
 	   }
 		@for $i from 1 through 30 {
-			$delay: $i / 5 + 0.1s;
+			$delay: math.div($i, 5) + 0.1s; 
 
 			&:nth-of-type(#{$i}) {
 				animation-delay: $i * 0.05s;
@@ -136,24 +137,24 @@ helix {
 // should use transform here mister
 @keyframes bulb-top {
    from { top: 0 }
-   to { top: -$bulbSize/2 }
+   to { top: math.div($bulbSize, 2) * -1 }
 }
 
 @keyframes bulb-bottom {
-   from { bottom: -$bulbSize/2 }
+   from { bottom: math.div($bulbSize, 2) * -1 }
    to { bottom: 0 }
 }
 
 // :<
 @keyframes bulb-bottom-size {
    0% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
-   49.9% { background:$smColor; width:$bulbSize/1.5; height:$bulbSize/1.5; }
+   49.9% { background:$smColor; width:math.div($bulbSize,1.5); height:math.div($bulbSize,1.5); }
    50% { background:$lgColor; width:$bulbSize; height:$bulbSize;  }
    100% { background:$lgColor; width:$bulbSize; height:$bulbSize;  }
 }
 
 @keyframes bulb-top-size {
-   0% { background:$smColor; width:$bulbSize/1.5; height:$bulbSize/1.5; }
+   0% { background:$smColor; width:math.div($bulbSize,1.5); height:math.div($bulbSize,1.5); }
    50% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
    100% { background:$lgColor; width:$bulbSize; height:$bulbSize; }
 }

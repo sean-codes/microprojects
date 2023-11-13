@@ -1,19 +1,22 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  font-family: 'Syncopate', sans-serif;
+  font-family: "Syncopate", sans-serif;
   color: #FFF;
-  height: 100%; }
+  height: 100%;
+}
 
 body {
   background: -webkit-gradient(linear, left top, right top, from(#56a), to(#46d));
   background: linear-gradient(to right, #56a, #46d);
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
-  body:hover phone {
-    -webkit-transform: scale(1);
-    transform: scale(1); }
+  display: flex;
+}
+body:hover phone {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
 
 phone, phone * {
   display: block;
@@ -24,7 +27,8 @@ phone, phone * {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-size: 62.5%; }
+  font-size: 62.5%;
+}
 
 phone {
   -webkit-animation: flyin 1.5s;
@@ -39,131 +43,153 @@ phone {
   margin: auto;
   background: #FFF;
   height: 65em;
-  padding: 1.0em 0.8em;
+  padding: 1em 0.8em;
   border-radius: 0.25em;
   -webkit-box-shadow: inset 0px 0px 1em rgba(0, 0, 0, 0.75), 2em 4em 20em rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0px 0px 1em rgba(0, 0, 0, 0.75), 2em 4em 20em rgba(0, 0, 0, 0.25); }
-  phone volumn, phone power {
-    position: absolute;
-    height: 20em;
-    width: 0.8em;
-    background: #000;
-    right: -4px;
-    top: 15em; }
-  phone power {
-    position: absolute;
-    height: 10em;
-    top: 44em;
-    -webkit-box-shadow: 0px 40em 0px black;
-    box-shadow: 0px 40em 0px black; }
-  phone screen {
-    background: #000;
-    min-height: 100%;
-    border-radius: 2em;
-    border: 0.2em solid rgba(255, 255, 255, 0.4);
-    position: relative;
-    overflow: hidden; }
-    phone screen:after {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -40em;
-      left: -100em;
-      -webkit-transform: rotateZ(25deg);
-      transform: rotateZ(25deg);
-      background: rgba(255, 255, 255, 0.075);
-      z-index: 10; }
-    phone screen speaker {
-      z-index: 100;
-      position: absolute;
-      width: 25em;
-      height: 2em;
-      top: 0em;
-      border: 3em solid transparent;
-      border-top: 2em solid #555;
-      -webkit-transform: translateX(-50%);
-      transform: translateX(-50%);
-      left: 50%; }
-    phone screen camera, phone screen sensor {
-      position: absolute;
-      top: 4.7em;
-      right: 11em;
-      width: 3.5em;
-      height: 3.5em;
-      border-radius: 75%;
-      background: #666; }
-    phone screen sensor {
-      width: 7em;
-      border-radius: 3em;
-      background: rgba(100, 0, 100, 0.25);
-      right: 22em; }
-    phone screen logo {
-      position: absolute;
-      font-size: 225%;
-      font-weight: 600;
-      color: #AAA;
-      letter-spacing: 0.1em;
-      top: 1.1em;
-      z-index: 100000;
-      text-align: center; }
-    phone screen lcd {
-      width: 76.3em;
-      height: 125em;
-      background: rgba(255, 255, 255, 0.1);
-      position: absolute;
-      top: 13.3em;
-      left: 5em; }
-    phone screen time {
-      position: absolute;
-      font-size: 1200%;
-      top: 4.8em;
-      left: .5em;
-      color: #FFF;
-      font-weight: 100; }
-    phone screen icons {
-      position: absolute;
-      height: 21em;
-      bottom: 0px;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex; }
-      phone screen icons svg {
-        -webkit-box-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-        font-size: 300px;
-        position: relative;
-        top: 1.5em;
-        color: #ccc; }
-        phone screen icons svg:last-of-type {
-          -webkit-transform: scaleX(-1);
-          transform: scaleX(-1); }
+  box-shadow: inset 0px 0px 1em rgba(0, 0, 0, 0.75), 2em 4em 20em rgba(0, 0, 0, 0.25);
+}
+phone volumn, phone power {
+  position: absolute;
+  height: 20em;
+  width: 0.8em;
+  background: #000;
+  right: -4px;
+  top: 15em;
+}
+phone power {
+  position: absolute;
+  height: 10em;
+  top: 44em;
+  -webkit-box-shadow: 0px 40em 0px rgb(0, 0, 0);
+  box-shadow: 0px 40em 0px rgb(0, 0, 0);
+}
+phone screen {
+  background: #000;
+  min-height: 100%;
+  border-radius: 2em;
+  border: 0.2em solid rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+phone screen:after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -40em;
+  left: -100em;
+  -webkit-transform: rotateZ(25deg);
+  transform: rotateZ(25deg);
+  background: rgba(255, 255, 255, 0.075);
+  z-index: 10;
+}
+phone screen speaker {
+  z-index: 100;
+  position: absolute;
+  width: 25em;
+  height: 2em;
+  top: 0em;
+  border: 3em solid transparent;
+  border-top: 2em solid #555;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  left: 50%;
+}
+phone screen camera, phone screen sensor {
+  position: absolute;
+  top: 4.7em;
+  right: 11em;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 75%;
+  background: #666;
+}
+phone screen sensor {
+  width: 7em;
+  border-radius: 3em;
+  background: rgba(100, 0, 100, 0.25);
+  right: 22em;
+}
+phone screen logo {
+  position: absolute;
+  font-size: 225%;
+  font-weight: 600;
+  color: #AAA;
+  letter-spacing: 0.1em;
+  top: 1.1em;
+  z-index: 100000;
+  text-align: center;
+}
+phone screen lcd {
+  width: 76.3em;
+  height: 125em;
+  background: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 13.3em;
+  left: 5em;
+}
+phone screen time {
+  position: absolute;
+  font-size: 1200%;
+  top: 4.8em;
+  left: 0.5em;
+  color: #FFF;
+  font-weight: 100;
+}
+phone screen icons {
+  position: absolute;
+  height: 21em;
+  bottom: 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+phone screen icons svg {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  font-size: 300px;
+  position: relative;
+  top: 1.5em;
+  color: #ccc;
+}
+phone screen icons svg:last-of-type {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
 
 @-webkit-keyframes flyin {
   0% {
     -webkit-transform: translateY(300px) scale(2) rotateZ(45deg);
     transform: translateY(300px) scale(2) rotateZ(45deg);
-    opacity: 0; }
+    opacity: 0;
+  }
   80% {
     -webkit-transform: translateY(50px) scale(0.6) rotateZ(-20deg);
     transform: translateY(50px) scale(0.6) rotateZ(-20deg);
-    opacity: 0.8; }
+    opacity: 0.8;
+  }
   100% {
     -webkit-transform: translateY(0px) scale(0.5);
     transform: translateY(0px) scale(0.5);
-    opacity: 1; } }
+    opacity: 1;
+  }
+}
 
 @keyframes flyin {
   0% {
     -webkit-transform: translateY(300px) scale(2) rotateZ(45deg);
     transform: translateY(300px) scale(2) rotateZ(45deg);
-    opacity: 0; }
+    opacity: 0;
+  }
   80% {
     -webkit-transform: translateY(50px) scale(0.6) rotateZ(-20deg);
     transform: translateY(50px) scale(0.6) rotateZ(-20deg);
-    opacity: 0.8; }
+    opacity: 0.8;
+  }
   100% {
     -webkit-transform: translateY(0px) scale(0.5);
     transform: translateY(0px) scale(0.5);
-    opacity: 1; } }
+    opacity: 1;
+  }
+}

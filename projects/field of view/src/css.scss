@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 html, body{
    padding:0px;
    margin:0px;
@@ -23,7 +25,7 @@ canvas {
       linear-gradient(-45deg, transparent 75%, $gridColor 75%);
    background-position:
       0px 0px,
-      0px $gridSize/2,
-      ($gridSize/2) (-$gridSize/2),
-      -$gridSize/2 0px;
+      0px math.div($gridSize,2),
+      math.div($gridSize,2) (-1 * math.div($gridSize,2)),
+      math.div(-$gridSize,2) 0px;
 }

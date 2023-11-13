@@ -2,15 +2,17 @@ html, body {
   padding: 0px;
   margin: 0px;
   background: #333;
-  font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
   color: #FFF;
   height: 100%;
-  background: #000; }
+  background: #000;
+}
 
 body {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+}
 
 .center {
   margin: auto;
@@ -24,13 +26,15 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 1rem; }
+  padding: 1rem;
+}
 
 * {
   background: none;
   padding: 0;
   margin: 0;
-  border: none; }
+  border: none;
+}
 
 .form {
   display: -webkit-box;
@@ -39,16 +43,20 @@ body {
   padding-top: 2rem;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
-  justify-content: space-between; }
-  .form .input-group label, .form .input-group input {
-    display: block; }
-  .form .input-group label {
-    color: #999; }
-  .form .input-group input {
-    background: #000;
-    color: #FFF;
-    font-size: 2rem;
-    width: 5rem; }
+  justify-content: space-between;
+}
+.form .input-group label, .form .input-group input {
+  display: block;
+}
+.form .input-group label {
+  color: #999;
+}
+.form .input-group input {
+  background: #000;
+  color: #FFF;
+  font-size: 2rem;
+  width: 5rem;
+}
 
 .display {
   -webkit-box-flex: 1;
@@ -56,23 +64,26 @@ body {
   flex: 1;
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
-  .display .counter {
-    margin: auto;
-    font-size: 4rem;
-    font-weight: bolder;
-    border-radius: 100%;
-    width: 10rem;
-    height: 10rem;
-    line-height: 10rem;
-    text-align: center;
-    background: linear-gradient(115deg, #423BBB, #635dcc);
-    -webkit-animation: glow 2s linear infinite alternate;
-    animation: glow 2s linear infinite alternate; }
-    .display .counter.rest {
-      -webkit-animation: glow 2s linear infinite alternate;
-      animation: glow 2s linear infinite alternate;
-      background: linear-gradient(115deg, #f22, #ff5555); }
+  display: flex;
+}
+.display .counter {
+  margin: auto;
+  font-size: 4rem;
+  font-weight: bolder;
+  border-radius: 100%;
+  width: 10rem;
+  height: 10rem;
+  line-height: 10rem;
+  text-align: center;
+  background: linear-gradient(115deg, #423BBB, #635dcc);
+  -webkit-animation: glow 2s linear infinite alternate;
+  animation: glow 2s linear infinite alternate;
+}
+.display .counter.rest {
+  -webkit-animation: glow 2s linear infinite alternate;
+  animation: glow 2s linear infinite alternate;
+  background: linear-gradient(115deg, #f22, #ff5555);
+}
 
 .actions {
   display: -webkit-box;
@@ -81,41 +92,54 @@ body {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  padding-bottom: 2rem; }
-  .actions button {
-    color: #FFF;
-    text-align: center;
-    background: #333;
-    border-radius: 100%;
-    width: 4rem;
-    height: 4rem;
-    margin: auto 0; }
-    .actions button .material-icons {
-      font-size: 1.5rem; }
-    .actions button#buttonPause, .actions button#buttonStart {
-      width: 5rem;
-      height: 5rem; }
-      .actions button#buttonPause .material-icons, .actions button#buttonStart .material-icons {
-        font-size: 2.5rem; }
-    .actions button:hover {
-      background: #444;
-      cursor: pointer; }
+  padding-bottom: 2rem;
+}
+.actions button {
+  color: #FFF;
+  text-align: center;
+  background: #333;
+  border-radius: 100%;
+  width: 4rem;
+  height: 4rem;
+  margin: auto 0;
+}
+.actions button .material-icons {
+  font-size: 1.5rem;
+}
+.actions button#buttonPause, .actions button#buttonStart {
+  width: 5rem;
+  height: 5rem;
+}
+.actions button#buttonPause .material-icons, .actions button#buttonStart .material-icons {
+  font-size: 2.5rem;
+}
+.actions button:hover {
+  background: #444;
+  cursor: pointer;
+}
 
 .hide {
-  display: none !important; }
+  display: none !important;
+}
 
 @-webkit-keyframes glow {
   from {
     -webkit-box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1); }
+    box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1);
+  }
   to {
     -webkit-box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2); } }
+    box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2);
+  }
+}
 
 @keyframes glow {
   from {
     -webkit-box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1); }
+    box-shadow: 0px 0px 10px 10px rgba(255, 255, 255, 0.1);
+  }
   to {
     -webkit-box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2); } }
+    box-shadow: 0px 0px 30px 20px rgba(255, 255, 255, 0.2);
+  }
+}

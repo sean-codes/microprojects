@@ -3,13 +3,14 @@ html {
   padding: 0;
   margin: 0;
   background: #191a1d;
-  font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
   color: #FFF;
   height: 100%;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none; }
+  user-select: none;
+}
 
 .stoneage-center {
   position: absolute;
@@ -17,7 +18,8 @@ html {
   left: 50%;
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  text-align: center; }
+  text-align: center;
+}
 
 h1 {
   margin: 0;
@@ -26,18 +28,22 @@ h1 {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none; }
+  user-select: none;
+}
 
 canvas {
   background: #191a1d;
   width: 600px;
-  height: 330px; }
-  canvas.grab {
-    cursor: -webkit-grab;
-    cursor: grab; }
-  canvas.grabbing {
-    cursor: -webkit-grabbing;
-    cursor: grabbing; }
+  height: 330px;
+}
+canvas.grab {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+canvas.grabbing {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
 
 button {
   background: none;
@@ -48,14 +54,20 @@ button {
   margin: 0 5px;
   border-radius: 5px;
   border: 2px solid #BF39A8;
-  cursor: pointer; }
-  button:nth-of-type(1) {
-    border: 2px solid #E64D43; }
-  button:nth-of-type(2) {
-    border: 2px solid #94264F; }
-  button:hover {
-    background: #BF39A8; }
-    button:hover:nth-of-type(1) {
-      background: #E64D43; }
-    button:hover:nth-of-type(2) {
-      background: #94264F; }
+  cursor: pointer;
+}
+button:nth-of-type(1) {
+  border: 2px solid #E64D43;
+}
+button:nth-of-type(2) {
+  border: 2px solid #94264F;
+}
+button:hover {
+  background: #BF39A8;
+}
+button:hover:nth-of-type(1) {
+  background: #E64D43;
+}
+button:hover:nth-of-type(2) {
+  background: #94264F;
+}

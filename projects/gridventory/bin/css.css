@@ -2,27 +2,31 @@ html, body {
   padding: 0px;
   margin: 0px;
   background: #fff;
-  font-family: 'Roboto Slab', serif;
+  font-family: "Roboto Slab", serif;
   color: #FFF;
-  height: 100%; }
+  height: 100%;
+}
 
 body {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+}
 
 container, inventory, inventory * {
   display: block;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 container {
   max-width: 400px;
   width: 100%;
   margin: auto;
-  padding: 50px; }
+  padding: 50px;
+}
 
 inventory {
   position: relative;
@@ -33,268 +37,339 @@ inventory {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  cursor: crosshair; }
-  inventory.holding {
-    cursor: -webkit-grabbing;
-    cursor: grabbing; }
-  inventory:after {
-    content: 'GRIDVENTORY';
-    position: absolute;
-    top: -35px;
-    width: 100%;
-    text-align: center;
-    color: #aaa;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 3px; }
-  inventory ruler {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    pointer-events: none;
-    width: 100%;
-    height: 100%; }
-    inventory ruler box {
-      position: relative;
-      opacity: 0;
-      -webkit-animation: fadeIn 0.5s forwards;
-      animation: fadeIn 0.5s forwards; }
-      inventory ruler box:nth-of-type(1) {
-        -webkit-animation-delay: 0.05s;
-        animation-delay: 0.05s; }
-      inventory ruler box:nth-of-type(2) {
-        -webkit-animation-delay: 0.1s;
-        animation-delay: 0.1s; }
-      inventory ruler box:nth-of-type(3) {
-        -webkit-animation-delay: 0.15s;
-        animation-delay: 0.15s; }
-      inventory ruler box:nth-of-type(4) {
-        -webkit-animation-delay: 0.2s;
-        animation-delay: 0.2s; }
-      inventory ruler box:nth-of-type(5) {
-        -webkit-animation-delay: 0.25s;
-        animation-delay: 0.25s; }
-      inventory ruler box:nth-of-type(6) {
-        -webkit-animation-delay: 0.3s;
-        animation-delay: 0.3s; }
-      inventory ruler box:nth-of-type(7) {
-        -webkit-animation-delay: 0.35s;
-        animation-delay: 0.35s; }
-      inventory ruler box:nth-of-type(8) {
-        -webkit-animation-delay: 0.4s;
-        animation-delay: 0.4s; }
-      inventory ruler box:nth-of-type(9) {
-        -webkit-animation-delay: 0.45s;
-        animation-delay: 0.45s; }
-      inventory ruler box:nth-of-type(10) {
-        -webkit-animation-delay: 0.5s;
-        animation-delay: 0.5s; }
-      inventory ruler box:nth-of-type(11) {
-        -webkit-animation-delay: 0.55s;
-        animation-delay: 0.55s; }
-      inventory ruler box:nth-of-type(12) {
-        -webkit-animation-delay: 0.6s;
-        animation-delay: 0.6s; }
-      inventory ruler box:nth-of-type(13) {
-        -webkit-animation-delay: 0.65s;
-        animation-delay: 0.65s; }
-      inventory ruler box:nth-of-type(14) {
-        -webkit-animation-delay: 0.7s;
-        animation-delay: 0.7s; }
-      inventory ruler box:nth-of-type(15) {
-        -webkit-animation-delay: 0.75s;
-        animation-delay: 0.75s; }
-      inventory ruler box:nth-of-type(16) {
-        -webkit-animation-delay: 0.8s;
-        animation-delay: 0.8s; }
-      inventory ruler box:nth-of-type(17) {
-        -webkit-animation-delay: 0.85s;
-        animation-delay: 0.85s; }
-      inventory ruler box:nth-of-type(18) {
-        -webkit-animation-delay: 0.9s;
-        animation-delay: 0.9s; }
-      inventory ruler box:nth-of-type(19) {
-        -webkit-animation-delay: 0.95s;
-        animation-delay: 0.95s; }
-      inventory ruler box:nth-of-type(20) {
-        -webkit-animation-delay: 1s;
-        animation-delay: 1s; }
-      inventory ruler box:nth-of-type(21) {
-        -webkit-animation-delay: 1.05s;
-        animation-delay: 1.05s; }
-      inventory ruler box:nth-of-type(22) {
-        -webkit-animation-delay: 1.1s;
-        animation-delay: 1.1s; }
-      inventory ruler box:nth-of-type(23) {
-        -webkit-animation-delay: 1.15s;
-        animation-delay: 1.15s; }
-      inventory ruler box:nth-of-type(24) {
-        -webkit-animation-delay: 1.2s;
-        animation-delay: 1.2s; }
-      inventory ruler box:nth-of-type(25) {
-        -webkit-animation-delay: 1.25s;
-        animation-delay: 1.25s; }
-      inventory ruler box:nth-of-type(26) {
-        -webkit-animation-delay: 1.3s;
-        animation-delay: 1.3s; }
-      inventory ruler box:nth-of-type(27) {
-        -webkit-animation-delay: 1.35s;
-        animation-delay: 1.35s; }
-      inventory ruler box:nth-of-type(28) {
-        -webkit-animation-delay: 1.4s;
-        animation-delay: 1.4s; }
-      inventory ruler box:nth-of-type(29) {
-        -webkit-animation-delay: 1.45s;
-        animation-delay: 1.45s; }
-      inventory ruler box:nth-of-type(30) {
-        -webkit-animation-delay: 1.5s;
-        animation-delay: 1.5s; }
-      inventory ruler box:nth-of-type(31) {
-        -webkit-animation-delay: 1.55s;
-        animation-delay: 1.55s; }
-      inventory ruler box:nth-of-type(32) {
-        -webkit-animation-delay: 1.6s;
-        animation-delay: 1.6s; }
-      inventory ruler box:nth-of-type(33) {
-        -webkit-animation-delay: 1.65s;
-        animation-delay: 1.65s; }
-      inventory ruler box:nth-of-type(34) {
-        -webkit-animation-delay: 1.7s;
-        animation-delay: 1.7s; }
-      inventory ruler box:nth-of-type(35) {
-        -webkit-animation-delay: 1.75s;
-        animation-delay: 1.75s; }
-      inventory ruler box:nth-of-type(36) {
-        -webkit-animation-delay: 1.8s;
-        animation-delay: 1.8s; }
-      inventory ruler box:nth-of-type(37) {
-        -webkit-animation-delay: 1.85s;
-        animation-delay: 1.85s; }
-      inventory ruler box:nth-of-type(38) {
-        -webkit-animation-delay: 1.9s;
-        animation-delay: 1.9s; }
-      inventory ruler box:nth-of-type(39) {
-        -webkit-animation-delay: 1.95s;
-        animation-delay: 1.95s; }
-      inventory ruler box:nth-of-type(40) {
-        -webkit-animation-delay: 2s;
-        animation-delay: 2s; }
-      inventory ruler box:before {
-        content: '';
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        width: calc(100% - 10px);
-        height: calc(100% - 10px);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        border: 3px dashed #aaa; }
-      inventory ruler box:hover:before {
-        border: 3px dashed #888; }
-  inventory item {
-    position: absolute;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border-radius: 3px;
-    background: none;
-    top: 0;
-    left: 0;
-    cursor: -webkit-grab;
-    cursor: grab;
-    z-index: 1;
-    -webkit-transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
-    transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
-    transition: transform 0.4s 0s, z-index 0s 0.4s;
-    transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s;
-    opacity: 0;
-    --xpos: 0px;
-    --ypos: 0px;
-    -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos));
-    transform: translateX(var(--xpos)) translateY(var(--ypos));
-    -webkit-animation: flyin 0.25s, fadeIn 0.5s forwards;
-    animation: flyin 0.25s, fadeIn 0.5s forwards; }
-    inventory item:nth-of-type(1) {
-      -webkit-animation-delay: 0.75s, 0.75s;
-      animation-delay: 0.75s, 0.75s; }
-    inventory item:nth-of-type(2) {
-      -webkit-animation-delay: 1s, 1s;
-      animation-delay: 1s, 1s; }
-    inventory item:nth-of-type(3) {
-      -webkit-animation-delay: 1.25s, 1.25s;
-      animation-delay: 1.25s, 1.25s; }
-    inventory item:nth-of-type(4) {
-      -webkit-animation-delay: 1.5s, 1.5s;
-      animation-delay: 1.5s, 1.5s; }
-    inventory item:nth-of-type(5) {
-      -webkit-animation-delay: 1.75s, 1.75s;
-      animation-delay: 1.75s, 1.75s; }
-    inventory item:nth-of-type(6) {
-      -webkit-animation-delay: 2s, 2s;
-      animation-delay: 2s, 2s; }
-    inventory item:nth-of-type(7) {
-      -webkit-animation-delay: 2.25s, 2.25s;
-      animation-delay: 2.25s, 2.25s; }
-    inventory item:nth-of-type(8) {
-      -webkit-animation-delay: 2.5s, 2.5s;
-      animation-delay: 2.5s, 2.5s; }
-    inventory item:nth-of-type(9) {
-      -webkit-animation-delay: 2.75s, 2.75s;
-      animation-delay: 2.75s, 2.75s; }
-    inventory item:nth-of-type(10) {
-      -webkit-animation-delay: 3s, 3s;
-      animation-delay: 3s, 3s; }
-    inventory item icon {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: calc(100% - 20px);
-      height: calc(100% - 20px);
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      pointer-events: none;
-      border-radius: 2px;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex; }
-      inventory item icon content {
-        display: inline-block;
-        margin: auto; }
-    inventory item.held {
-      pointer-events: none;
-      -webkit-transition: -webkit-transform 0s 0s;
-      transition: -webkit-transform 0s 0s;
-      transition: transform 0s 0s;
-      transition: transform 0s 0s, -webkit-transform 0s 0s;
-      z-index: 10; }
+  cursor: crosshair;
+}
+inventory.holding {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+inventory:after {
+  content: "GRIDVENTORY";
+  position: absolute;
+  top: -35px;
+  width: 100%;
+  text-align: center;
+  color: #aaa;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+inventory ruler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+inventory ruler box {
+  position: relative;
+  opacity: 0;
+  -webkit-animation: fadeIn 0.5s forwards;
+  animation: fadeIn 0.5s forwards;
+}
+inventory ruler box:nth-of-type(1) {
+  -webkit-animation-delay: 0.05s;
+  animation-delay: 0.05s;
+}
+inventory ruler box:nth-of-type(2) {
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
+}
+inventory ruler box:nth-of-type(3) {
+  -webkit-animation-delay: 0.15s;
+  animation-delay: 0.15s;
+}
+inventory ruler box:nth-of-type(4) {
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+}
+inventory ruler box:nth-of-type(5) {
+  -webkit-animation-delay: 0.25s;
+  animation-delay: 0.25s;
+}
+inventory ruler box:nth-of-type(6) {
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
+}
+inventory ruler box:nth-of-type(7) {
+  -webkit-animation-delay: 0.35s;
+  animation-delay: 0.35s;
+}
+inventory ruler box:nth-of-type(8) {
+  -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+inventory ruler box:nth-of-type(9) {
+  -webkit-animation-delay: 0.45s;
+  animation-delay: 0.45s;
+}
+inventory ruler box:nth-of-type(10) {
+  -webkit-animation-delay: 0.5s;
+  animation-delay: 0.5s;
+}
+inventory ruler box:nth-of-type(11) {
+  -webkit-animation-delay: 0.55s;
+  animation-delay: 0.55s;
+}
+inventory ruler box:nth-of-type(12) {
+  -webkit-animation-delay: 0.6s;
+  animation-delay: 0.6s;
+}
+inventory ruler box:nth-of-type(13) {
+  -webkit-animation-delay: 0.65s;
+  animation-delay: 0.65s;
+}
+inventory ruler box:nth-of-type(14) {
+  -webkit-animation-delay: 0.7s;
+  animation-delay: 0.7s;
+}
+inventory ruler box:nth-of-type(15) {
+  -webkit-animation-delay: 0.75s;
+  animation-delay: 0.75s;
+}
+inventory ruler box:nth-of-type(16) {
+  -webkit-animation-delay: 0.8s;
+  animation-delay: 0.8s;
+}
+inventory ruler box:nth-of-type(17) {
+  -webkit-animation-delay: 0.85s;
+  animation-delay: 0.85s;
+}
+inventory ruler box:nth-of-type(18) {
+  -webkit-animation-delay: 0.9s;
+  animation-delay: 0.9s;
+}
+inventory ruler box:nth-of-type(19) {
+  -webkit-animation-delay: 0.95s;
+  animation-delay: 0.95s;
+}
+inventory ruler box:nth-of-type(20) {
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+inventory ruler box:nth-of-type(21) {
+  -webkit-animation-delay: 1.05s;
+  animation-delay: 1.05s;
+}
+inventory ruler box:nth-of-type(22) {
+  -webkit-animation-delay: 1.1s;
+  animation-delay: 1.1s;
+}
+inventory ruler box:nth-of-type(23) {
+  -webkit-animation-delay: 1.15s;
+  animation-delay: 1.15s;
+}
+inventory ruler box:nth-of-type(24) {
+  -webkit-animation-delay: 1.2s;
+  animation-delay: 1.2s;
+}
+inventory ruler box:nth-of-type(25) {
+  -webkit-animation-delay: 1.25s;
+  animation-delay: 1.25s;
+}
+inventory ruler box:nth-of-type(26) {
+  -webkit-animation-delay: 1.3s;
+  animation-delay: 1.3s;
+}
+inventory ruler box:nth-of-type(27) {
+  -webkit-animation-delay: 1.35s;
+  animation-delay: 1.35s;
+}
+inventory ruler box:nth-of-type(28) {
+  -webkit-animation-delay: 1.4s;
+  animation-delay: 1.4s;
+}
+inventory ruler box:nth-of-type(29) {
+  -webkit-animation-delay: 1.45s;
+  animation-delay: 1.45s;
+}
+inventory ruler box:nth-of-type(30) {
+  -webkit-animation-delay: 1.5s;
+  animation-delay: 1.5s;
+}
+inventory ruler box:nth-of-type(31) {
+  -webkit-animation-delay: 1.55s;
+  animation-delay: 1.55s;
+}
+inventory ruler box:nth-of-type(32) {
+  -webkit-animation-delay: 1.6s;
+  animation-delay: 1.6s;
+}
+inventory ruler box:nth-of-type(33) {
+  -webkit-animation-delay: 1.65s;
+  animation-delay: 1.65s;
+}
+inventory ruler box:nth-of-type(34) {
+  -webkit-animation-delay: 1.7s;
+  animation-delay: 1.7s;
+}
+inventory ruler box:nth-of-type(35) {
+  -webkit-animation-delay: 1.75s;
+  animation-delay: 1.75s;
+}
+inventory ruler box:nth-of-type(36) {
+  -webkit-animation-delay: 1.8s;
+  animation-delay: 1.8s;
+}
+inventory ruler box:nth-of-type(37) {
+  -webkit-animation-delay: 1.85s;
+  animation-delay: 1.85s;
+}
+inventory ruler box:nth-of-type(38) {
+  -webkit-animation-delay: 1.9s;
+  animation-delay: 1.9s;
+}
+inventory ruler box:nth-of-type(39) {
+  -webkit-animation-delay: 1.95s;
+  animation-delay: 1.95s;
+}
+inventory ruler box:nth-of-type(40) {
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+}
+inventory ruler box:before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 3px dashed #aaa;
+}
+inventory ruler box:hover:before {
+  border: 3px dashed #888;
+}
+inventory item {
+  position: absolute;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background: none;
+  top: 0;
+  left: 0;
+  cursor: -webkit-grab;
+  cursor: grab;
+  z-index: 1;
+  -webkit-transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+  transition: z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+  transition: transform 0.4s 0s, z-index 0s 0.4s;
+  transition: transform 0.4s 0s, z-index 0s 0.4s, -webkit-transform 0.4s 0s;
+  opacity: 0;
+  --xpos: 0px;
+  --ypos: 0px;
+  -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos));
+  transform: translateX(var(--xpos)) translateY(var(--ypos));
+  -webkit-animation: flyin 0.25s, fadeIn 0.5s forwards;
+  animation: flyin 0.25s, fadeIn 0.5s forwards;
+}
+inventory item:nth-of-type(1) {
+  -webkit-animation-delay: 0.75s, 0.75s;
+  animation-delay: 0.75s, 0.75s;
+}
+inventory item:nth-of-type(2) {
+  -webkit-animation-delay: 1s, 1s;
+  animation-delay: 1s, 1s;
+}
+inventory item:nth-of-type(3) {
+  -webkit-animation-delay: 1.25s, 1.25s;
+  animation-delay: 1.25s, 1.25s;
+}
+inventory item:nth-of-type(4) {
+  -webkit-animation-delay: 1.5s, 1.5s;
+  animation-delay: 1.5s, 1.5s;
+}
+inventory item:nth-of-type(5) {
+  -webkit-animation-delay: 1.75s, 1.75s;
+  animation-delay: 1.75s, 1.75s;
+}
+inventory item:nth-of-type(6) {
+  -webkit-animation-delay: 2s, 2s;
+  animation-delay: 2s, 2s;
+}
+inventory item:nth-of-type(7) {
+  -webkit-animation-delay: 2.25s, 2.25s;
+  animation-delay: 2.25s, 2.25s;
+}
+inventory item:nth-of-type(8) {
+  -webkit-animation-delay: 2.5s, 2.5s;
+  animation-delay: 2.5s, 2.5s;
+}
+inventory item:nth-of-type(9) {
+  -webkit-animation-delay: 2.75s, 2.75s;
+  animation-delay: 2.75s, 2.75s;
+}
+inventory item:nth-of-type(10) {
+  -webkit-animation-delay: 3s, 3s;
+  animation-delay: 3s, 3s;
+}
+inventory item icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  border-radius: 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+inventory item icon content {
+  display: inline-block;
+  margin: auto;
+}
+inventory item.held {
+  pointer-events: none;
+  -webkit-transition: -webkit-transform 0s 0s;
+  transition: -webkit-transform 0s 0s;
+  transition: transform 0s 0s;
+  transition: transform 0s 0s, -webkit-transform 0s 0s;
+  z-index: 10;
+}
 
 @-webkit-keyframes fadeIn {
   from {
-    opacity: 0; }
+    opacity: 0;
+  }
   to {
-    opacity: 1; } }
+    opacity: 1;
+  }
+}
 
 @keyframes fadeIn {
   from {
-    opacity: 0; }
+    opacity: 0;
+  }
   to {
-    opacity: 1; } }
-
+    opacity: 1;
+  }
+}
 @-webkit-keyframes flyin {
   from {
     -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
-    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
+  }
   to {
     -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
-    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); } }
-
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
+  }
+}
 @keyframes flyin {
   from {
     -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
-    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2); }
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(2);
+  }
   to {
     -webkit-transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
-    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1); } }
+    transform: translateX(var(--xpos)) translateY(var(--ypos)) scale(1);
+  }
+}

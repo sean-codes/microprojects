@@ -3,7 +3,8 @@ var path = require('path')
 var fs = require('fs')
 var gulp = require('gulp')
 var pug = require('gulp-pug')
-var sass = require('gulp-sass')
+// var sass = require('gulp-sass')
+const sass = require('gulp-sass')(require('sass'));
 var babel = require('gulp-babel')
 var prefix = require('gulp-autoprefixer')
 var readLine = require('readline-sync')
@@ -16,6 +17,7 @@ var tapSpec = require('tap-spec')
 var run = require('tape-run')
 var shell = require('gulp-shell')
 var mpconfig = require('./mpconfig.json')
+var express = require('express')
 
 gulp.task('test', function() {
    test('projects/**/test/*.js')
@@ -60,6 +62,15 @@ gulp.task('watch', function() {
    gulp.watch(['./mpconfig.json', './autoreload.js'], function watch_config(done) {
       build(done)
    })
+
+
+   var app = express()
+   app.use('/microprojects', express.static(__dirname))
+   app.listen('4455', () => {
+      console.log('-------------------------------')
+      console.log('Serving: http://localhost:4455/microprojects')
+   })
+
 })
 
 gulp.task('new', gulp.series(function(done) {

@@ -3,9 +3,10 @@ html, body {
   margin: 0px;
   background: #191a1d;
   background: radial-gradient(#414768, #1a1c29);
-  font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
   color: #FFF;
-  height: 100%; }
+  height: 100%;
+}
 
 .model, .model * {
   -webkit-box-sizing: border-box;
@@ -14,7 +15,8 @@ html, body {
   border: none;
   display: block;
   padding: 0;
-  margin: 0; }
+  margin: 0;
+}
 
 .modelContainer {
   display: inline-block;
@@ -27,89 +29,112 @@ html, body {
   -webkit-perspective: 30em;
   perspective: 30em;
   -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d; }
-  .modelContainer .model {
-    --modelWidth: 1em;
-    --modelHeight: 1em;
-    --modelDepth: 1em;
-    width: var(--modelWidth);
-    height: var(--modelHeight);
-    ccbackground: repeating-linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 0.03em, transparent 0.03em, transparent 0.4em), repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 0.03em, transparent 0.03em, transparent 0.4em);
-    background-position: -0.2em -0.2em;
-    -webkit-animation: rotate 6s linear infinite;
-    animation: rotate 6s linear infinite;
-    -webkit-transform-origin: center;
-    transform-origin: center;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d; }
-    .modelContainer .model .voxel {
-      width: 1em;
-      height: 1em;
-      --voxelX:0;
-      --voxelY:0;
-      --voxelZ:0;
-      --voxelColor:red;
-      -webkit-transform-style: preserve-3d;
-      transform-style: preserve-3d;
-      -webkit-transform: translate3d(var(--voxelX), calc(var(--voxelY) - var(--voxelID)), calc(var(--modelDepth)/2 - var(--voxelZ)));
-      transform: translate3d(var(--voxelX), calc(var(--voxelY) - var(--voxelID)), calc(var(--modelDepth)/2 - var(--voxelZ))); }
-      .modelContainer .model .voxel .side {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: var(--voxelColor);
-        -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d; }
-        .modelContainer .model .voxel .side:after {
-          content: '';
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          position: absolute; }
-        .modelContainer .model .voxel .side.top {
-          -webkit-transform: rotateX(90deg) translateZ(0.5em);
-          transform: rotateX(90deg) translateZ(0.5em); }
-          .modelContainer .model .voxel .side.top:after {
-            background: rgba(255, 255, 255, 0.25); }
-        .modelContainer .model .voxel .side.bottom {
-          -webkit-transform: rotateX(-90deg) translateZ(0.5em);
-          transform: rotateX(-90deg) translateZ(0.5em); }
-          .modelContainer .model .voxel .side.bottom:after {
-            background: rgba(255, 255, 255, 0); }
-        .modelContainer .model .voxel .side.left {
-          -webkit-transform: rotateY(-90deg) translateZ(0.5em);
-          transform: rotateY(-90deg) translateZ(0.5em); }
-          .modelContainer .model .voxel .side.left:after {
-            background: rgba(255, 255, 255, 0.25); }
-        .modelContainer .model .voxel .side.right {
-          -webkit-transform: rotateY(90deg) translateZ(0.5em);
-          transform: rotateY(90deg) translateZ(0.5em); }
-          .modelContainer .model .voxel .side.right:after {
-            background: rgba(255, 255, 255, 0.25); }
-        .modelContainer .model .voxel .side.back {
-          -webkit-transform: rotateZ(90deg) translateZ(-0.5em);
-          transform: rotateZ(90deg) translateZ(-0.5em); }
-          .modelContainer .model .voxel .side.back:after {
-            background: rgba(255, 255, 255, 0.1); }
-        .modelContainer .model .voxel .side.front {
-          -webkit-transform: rotateZ(90deg) translateZ(0.5em);
-          transform: rotateZ(90deg) translateZ(0.5em); }
-          .modelContainer .model .voxel .side.front:after {
-            background: rgba(255, 255, 255, 0.1); }
+  transform-style: preserve-3d;
+}
+.modelContainer .model {
+  --modelWidth: 1em;
+  --modelHeight: 1em;
+  --modelDepth: 1em;
+  width: var(--modelWidth);
+  height: var(--modelHeight);
+  ccbackground: repeating-linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 0.03em, transparent 0.03em, transparent 0.4em), repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 0.03em, transparent 0.03em, transparent 0.4em);
+  background-position: -0.2em -0.2em;
+  -webkit-animation: rotate 6s linear infinite;
+  animation: rotate 6s linear infinite;
+  -webkit-transform-origin: center;
+  transform-origin: center;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.modelContainer .model .voxel {
+  width: 1em;
+  height: 1em;
+  --voxelX:0;
+  --voxelY:0;
+  --voxelZ:0;
+  --voxelColor:red;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform: translate3d(var(--voxelX), calc(var(--voxelY) - var(--voxelID)), calc(var(--modelDepth) / 2 - var(--voxelZ)));
+  transform: translate3d(var(--voxelX), calc(var(--voxelY) - var(--voxelID)), calc(var(--modelDepth) / 2 - var(--voxelZ)));
+}
+.modelContainer .model .voxel .side {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: var(--voxelColor);
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.modelContainer .model .voxel .side:after {
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.modelContainer .model .voxel .side.top {
+  -webkit-transform: rotateX(90deg) translateZ(0.5em);
+  transform: rotateX(90deg) translateZ(0.5em);
+}
+.modelContainer .model .voxel .side.top:after {
+  background: rgba(255, 255, 255, 0.25);
+}
+.modelContainer .model .voxel .side.bottom {
+  -webkit-transform: rotateX(-90deg) translateZ(0.5em);
+  transform: rotateX(-90deg) translateZ(0.5em);
+}
+.modelContainer .model .voxel .side.bottom:after {
+  background: rgba(255, 255, 255, 0);
+}
+.modelContainer .model .voxel .side.left {
+  -webkit-transform: rotateY(-90deg) translateZ(0.5em);
+  transform: rotateY(-90deg) translateZ(0.5em);
+}
+.modelContainer .model .voxel .side.left:after {
+  background: rgba(255, 255, 255, 0.25);
+}
+.modelContainer .model .voxel .side.right {
+  -webkit-transform: rotateY(90deg) translateZ(0.5em);
+  transform: rotateY(90deg) translateZ(0.5em);
+}
+.modelContainer .model .voxel .side.right:after {
+  background: rgba(255, 255, 255, 0.25);
+}
+.modelContainer .model .voxel .side.back {
+  -webkit-transform: rotateZ(90deg) translateZ(-0.5em);
+  transform: rotateZ(90deg) translateZ(-0.5em);
+}
+.modelContainer .model .voxel .side.back:after {
+  background: rgba(255, 255, 255, 0.1);
+}
+.modelContainer .model .voxel .side.front {
+  -webkit-transform: rotateZ(90deg) translateZ(0.5em);
+  transform: rotateZ(90deg) translateZ(0.5em);
+}
+.modelContainer .model .voxel .side.front:after {
+  background: rgba(255, 255, 255, 0.1);
+}
 
 @-webkit-keyframes rotate {
   from {
     -webkit-transform: rotateY(0deg);
-    transform: rotateY(0deg); }
+    transform: rotateY(0deg);
+  }
   to {
     -webkit-transform: rotateY(360deg);
-    transform: rotateY(360deg); } }
+    transform: rotateY(360deg);
+  }
+}
 
 @keyframes rotate {
   from {
     -webkit-transform: rotateY(0deg);
-    transform: rotateY(0deg); }
+    transform: rotateY(0deg);
+  }
   to {
     -webkit-transform: rotateY(360deg);
-    transform: rotateY(360deg); } }
+    transform: rotateY(360deg);
+  }
+}
