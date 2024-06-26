@@ -1,0 +1,19 @@
+html, body {
+  padding: 0px;
+  margin: 0px;
+  background: #333;
+  font-family: "Karla", sans-serif;
+  color: #FFF;
+  height: 100%;
+}
+
+canvas {
+  width: 500px;
+  height: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: #FFF;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}

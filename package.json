@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "gulp watch",
-    "gulp:new": "gulp new",
-    "gulp:watch": "gulp watch",
-    "gulp:build": "gulp"
+    "new": "gulp new",
+    "watch": "gulp watch",
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
