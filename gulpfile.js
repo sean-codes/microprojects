@@ -161,7 +161,7 @@ function updateWWWJSON(projectFolders) {
          // console.log("ERROR: CONFIG COULD NOT BE READ", projectFolder)
       }
 
-      var relativePath = projectFolder.replace(__dirname + '\\', '').replaceAll('\\', '/')
+      var relativePath = projectFolder.replace(__dirname, '').replaceAll('\\', '/').replace('\/', '')
       return {
          title: path.basename(projectFolder),
          path: relativePath,
