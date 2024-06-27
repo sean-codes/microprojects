@@ -184,7 +184,12 @@ function updateWWWJSON(projectFolders) {
 }
 
 function microBuild(pathSite, done) {
-   console.log('Building: ' + pathSite.replace(__dirname + "\\", '').replaceAll('\\', '\/'))
+   var cleanPath = pathSite
+      .replace(__dirname, '') // start
+      .replaceAll('\\', '\/') // // to /
+      .replace('/', '') // first slash
+
+   console.log('Building: ' + cleanPath)
    var pathDev = path.join(pathSite, 'src')
    var pathDist = path.join(pathSite, 'bin')
 
