@@ -1,13 +1,10 @@
-var gulp = require('gulp')
 var path = require('path')
 var fs = require('fs')
 var gulp = require('gulp')
 var pug = require('gulp-pug')
-// var sass = require('gulp-sass')
 const sass = require('gulp-sass')(require('sass'));
 var babel = require('gulp-babel')
 var prefix = require('gulp-autoprefixer')
-var readLine = require('readline-sync')
 var gutil = require('gulp-util')
 var data = require('gulp-data')
 var watch = require('gulp-watch')
@@ -19,6 +16,21 @@ var shell = require('gulp-shell')
 var mpconfig = require('./mpconfig.json')
 var express = require('express')
 
+// wish there was a simple readlineSync function built into node :(
+const readline = require('node:readline');
+const { stdin: input, stdout: output } = require('node:process');
+const rl = readline.createInterface({ input, output });
+const readlineQuestion = async function(question) {
+   return await new Promise((yay, nay) => {
+      rl.question(question, (answer) => {
+         rl.close();
+         yay(answer)
+      });
+   })
+}
+
+
+
 gulp.task('test', function() {
    test('projects/**/test/*.js')
 });
@@ -29,10 +41,16 @@ gulp.task('watch', function() {
    var unlinked = {}
 
    GulpInception(projectFolders, function(projectFolder) {
-      gulp.watch([projectFolder + '/test/*.js', projectFolder + '/src/**/*', projectFolder + '/index.pug'], function watch_project_change (done) {
+      var paths = [
+         path.join(projectFolder, '/test/*.js'),
+         path.join(projectFolder, '/src/**/*'),
+         path.join(projectFolder, '/index.pug')
+      ]
+      
+      gulp.watch(paths, function watch_project_change (done) {
          microBuild(projectFolder, done)
          if (fs.existsSync(projectFolder + '/test/test.js')) {
-            test(projectFolder + '/test/test.js')
+            test(projectFolder + '/test/test.js') 
          }
       })
 
@@ -73,18 +91,26 @@ gulp.task('watch', function() {
 
 })
 
-gulp.task('new', gulp.series(function(done) {
-   var projectName = readLine.question('Project Title: ')
+gulp.task('new', gulp.series(async function(done) {
+   var projectName = await readlineQuestion('Project Title: ')
    var projectPath = path.join(__dirname, 'projects', projectName)
-   if (!fs.existsSync(projectPath)) {
-      console.log('Creating project..')
-      gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function() {
-         done()
-      }))
+
+   // exit project exists
+   if (fs.existsSync(projectPath)) {
+      console.log('Project Exists!')
       return
    }
-
-   console.log('Project Exists!')
+   
+   // create it
+   console.log('Creating project..')
+   await new Promise((yay, nay) => {
+      gulp.src('template/**/*').pipe(gulp.dest(projectPath).on('finish', function() {
+         console.log('Project created!')
+         yay()
+      }))
+   })
+   
+   done()
 }, 'watch'));
 
 gulp.task('default', build)
@@ -98,18 +124,18 @@ function build(done) {
    updateWWWJSON(projectFolders)
 
    GulpInception(projectFolders, microBuild)
-   microBuild('template')
-   microBuild('www', done)
+   microBuild(path.join(__dirname, 'template'))
+   microBuild(path.join(__dirname, 'www'), done)
 }
 
 function updateWWW() {
    var projectFolders = GulpFolders('projects')
    updateWWWJSON(projectFolders)
-   microBuild('www')
+   microBuild(path.join(__dirname, 'www'), done)
 }
 
 function updateIndex() {
-   gulp.src('www/index.html').pipe(gulp.dest('./'))
+   gulp.src('www/index.html').pipe(gulp.dest(__dirname))
 }
 
 function updateWWWJSON(projectFolders) {
@@ -135,11 +161,12 @@ function updateWWWJSON(projectFolders) {
          // console.log("ERROR: CONFIG COULD NOT BE READ", projectFolder)
       }
 
+      var relativePath = projectFolder.replace(__dirname + '\\', '').replaceAll('\\', '/')
       return {
          title: path.basename(projectFolder),
-         path: projectFolder,
+         path: relativePath,
          ...projectConfig,
-         hash: projectFolder
+         hash: relativePath
               .replace('projects', '')
               .normalize('NFD')               // Change diacritics
               .replace(/[\u0300-\u036f]/g,'') // Remove illegal characters
@@ -153,11 +180,11 @@ function updateWWWJSON(projectFolders) {
       }
    })
 
-   fs.writeFileSync(path.join(__dirname, 'www.json'), JSON.stringify(wwwJSON, null, '   '))
+   fs.writeFileSync(path.join(__dirname, 'www.json'), JSON.stringify(wwwJSON, null, '   ').replace(/\r\n/g, "\n"))
 }
 
 function microBuild(pathSite, done) {
-   console.log('Building: ' + pathSite)
+   console.log('Building: ' + pathSite.replace(__dirname + "\\", '').replaceAll('\\', '\/'))
    var pathDev = path.join(pathSite, 'src')
    var pathDist = path.join(pathSite, 'bin')
 
@@ -214,7 +241,7 @@ function GulpFolders(pathFolders, absolute) {
    //var pathFolders = absolute ? pathFolders : path.join(__dirname, pathFolders)
    var pathFolders = pathFolders
    for (var fileName of fs.readdirSync(pathFolders)) {
-      var pathFolder = path.join(pathFolders, fileName)
+      var pathFolder = path.join(__dirname, pathFolders, fileName)
       if (fs.statSync(pathFolder).isDirectory()) {
          arrFolders.push(pathFolder)
       }
