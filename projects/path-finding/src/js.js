@@ -1,301 +1,192 @@
-var width = 500
-var height = 500
 var canvas = document.querySelector('canvas')
 var ctx = canvas.getContext('2d')
+var fps = 1000*5
+
+var width = 500
+var height = 500
 canvas.width = width
 canvas.height = height
 
-//-----------------------------------------------------------
-// Objects
-//-----------------------------------------------------------
-class ObjectBase {
-   create({ x, y, size }) {
-      this.x = x
-      this.y = y
-      this.size = size
-   }
+//---------------------------------------------------------
+// start
+//---------------------------------------------------------
+var engine = new Engine()
 
-   draw() {}
-}
+// map
+var map = `
+-------b--
+-s--bbbb--
+----b-----
+----------
+-bbbb-----
+-b--------
+-b--bbbb--
+----be----
+----bbb---
+----------
+`.trim().split('\n').map(r => r.split(''))
+var space = height/map[0].length
 
-class ObjectGrid {
-   draw() {
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'
+for (var row in map) {
+   for (var col in map[row]) {
+      var key = map[row][col]
+      var object = { b: ObjectBlock, s: ObjectStart, e: ObjectEnd }[key]
 
-      var size = width / 10
-      for (var y = 0; y < height; y += size) {
-         ctx.beginPath()
-         ctx.moveTo(0, y + 0.5)
-         ctx.lineTo(width, y + 0.5)
-         ctx.stroke()
-      }
-
-      for (var x = 0; x < width; x += size) {
-         ctx.beginPath()
-         ctx.moveTo(x + 0.5, 0)
-         ctx.lineTo(x + 0.5, height)
-         ctx.stroke()
-      }
+      object && engine.add(object, { x: col*space, y: row*space, size: space })
    }
 }
 
-class ObjectBlock extends ObjectBase {
-   draw() {
-      ctx.fillStyle = '#000'
-      ctx.fillRect(this.x, this.y, this.size, this.size)
-   }
-}
+engine.loop()
 
-class ObjectStart extends ObjectBase {
-   draw() {
-      ctx.fillStyle = '#F22'
-      ctx.fillRect(this.x, this.y, this.size, this.size)
+//---------------------------------------------------------
+// objects
+//---------------------------------------------------------
+function ObjectStart(attr) {
+   this.x = attr.x
+   this.y = attr.y
+   this.width = attr.size
+   this.height = attr.size
 
-      // find end
-      // var endObject = objects.find(o => o.constructor === ObjectEnd)
-      // var sx = this.x + this.size/2
-      // var sy = this.y + this.size/2
-      // var ex = endObject.x + endObject.size/2
-      // var ey = endObject.y + endObject.size/2
+   this.step = function(engine) {
+      // not remotely optimized but should be sub 0.25ms (slow)
+      var time = performance.now()
 
-      // ctx.strokeStyle = 'rgba(0, 0, 0, 1)'
-      // ctx.beginPath()
-      // ctx.moveTo(sx, sy)
-      // ctx.lineTo(ex, ey)
-      // ctx.stroke()
+      ctx.fillStyle = 'green'
+      ctx.fillRect(this.x, this.y, this.width, this.height)
 
-      // loop
-      var cols = width/this.size
-      var rows = height/this.size
-      var graph = {
-         nodes: [],
-         size: this.size,
-         width: width,
-         height: height,
-         cols,
-         rows,
-      }
+      // pathfinding
+      var grid = []
+      for (var y = 0; y < height/space; y++) {
+         var row = []
+         for (var x = 0; x < width/space; x++) {
+            var xPos = x*space
+            var yPos = y*space
+            var object = engine.objects.find(o => o.x == xPos && o.y == yPos)
 
-      for (var y = 0; y < rows; y++) {
-         for (var x = 0; x < cols; x++) {
-            var i = y*cols + x
-            var mx = x * graph.size
-            var my = y * graph.size            
-
-            graph.nodes.push({ 
-               x, 
-               y,
-               mx,
-               my,
-               i,
-               object: objects.find(o => o.x == mx && o.y === my)
+            row.push({
+               x: xPos,
+               y: yPos,
+               xi: x,
+               yi: y,
+               type: object?.type,
+               checked: false
             })
          }
+         grid.push(row)
       }
 
-      function getNodeIndexFromXY(graph, x, y) {
-         var cols = graph.cols
-         var rows = graph.rows
-         var ix = x / graph.size
-         var iy = y / graph.size
-         var i = iy*cols + ix
+      var paths = [[{ type: this.type, x: this.x/space, y: this.y/space }]]
+      var curPath = paths[0]
 
-         return i
-      }
+      var maxChecks = 20
+      var stop = false
+      while (maxChecks > 0 && !stop) {
+         maxChecks -= 1
 
+         var newPath = []
+         for (var cell of curPath) {
+            var dirs = [[1, 0], [-1, 0], [0, -1], [0, 1]]
+            for (var dir of dirs) {
+               var cellX = cell.x
+               var cellY = cell.y
+               var checkX = cell.x+dir[0]
+               var checkY = cell.y+dir[1]
+               var checkCell = grid?.[checkY]?.[checkX]
 
-      function cursePasses(graph, x, y) {
-         var i = getNodeIndexFromXY(graph, x, y)
-         // console.log(graph, i)
-         var parentNode = graph.nodes[i]
-         var dirs = [[1,0], [0,1], [-1,0], [0,-1]]
+               if (checkCell && !checkCell.checked) {
+                  checkCell.checked = true
+                  
+                  // skip blocks
+                  if (checkCell.type == ObjectBlock) continue
 
-         // multi passing
-         var checked = [parentNode]
-         var passes = [
-            [{node: parentNode, parent: null}]
-         ]
+                  // stop at end
+                  if (checkCell.type == ObjectEnd) stop = true
 
-         // single pass
-         var curPass = passes[0]
-
-         var donePassing = false
-         var maxPass = 100
-
-         // single node
-         while (maxPass > 0 && !donePassing) {
-            maxPass -= 1
-            var nextPass = []
-
-            for (var nodeData of curPass) {
-               var node = nodeData.node
-               for (var dir of dirs) {
-
-                  var cx = node.x*graph.size + dir[0]*graph.size
-                  var cy = node.y*graph.size + dir[1]*graph.size
-
-                  if (cx < 0 || cx > (graph.width - graph.size)) continue
-                  if (cy < 0 || cy > (graph.height - graph.size)) continue
-
-                  var ic = getNodeIndexFromXY(graph, cx, cy)
-
-                  var fnode = graph.nodes[ic]
-                  if (!fnode) continue
-                  if (checked.find(n => fnode.i === n.i)) {
-                     continue
-                  }
-                  if (fnode?.object?.constructor === ObjectBlock) {
-                     continue
-                  }
-
-                  if (fnode?.object?.constructor === ObjectEnd) {
-                     donePassing = true
-                  }
-
-
-                  checked.push(fnode)
-                  nextPass.push({ node: fnode, parent: nodeData })
+                  newPath.push({
+                     type: checkCell?.type,
+                     x: checkX,
+                     y: checkY,
+                     parent: cell
+                  })
                }
             }
-
-            passes.push(nextPass)
-            if (nextPass.length == 0) break
-            curPass = nextPass
          }
 
-         return passes
+         paths.push(newPath)
+         curPath = newPath
       }
-
-      // player node
-      var passes = cursePasses(graph, this.x, this.y)
-      console.log(passes)
-
+      
 
       // draw path
-      
-      var startNode = passes[passes.length-1].find(n => n.node?.object?.constructor === ObjectEnd)
-      console.log(startNode)
-      var parent = startNode.parent
+      var steps = paths.length
+      var end = paths.pop().find(c => c.type === ObjectEnd)
+      while (end.parent) {
+         ctx.fillStyle = 'orange'
+         ctx.fillRect(end.x*space, end.y*space, space, space)
+         end = end.parent
 
-      var passI = 0
-      while (parent) {
-         var node = parent.node
-         var x = node.x * this.size
-         var y = node.y * this.size
-         ctx.fillStyle = `rgba(${255 - passI * 30}, 0, 0, 1)`
-         ctx.fillRect(x+1, y+1, graph.size-2, graph.size-2)
-         ctx.font = '12px monospace'
-         ctx.textAlign = 'center'
-         ctx.textBaseline = 'middle'
-         ctx.fillStyle = 'white'
-
-         parent = parent.parent
-         passI += 1
       }
 
-      // draw pass result (naive)
-      // var passI = 0
-      // for (var pass of passes) {
-      //    passI += 1
+      var timeToComplete = performance.now() - time
+      console.log(`Performance | ${steps} steps | ${Math.floor(timeToComplete*100)/100}ms`)
 
-      //    for (var nodeData of pass) {
-      //       var node = nodeData.node
-      //       var x = node.x * this.size
-      //       var y = node.y * this.size
-      //       ctx.fillStyle = `rgba(${255 - passI * 30}, 0, 0, 1)`
-      //       ctx.fillRect(x+1, y+1, this.size-2, this.size-2)
-      //       ctx.font = '12px monospace'
+      // draw all
+      // for (var iPath in paths) {
+      //    var path = paths[iPath]
+      //    for (var cell of path) {
+      //       ctx.fillStyle = 'green'
+      //       ctx.fillRect(cell.x*space, cell.y*space, space, space)
+      //       ctx.fillStyle = 'white'
       //       ctx.textAlign = 'center'
       //       ctx.textBaseline = 'middle'
-      //       ctx.fillStyle = 'white'
-
-
-      //       if (node?.object?.constructor === ObjectStart) {
-      //          ctx.fillText('start', x+this.size/2, y+this.size/2)
-
-      //       } else if (node?.object?.constructor === ObjectEnd) {
-      //          ctx.fillText('end', x+this.size/2, y+this.size/2)
-      //       } else {
-      //          ctx.fillText(passI, x+this.size/2, y+this.size/2)
-      //       }
+      //       ctx.font = '12px monospace'
+      //       ctx.fillText(iPath, cell.x*space+space/2, cell.y*space+space/2)
       //    }
       // }
    }
 }
 
-class ObjectEnd extends ObjectBase {
-   draw() {
-      ctx.fillStyle = 'teal' 
-      ctx.fillRect(this.x, this.y, this.size, this.size)
-   }
-} 
+function ObjectEnd(attr) {
+   this.x = attr.x
+   this.y = attr.y
+   this.width = attr.size
+   this.height = attr.size
 
-//-----------------------------------------------------------
-// Engine kind of
-//-----------------------------------------------------------
-var objects = []
-objects.push(new ObjectGrid())
-
-loadMap(`
-----------
-t---------
-xxxxxx----
-o----x----
-----------
-xxxxxx----
-----------
-----------
-----------
-----------
-`)
-
-loop()
-
-function loop() {
-   setTimeout(loop, 5000/1)
-   ctx.clearRect(0, 0, width, height)
-
-   for (var object of objects) {
-      object.draw()
+   this.step = function() {
+      ctx.fillStyle = 'red'
+      ctx.fillRect(this.x, this.y, this.width, this.height)
    }
 }
 
+function ObjectBlock(attr) {
+   this.x = attr.x
+   this.y = attr.y
+   this.width = attr.size
+   this.height = attr.size
 
+   this.step = function() {
+      ctx.fillStyle = 'black'
+      ctx.fillRect(this.x, this.y, this.width, this.height)
+   }
+}
 
-//-----------------------------------------------------------
-// Load map
-//-----------------------------------------------------------
-function loadMap(map) {
-   var mapArr = map.split('\n').filter(l => l)
-   // console.log('generating map', map, mapArr)
-   var mapRows = mapArr.length
-   var mapCols = mapArr[0].length
-   var size = width / mapRows
-   for (var y = 0; y < mapCols; y++) {
-      for (var x = 0; x < mapRows; x++) {
-         var code = mapArr[y][x]
-         if (code == '-') continue
+//---------------------------------------------------------
+// engine
+//---------------------------------------------------------
+function Engine() {
+   this.objects = []
 
-         var xPos = x * size
-         var yPos = y * size
+   this.add = function(obj, attr) {
+      var newObject = new obj(attr)
+      newObject.type = obj
+      this.objects.push(newObject)
+   }
 
-         if (code == 'x') { 
-            var newObject = new ObjectBlock()
-            newObject.create({x: xPos, y: yPos, size: size })
-            objects.push(newObject)
-         }
-
-         if (code == 'o') { 
-            var newObject = new ObjectStart()
-            newObject.create({x: xPos, y: yPos, size: size })
-            objects.push(newObject)
-         }
-
-         if (code == 't') {
-            var newObject = new ObjectEnd()
-            newObject.create({x: xPos, y: yPos, size: size })
-            objects.push(newObject)
-         }
+   this.loop = function() {
+      setTimeout(() => this.loop(), fps)
+      ctx.clearRect(0, 0, width, height)
+      for (var object of this.objects) {
+         object.step(this)
       }
    }
 }
